@@ -9,6 +9,8 @@ Competition: [Meteora DBC side track on Superteam Earn](https://superteam.fun/ea
 - GitHub: https://github.com/furkanefecancaglar/curve-covenant
 - Website: https://furkanefecancaglar.github.io/curve-covenant/
 - Pitch deck: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/Curve-Covenant-Pitch.pdf
+- Presentation video (2:09): https://furkanefecancaglar.github.io/curve-covenant/pitch.mp4
+- Product demo video (2:00): https://furkanefecancaglar.github.io/curve-covenant/demo.mp4
 - Detailed pitch and video script: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/PITCH.md
 - Logo: [`public/favicon.svg`](../public/favicon.svg)
 - Tech: Solana mainnet/devnet, Meteora DBC SDK 1.5.13, React/Vite, Ed25519 message signatures.

@@ -10,6 +10,8 @@ This is an independent tool, not a Meteora product or financial advice.
 
 Open [the live site](https://furkanefecancaglar.github.io/curve-covenant/) and choose **Try a live pool**, or paste any Meteora DBC pool/config address. A wallet is not required. Use a custom RPC endpoint under **Advanced** if the shared public endpoint is rate limited.
 
+Watch the [two-minute product demo](https://furkanefecancaglar.github.io/curve-covenant/demo.mp4) and [project presentation](https://furkanefecancaglar.github.io/curve-covenant/pitch.mp4). The demo reads a public sample pool; its token is unrelated to Curve Covenant.
+
 ### Embed the live report
 
 After inspecting a pool, click **Copy embed**. The iframe opens a compact report that refreshes from chain whenever a visitor loads it:
@@ -51,6 +53,17 @@ Version `curve-covenant/v1` is a JSON object containing the network, config and 
 The optional signature uses Phantom's fee-free `signMessage()` method and Ed25519 verification. The signer must equal either the config's on-chain fee claimer or the pool's creator to receive a role-verified badge. An unsigned file or a valid signature from an unrelated wallet is shown separately. Signed data is domain-separated and includes every disclosed field, so changing a field invalidates the signature.
 
 Anyone can create an unsigned covenant file. A signature proves that the listed wallet signed those bytes, not that the wallet's human owner is trustworthy or that future actions are guaranteed. Publishing through a recognized project channel provides additional context.
+
+### Verify from a terminal
+
+The CLI emits JSON and exits with code 1 if a claim fails, a signature is invalid, or a required role signature is missing. It reads current Solana state through the same decoder as the website:
+
+```bash
+npm run verify -- examples/public-sample-covenant.json
+npm run verify -- path/to/issuer-covenant.json --require-role-signature
+```
+
+The included sample covenant is explicitly unsigned and serves only as a format and chain-reading example. Automation can consume the `passed`, `checks`, and `signature` fields; a custom endpoint can be supplied with `--rpc URL`.
 
 ## Architecture
 

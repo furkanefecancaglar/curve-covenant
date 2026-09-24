@@ -8,3 +8,6 @@ playwright-report/
 test-results/
 
 *.tsbuildinfo
+
+.venv/
+docs/video-work/

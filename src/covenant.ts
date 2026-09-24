@@ -57,7 +57,7 @@ export function createCovenant(launch: LaunchData, project: string, description:
 export function parseCovenant(value: unknown): Covenant {
   if (!value || typeof value !== 'object') throw new Error('The file is not a covenant.')
   const obj = value as Partial<Covenant>
-  if (obj.schema !== 'curve-covenant/v1' || !obj.configAddress || !obj.network || !obj.claims || typeof obj.claims !== 'object') {
+  if (obj.schema !== 'curve-covenant/v1' || !obj.configAddress || !['mainnet-beta', 'devnet'].includes(obj.network ?? '') || !obj.claims || typeof obj.claims !== 'object') {
     throw new Error('Unsupported covenant file.')
   }
   return obj as Covenant

@@ -1,0 +1,18 @@
+{
+  "schema": "curve-covenant/v1",
+  "network": "mainnet-beta",
+  "configAddress": "3jdtmNC1rZP8Li6ERtt4JjdAgQEJ6XAEzCQfvNB8hT8L",
+  "poolAddress": "4L9LJ3B5niCSLWujRJjPU6scZVbNJz4zw6A9B3aPxTeT",
+  "project": "Public DBC sample",
+  "description": "Read-only demonstration of a public pool. Not an issuer statement.",
+  "claims": {
+    "initialTradingFeePct": 2,
+    "migrationQuoteThresholdRaw": "8696938456",
+    "migrationTarget": "Meteora DAMM v2",
+    "creatorFeeSharePct": 0,
+    "partnerLiquidityPct": 0,
+    "creatorLiquidityPct": 0,
+    "tokenAuthority": "Immutable metadata"
+  },
+  "createdAt": "2026-09-24T12:04:15.970Z"
+}
