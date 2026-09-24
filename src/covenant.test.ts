@@ -1,0 +1,35 @@
+import { describe, expect, it } from 'vitest'
+import { compareCovenant, createCovenant, parseCovenant } from './covenant'
+import { formatUnits } from './dbc'
+import type { LaunchData } from './dbc'
+
+const launch = {
+  network: 'mainnet-beta', configAddress: 'config', poolAddress: 'pool',
+  initialTradingFeePct: 2, migrationQuoteThresholdRaw: '8696938456',
+  migrationTarget: 'Meteora DAMM v2', creatorFeeSharePct: 0,
+  partnerLiquidityPct: 0, creatorLiquidityPct: 0,
+  tokenAuthority: 'Immutable metadata',
+} as LaunchData
+
+describe('covenants', () => {
+  it('checks exact on-chain values and exposes a changed promise', () => {
+    const covenant = createCovenant(launch, 'Example', 'Disclosure', { initialTradingFeePct: 2, migrationQuoteThresholdRaw: '8696938456' })
+    expect(compareCovenant(covenant, launch).every(check => check.matches)).toBe(true)
+    expect(compareCovenant(covenant, { ...launch, initialTradingFeePct: 3 })[0].matches).toBe(false)
+  })
+  it('rejects a covenant for a different config', () => {
+    const covenant = createCovenant(launch, 'Example', '', { creatorFeeSharePct: 0 })
+    expect(() => compareCovenant(covenant, { ...launch, configAddress: 'other' })).toThrow()
+  })
+  it('rejects malformed files and missing claims', () => {
+    expect(() => parseCovenant({ schema: 'unknown' })).toThrow()
+    expect(() => createCovenant(launch, 'Example', '', {})).toThrow()
+  })
+})
+
+describe('quote units', () => {
+  it('preserves large raw values without floating-point rounding', () => {
+    expect(formatUnits('9007199254740993123', 6)).toBe('9007199254740.993123')
+    expect(formatUnits('1000000', 6)).toBe('1')
+  })
+})
