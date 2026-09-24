@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Check, ChevronRight, CircleHelp, Code2, Copy, Download, ExternalLink, FileCheck2, Globe2, LockKeyhole, Radar, RefreshCw, Search, ShieldCheck, X } from 'lucide-react'
 import { DBC_PROGRAM, loadLaunch, quoteBuy, RPC } from './dbc'
 import type { BuyQuote, LaunchData, Network } from './dbc'
-import { compareCovenant, createCovenant, downloadJson, parseCovenant, PROMISE_FIELDS } from './covenant'
+import { compareCovenant, createCovenant, downloadJson, parseCovenant, PROMISE_FIELDS, signCovenantWithPhantom, verifyCovenantSignature } from './covenant'
 import type { Covenant, PromiseField } from './covenant'
 
 const short = (value: string, chars = 7) => `${value.slice(0, chars)}…${value.slice(-chars)}`
@@ -34,6 +34,7 @@ function App() {
   const [buyQuote, setBuyQuote] = useState<BuyQuote | null>(null)
   const [quoteLoading, setQuoteLoading] = useState(false)
   const [quoteError, setQuoteError] = useState('')
+  const [signing, setSigning] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const booted = useRef(false)
 
@@ -78,17 +79,22 @@ function App() {
   }
 
   const checks = covenant && launch ? (() => { try { return compareCovenant(covenant, launch) } catch { return null } })() : null
+  const signatureCheck = covenant && launch ? verifyCovenantSignature(covenant, launch) : null
   const claimCount = checks?.length ?? 0
   const passCount = checks?.filter(check => check.matches).length ?? 0
 
-  function exportCovenant() {
+  async function exportCovenant(sign = false) {
     if (!launch) return
+    setError('')
+    if (sign) setSigning(true)
     try {
       const claims = Object.fromEntries(selected.map(key => [key, launch[key]])) as Partial<Record<PromiseField, string | number>>
-      const next = createCovenant(launch, project, description, claims)
+      let next = createCovenant(launch, project, description, claims)
+      if (sign) next = await signCovenantWithPhantom(next, launch)
       setCovenant(next)
       downloadJson(`${project.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'launch'}-covenant.json`, next)
     } catch (err) { setError(err instanceof Error ? err.message : 'Could not export covenant.') }
+    finally { setSigning(false) }
   }
 
   async function share() {
@@ -140,8 +146,8 @@ function App() {
           </div>}
           {tab === 'scenario' && <div className="scenario-view"><div className="covenant-intro"><div><span className="section-kicker">02 / SCENARIO LAB</span><h3>Explore a trade before it happens.</h3><p>Use Meteora's official DBC quote math on the latest pool state. See the estimated token output, fee split and unfilled amount when a buy approaches graduation. No wallet or transaction is involved.</p></div><Radar size={50}/></div>{launch.poolAddress && !launch.migrated ? <div className="scenario-form"><label>SIMULATED BUY AMOUNT <span>in {launch.quoteSymbol}</span></label><div className="scenario-entry"><input aria-label="Simulated buy amount" value={buyAmount} onChange={event => setBuyAmount(event.target.value)} inputMode="decimal"/><span>{launch.quoteSymbol}</span><button className="primary-button" onClick={runQuote} disabled={quoteLoading}>{quoteLoading ? <RefreshCw size={17} className="spin"/> : <ArrowUpRight size={17}/>} Calculate</button></div><div className="quick-amounts">{['1','10','100','1000'].map(value => <button key={value} onClick={() => setBuyAmount(value)}>{value} {launch.quoteSymbol}</button>)}</div>{quoteError && <div className="error"><X size={16}/>{quoteError}</div>}{buyQuote && <div className="quote-result"><div className="quote-main"><span>ESTIMATED BASE TOKENS</span><strong>{Number(buyQuote.estimatedTokens).toLocaleString('en-US', { maximumFractionDigits: 6 })}</strong><small>Minimum with 1% slippage: {Number(buyQuote.minimumTokens).toLocaleString('en-US', { maximumFractionDigits: 6 })}</small></div><InfoRow label="Trading fee" value={`${buyQuote.tradingFee} ${buyQuote.feeAsset}`}/><InfoRow label="Protocol fee" value={`${buyQuote.protocolFee} ${buyQuote.feeAsset}`}/><InfoRow label="Unfilled input near graduation" value={`${buyQuote.unfilledInput} ${launch.quoteSymbol}`}/><p>Calculated at {new Date(buyQuote.fetchedAt).toLocaleTimeString()}. Quotes are estimates based on a changing pool; this does not execute a trade.</p></div>}</div> : <div className="scenario-unavailable">{launch.migrated ? 'This pool has already graduated from DBC.' : 'Paste a live DBC pool address to simulate a buy.'}</div>}</div>}
           {tab === 'covenant' && <div className="covenant-view"><div className="covenant-intro"><div><span className="section-kicker">02 / PUBLISH</span><h3>Make your launch terms a promise.</h3><p>Export a machine-readable covenant from the live DBC configuration. Share it with your community. Anyone can import it later and compare every claim with the chain.</p></div><FileCheck2 size={50}/></div>
-            {covenant && <div className={`verification ${checks && passCount === claimCount ? 'passed' : 'failed'}`}><div className="verification-head">{checks && passCount === claimCount ? <Check size={21}/> : <X size={21}/>}<strong>{checks ? `${passCount} of ${claimCount} promises match the chain` : 'This covenant belongs to a different launch'}</strong></div>{checks?.map(check => <div className="check-row" key={check.key}><span>{check.matches ? <Check size={15}/> : <X size={15}/>} {check.label}</span><span>{check.expected}{check.expected !== check.actual ? ` → ${check.actual}` : ''}</span></div>)}</div>}
-            <div className="covenant-form"><label>PROJECT NAME<input placeholder="Your launch or platform name" value={project} onChange={event => setProject(event.target.value)}/></label><label>WHAT THIS LAUNCH IS FOR<textarea placeholder="A plain-language description your community can understand" value={description} onChange={event => setDescription(event.target.value)} rows={3}/></label><div className="claim-heading">PROMISES TO INCLUDE <span>read directly from the current config</span></div><div className="claim-list">{PROMISE_FIELDS.map(field => <label className="claim" key={field.key}><input type="checkbox" checked={selected.includes(field.key)} onChange={event => setSelected(current => event.target.checked ? [...current, field.key] : current.filter(key => key !== field.key))}/><span>{field.label}</span><strong>{String(launch[field.key])}{field.suffix}</strong></label>)}</div><button className="primary-button export" onClick={exportCovenant}><Download size={17}/> Download covenant JSON</button><p className="form-note">This file verifies selected terms against live chain data. Anyone can create a file; it does not prove the issuer's identity or guarantee future actions. Re-import it to compare against a fresh read.</p></div>
+            {covenant && <div className={`verification ${checks && passCount === claimCount ? 'passed' : 'failed'}`}><div className="verification-head">{checks && passCount === claimCount ? <Check size={21}/> : <X size={21}/>}<strong>{checks ? `${passCount} of ${claimCount} promises match the chain` : 'This covenant belongs to a different launch'}</strong></div><div className="signature-status">{signatureCheck ? signatureCheck.valid && signatureCheck.authorizedRole ? <><ShieldCheck size={16}/> Signed by on-chain {signatureCheck.authorizedRole}: {short(signatureCheck.signer)}</> : signatureCheck.valid ? <><CircleHelp size={16}/> Valid signature from a wallet with no verified DBC role</> : <><X size={16}/> Invalid signature: {signatureCheck.reason}</> : <><CircleHelp size={16}/> Unsigned: issuer identity has not been verified</>}</div>{checks?.map(check => <div className="check-row" key={check.key}><span>{check.matches ? <Check size={15}/> : <X size={15}/>} {check.label}</span><span>{check.expected}{check.expected !== check.actual ? ` → ${check.actual}` : ''}</span></div>)}</div>}
+            <div className="covenant-form"><label>PROJECT NAME<input placeholder="Your launch or platform name" value={project} onChange={event => setProject(event.target.value)}/></label><label>WHAT THIS LAUNCH IS FOR<textarea placeholder="A plain-language description your community can understand" value={description} onChange={event => setDescription(event.target.value)} rows={3}/></label><div className="claim-heading">PROMISES TO INCLUDE <span>read directly from the current config</span></div><div className="claim-list">{PROMISE_FIELDS.map(field => <label className="claim" key={field.key}><input type="checkbox" checked={selected.includes(field.key)} onChange={event => setSelected(current => event.target.checked ? [...current, field.key] : current.filter(key => key !== field.key))}/><span>{field.label}</span><strong>{String(launch[field.key])}{field.suffix}</strong></label>)}</div><div className="export-actions"><button className="primary-button" onClick={() => exportCovenant(false)}><Download size={17}/> Download unsigned</button><button className="primary-button outline" onClick={() => exportCovenant(true)} disabled={signing}>{signing ? <RefreshCw size={17} className="spin"/> : <LockKeyhole size={17}/>} Sign with Phantom & download</button></div>{error && <div className="error"><X size={16}/>{error}</div>}<p className="form-note">Only the DBC fee claimer or pool creator can create a role-verified signed covenant. Signing a message costs no network fee. The file describes current terms; it does not guarantee future actions.</p></div>
           </div>}
           {tab === 'raw' && <div className="raw-view"><p>The full decoded Meteora SDK account state used in this report. Values too large for JavaScript numbers remain strings.</p><pre>{JSON.stringify(launch.raw, null, 2)}</pre></div>}
         </div>}

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { compareCovenant, createCovenant, parseCovenant } from './covenant'
+import { compareCovenant, covenantMessage, createCovenant, parseCovenant, verifyCovenantSignature } from './covenant'
 import { formatUnits, parseUnits } from './dbc'
 import type { LaunchData } from './dbc'
+import { Keypair } from '@solana/web3.js'
+import nacl from 'tweetnacl'
 
 const launch = {
   network: 'mainnet-beta', configAddress: 'config', poolAddress: 'pool',
@@ -24,6 +26,15 @@ describe('covenants', () => {
   it('rejects malformed files and missing claims', () => {
     expect(() => parseCovenant({ schema: 'unknown' })).toThrow()
     expect(() => createCovenant(launch, 'Example', '', {})).toThrow()
+  })
+  it('verifies issuer signatures and detects tampering', () => {
+    const signer = Keypair.generate()
+    const associatedLaunch = { ...launch, feeClaimer: signer.publicKey.toBase58() }
+    const covenant = createCovenant(associatedLaunch, 'Example', 'Disclosure', { initialTradingFeePct: 2 })
+    const signature = nacl.sign.detached(covenantMessage(covenant), signer.secretKey)
+    const signed = { ...covenant, signature: { scheme: 'ed25519' as const, signer: signer.publicKey.toBase58(), bytesBase64: btoa(String.fromCharCode(...signature)) } }
+    expect(verifyCovenantSignature(signed, associatedLaunch)?.authorizedRole).toBe('DBC fee claimer')
+    expect(verifyCovenantSignature({ ...signed, description: 'Changed' }, associatedLaunch)?.valid).toBe(false)
   })
 })
 
