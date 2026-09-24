@@ -68,3 +68,5 @@ The DBC integration is in [`src/dbc.ts`](src/dbc.ts). The portable disclosure an
 ## License
 
 MIT. The on-chain Meteora programs have their own license; this project's license only covers Curve Covenant source code.
+
+![Scenario lab live pool demo](docs/screenshots/scenario.png)
