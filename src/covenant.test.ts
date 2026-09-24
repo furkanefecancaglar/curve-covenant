@@ -26,6 +26,9 @@ describe('covenants', () => {
   it('rejects malformed files and missing claims', () => {
     expect(() => parseCovenant({ schema: 'unknown' })).toThrow()
     expect(() => createCovenant(launch, 'Example', '', {})).toThrow()
+    const valid = createCovenant(launch, 'Example', '', { initialTradingFeePct: 2 })
+    expect(() => parseCovenant({ ...valid, claims: {} })).toThrow('at least one')
+    expect(() => parseCovenant({ ...valid, claims: { unverifiedField: 'looks safe' } })).toThrow('supported')
   })
   it('verifies issuer signatures and detects tampering', () => {
     const signer = Keypair.generate()

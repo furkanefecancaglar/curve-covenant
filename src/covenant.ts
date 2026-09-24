@@ -57,8 +57,23 @@ export function createCovenant(launch: LaunchData, project: string, description:
 export function parseCovenant(value: unknown): Covenant {
   if (!value || typeof value !== 'object') throw new Error('The file is not a covenant.')
   const obj = value as Partial<Covenant>
-  if (obj.schema !== 'curve-covenant/v1' || !obj.configAddress || !['mainnet-beta', 'devnet'].includes(obj.network ?? '') || !obj.claims || typeof obj.claims !== 'object') {
+  if (obj.schema !== 'curve-covenant/v1' || typeof obj.configAddress !== 'string' || !obj.configAddress ||
+    !['mainnet-beta', 'devnet'].includes(obj.network ?? '') ||
+    typeof obj.project !== 'string' || !obj.project.trim() || typeof obj.description !== 'string' ||
+    typeof obj.createdAt !== 'string' || !obj.createdAt ||
+    !obj.claims || typeof obj.claims !== 'object' || Array.isArray(obj.claims)) {
     throw new Error('Unsupported covenant file.')
+  }
+  const validKeys = new Set(PROMISE_FIELDS.map(field => field.key))
+  const entries = Object.entries(obj.claims)
+  if (!entries.length || entries.some(([key, claim]) => !validKeys.has(key as PromiseField) ||
+    (typeof claim !== 'string' && typeof claim !== 'number') || claim === '' ||
+    (typeof claim === 'number' && !Number.isFinite(claim)))) {
+    throw new Error('Covenant must contain at least one supported on-chain claim.')
+  }
+  if (obj.signature && (obj.signature.scheme !== 'ed25519' ||
+    typeof obj.signature.signer !== 'string' || typeof obj.signature.bytesBase64 !== 'string')) {
+    throw new Error('Unsupported covenant signature.')
   }
   return obj as Covenant
 }
