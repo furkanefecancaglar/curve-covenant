@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Check, ChevronRight, CircleHelp, Code2, Copy, Download, ExternalLink, FileCheck2, Globe2, LockKeyhole, Radar, RefreshCw, Search, ShieldCheck, X } from 'lucide-react'
-import { DBC_PROGRAM, loadLaunch, RPC } from './dbc'
-import type { LaunchData, Network } from './dbc'
+import { DBC_PROGRAM, loadLaunch, quoteBuy, RPC } from './dbc'
+import type { BuyQuote, LaunchData, Network } from './dbc'
 import { compareCovenant, createCovenant, downloadJson, parseCovenant, PROMISE_FIELDS } from './covenant'
 import type { Covenant, PromiseField } from './covenant'
 
@@ -29,7 +29,11 @@ function App() {
   const [description, setDescription] = useState('')
   const [selected, setSelected] = useState<PromiseField[]>(PROMISE_FIELDS.map(field => field.key))
   const [covenant, setCovenant] = useState<Covenant | null>(null)
-  const [tab, setTab] = useState<'overview' | 'covenant' | 'raw'>('overview')
+  const [tab, setTab] = useState<'overview' | 'scenario' | 'covenant' | 'raw'>('overview')
+  const [buyAmount, setBuyAmount] = useState('10')
+  const [buyQuote, setBuyQuote] = useState<BuyQuote | null>(null)
+  const [quoteLoading, setQuoteLoading] = useState(false)
+  const [quoteError, setQuoteError] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
   const booted = useRef(false)
 
@@ -46,7 +50,7 @@ function App() {
 
   async function inspect(input = address, chain = network) {
     if (!input.trim()) return setError('Enter a DBC pool or config address.')
-    setLoading(true); setError(''); setLaunch(null); setCovenant(null)
+    setLoading(true); setError(''); setLaunch(null); setCovenant(null); setBuyQuote(null)
     try {
       const result = await loadLaunch(input, chain, rpcUrl.trim() || RPC[chain])
       setLaunch(result)
@@ -91,6 +95,14 @@ function App() {
     await navigator.clipboard.writeText(window.location.href)
   }
 
+  async function runQuote() {
+    if (!launch) return
+    setQuoteLoading(true); setQuoteError(''); setBuyQuote(null)
+    try { setBuyQuote(await quoteBuy(launch, buyAmount, rpcUrl.trim() || RPC[launch.network])) }
+    catch (err) { setQuoteError(err instanceof Error ? err.message : 'Could not calculate a quote.') }
+    finally { setQuoteLoading(false) }
+  }
+
   return <div className="app-shell">
     <header className="site-header">
       <a className="brand" href="/"><div className="brand-icon"><Radar size={23} strokeWidth={2.2}/></div><span>curve<span className="brand-accent">covenant</span></span><span className="beta">BETA</span></a>
@@ -119,13 +131,14 @@ function App() {
 
         {launch && <div className="result-panel">
           <div className="result-header"><div><div className="result-label"><span className="live-dot"/> VERIFIED ON-CHAIN <span className="muted">·</span> SLOT {launch.slot.toLocaleString()}</div><h3>{launch.kind === 'pool' ? 'Launch pool' : 'Launch configuration'} <span>{short(launch.address, 5)}</span></h3><p>Read at {new Date(launch.fetchedAt).toLocaleString()} · {launch.network === 'devnet' ? 'Solana devnet' : 'Solana mainnet'}</p></div><div className="result-actions"><button onClick={share}><Copy size={15}/> Copy link</button><button onClick={() => downloadJson('dbc-onchain-snapshot.json', launch)}><Download size={15}/> Snapshot</button></div></div>
-          <div className="tabs"><button className={tab === 'overview' ? 'selected' : ''} onClick={() => setTab('overview')}>Overview</button><button className={tab === 'covenant' ? 'selected' : ''} onClick={() => setTab('covenant')}>Covenant</button><button className={tab === 'raw' ? 'selected' : ''} onClick={() => setTab('raw')}>Raw chain data</button></div>
+          <div className="tabs"><button className={tab === 'overview' ? 'selected' : ''} onClick={() => setTab('overview')}>Overview</button><button className={tab === 'scenario' ? 'selected' : ''} onClick={() => setTab('scenario')}>Scenario lab</button><button className={tab === 'covenant' ? 'selected' : ''} onClick={() => setTab('covenant')}>Covenant</button><button className={tab === 'raw' ? 'selected' : ''} onClick={() => setTab('raw')}>Raw chain data</button></div>
           {tab === 'overview' && <div className="overview">
             <div className="metric-grid"><div className="metric"><span>INITIAL TRADING FEE</span><strong>{pct(launch.initialTradingFeePct)}</strong><small>{launch.feeMode}{launch.dynamicFeeEnabled ? ' + dynamic fee' : ''}</small></div><div className="metric"><span>GRADUATION TARGET</span><strong>{launch.migrationQuoteThreshold}</strong><small>{launch.quoteSymbol} contributed to curve</small></div><div className="metric"><span>MIGRATION DESTINATION</span><strong className="medium-value">{launch.migrationTarget}</strong><small>{launch.migrated === undefined ? 'Configuration' : launch.migrated ? 'Already migrated' : 'Awaiting threshold'}</small></div></div>
             {launch.graduationProgress !== undefined && <div className="progress-card"><div><span>GRADUATION PROGRESS</span><strong>{pct(launch.graduationProgress)}</strong></div><div className="progress-track"><span style={{ width: `${launch.graduationProgress}%` }}/></div><p>{launch.currentQuoteReserve} of {launch.migrationQuoteThreshold} {launch.quoteSymbol} in quote reserve</p></div>}
             <div className="detail-grid"><div className="detail-card"><h4><span className="detail-icon"><ArrowDownRight size={19}/></span> Fees & flow</h4><InfoRow label="Initial trading fee" value={pct(launch.initialTradingFeePct)}/><InfoRow label="Fee schedule" value={launch.feeMode}/><InfoRow label="Dynamic fee" value={launch.dynamicFeeEnabled ? 'Enabled' : 'Disabled'}/><InfoRow label="Creator share of trading fees" value={pct(launch.creatorFeeSharePct)}/><InfoRow label="Fee claimer" value={<Address value={launch.feeClaimer} network={launch.network}/>}/><InfoRow label="Migration fee allocation" value={`${pct(launch.migrationFeePct)} partner / ${pct(launch.creatorMigrationFeePct)} creator`}/></div><div className="detail-card"><h4><span className="detail-icon purple"><ArrowUpRight size={19}/></span> Migration & control</h4><InfoRow label="Quote asset" value={<Address value={launch.quoteMint} network={launch.network}/>}/><InfoRow label="Migration target" value={launch.migrationTarget}/><InfoRow label="Partner liquidity share" value={pct(launch.partnerLiquidityPct)}/><InfoRow label="Creator liquidity share" value={pct(launch.creatorLiquidityPct)}/><InfoRow label="Partner permanent lock" value={pct(launch.partnerPermanentLockPct)}/><InfoRow label="Creator permanent lock" value={pct(launch.creatorPermanentLockPct)}/><InfoRow label="Token authority" value={launch.tokenAuthority}/></div></div>
             <div className="addresses"><InfoRow label="DBC config" value={<Address value={launch.configAddress} network={launch.network}/>} mono/>{launch.poolAddress && <InfoRow label="DBC pool" value={<Address value={launch.poolAddress} network={launch.network}/>} mono/>}{launch.baseMint && <InfoRow label="Base token" value={<Address value={launch.baseMint} network={launch.network}/>} mono/>}{launch.creator && <InfoRow label="Creator" value={<Address value={launch.creator} network={launch.network}/>} mono/>}<InfoRow label="DBC program" value={<Address value={DBC_PROGRAM} network={launch.network}/>} mono/></div>
           </div>}
+          {tab === 'scenario' && <div className="scenario-view"><div className="covenant-intro"><div><span className="section-kicker">02 / SCENARIO LAB</span><h3>Explore a trade before it happens.</h3><p>Use Meteora's official DBC quote math on the latest pool state. See the estimated token output, fee split and unfilled amount when a buy approaches graduation. No wallet or transaction is involved.</p></div><Radar size={50}/></div>{launch.poolAddress && !launch.migrated ? <div className="scenario-form"><label>SIMULATED BUY AMOUNT <span>in {launch.quoteSymbol}</span></label><div className="scenario-entry"><input aria-label="Simulated buy amount" value={buyAmount} onChange={event => setBuyAmount(event.target.value)} inputMode="decimal"/><span>{launch.quoteSymbol}</span><button className="primary-button" onClick={runQuote} disabled={quoteLoading}>{quoteLoading ? <RefreshCw size={17} className="spin"/> : <ArrowUpRight size={17}/>} Calculate</button></div><div className="quick-amounts">{['1','10','100','1000'].map(value => <button key={value} onClick={() => setBuyAmount(value)}>{value} {launch.quoteSymbol}</button>)}</div>{quoteError && <div className="error"><X size={16}/>{quoteError}</div>}{buyQuote && <div className="quote-result"><div className="quote-main"><span>ESTIMATED BASE TOKENS</span><strong>{Number(buyQuote.estimatedTokens).toLocaleString('en-US', { maximumFractionDigits: 6 })}</strong><small>Minimum with 1% slippage: {Number(buyQuote.minimumTokens).toLocaleString('en-US', { maximumFractionDigits: 6 })}</small></div><InfoRow label="Trading fee" value={`${buyQuote.tradingFee} ${buyQuote.feeAsset}`}/><InfoRow label="Protocol fee" value={`${buyQuote.protocolFee} ${buyQuote.feeAsset}`}/><InfoRow label="Unfilled input near graduation" value={`${buyQuote.unfilledInput} ${launch.quoteSymbol}`}/><p>Calculated at {new Date(buyQuote.fetchedAt).toLocaleTimeString()}. Quotes are estimates based on a changing pool; this does not execute a trade.</p></div>}</div> : <div className="scenario-unavailable">{launch.migrated ? 'This pool has already graduated from DBC.' : 'Paste a live DBC pool address to simulate a buy.'}</div>}</div>}
           {tab === 'covenant' && <div className="covenant-view"><div className="covenant-intro"><div><span className="section-kicker">02 / PUBLISH</span><h3>Make your launch terms a promise.</h3><p>Export a machine-readable covenant from the live DBC configuration. Share it with your community. Anyone can import it later and compare every claim with the chain.</p></div><FileCheck2 size={50}/></div>
             {covenant && <div className={`verification ${checks && passCount === claimCount ? 'passed' : 'failed'}`}><div className="verification-head">{checks && passCount === claimCount ? <Check size={21}/> : <X size={21}/>}<strong>{checks ? `${passCount} of ${claimCount} promises match the chain` : 'This covenant belongs to a different launch'}</strong></div>{checks?.map(check => <div className="check-row" key={check.key}><span>{check.matches ? <Check size={15}/> : <X size={15}/>} {check.label}</span><span>{check.expected}{check.expected !== check.actual ? ` → ${check.actual}` : ''}</span></div>)}</div>}
             <div className="covenant-form"><label>PROJECT NAME<input placeholder="Your launch or platform name" value={project} onChange={event => setProject(event.target.value)}/></label><label>WHAT THIS LAUNCH IS FOR<textarea placeholder="A plain-language description your community can understand" value={description} onChange={event => setDescription(event.target.value)} rows={3}/></label><div className="claim-heading">PROMISES TO INCLUDE <span>read directly from the current config</span></div><div className="claim-list">{PROMISE_FIELDS.map(field => <label className="claim" key={field.key}><input type="checkbox" checked={selected.includes(field.key)} onChange={event => setSelected(current => event.target.checked ? [...current, field.key] : current.filter(key => key !== field.key))}/><span>{field.label}</span><strong>{String(launch[field.key])}{field.suffix}</strong></label>)}</div><button className="primary-button export" onClick={exportCovenant}><Download size={17}/> Download covenant JSON</button><p className="form-note">This file verifies selected terms against live chain data. Anyone can create a file; it does not prove the issuer's identity or guarantee future actions. Re-import it to compare against a fresh read.</p></div>

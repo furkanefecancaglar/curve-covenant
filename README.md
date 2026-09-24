@@ -2,13 +2,13 @@
 
 **Live, human-readable terms for Meteora Dynamic Bonding Curve (DBC) launches.**
 
-Curve Covenant reads a DBC pool or config directly from Solana using Meteora's official TypeScript SDK. It shows the initial trading fee, fee schedule, quote asset and graduation threshold, migration target, creator and partner fee and liquidity shares, token authority, and live pool progress. A launch team can export those terms as a portable JSON covenant. Anyone can import that file later and compare each declared field against a fresh on-chain read.
+Curve Covenant reads a DBC pool or config directly from Solana using Meteora's official TypeScript SDK. It shows the initial trading fee, fee schedule, quote asset and graduation threshold, migration target, creator and partner fee and liquidity shares, token authority, and live pool progress. Its scenario lab uses Meteora's swap quote math to estimate a buy, fee split, and partial fill without sending a transaction. A launch team can export terms as a portable JSON covenant. Anyone can import that file later and compare each declared field against a fresh on-chain read.
 
 This is an independent tool, not a Meteora product or financial advice.
 
 ## Try it
 
-Open the site and choose **Try a live pool**, or paste any Meteora DBC pool/config address. A wallet is not required. Use a custom RPC endpoint under **Advanced** if the shared public endpoint is rate limited.
+Open [the live site](https://furkanefecancaglar.github.io/curve-covenant/) and choose **Try a live pool**, or paste any Meteora DBC pool/config address. A wallet is not required. Use a custom RPC endpoint under **Advanced** if the shared public endpoint is rate limited.
 
 The included sample pool is a live technical fixture, not an endorsement of its token. The [official DBC program](https://github.com/MeteoraAg/dynamic-bonding-curve-sdk) is `dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN`.
 
@@ -16,7 +16,7 @@ The included sample pool is a live technical fixture, not an endorsement of its 
 
 DBC launchpads can configure fee schedules, graduation thresholds, post-migration liquidity distribution, token authority, and more. Those choices are visible on-chain but difficult for many people to interpret together. A reusable disclosure format lets launch teams publish precise terms and lets users verify them independently.
 
-The app supports standard and transfer-hook variants of both DBC pools and configs through `DynamicBondingCurveClient.state`. It uses exact integer arithmetic for raw quote token units and validates account ownership against the DBC program before decoding. It never asks users to sign a transaction.
+The app supports standard and transfer-hook variants of both DBC pools and configs through `DynamicBondingCurveClient.state`. Its scenario lab calls `DynamicBondingCurveClient.pool.swapQuote2` in partial-fill mode on fresh pool state. It uses exact integer arithmetic for raw quote token units and validates account ownership against the DBC program before decoding. It never asks users to sign a transaction.
 
 ## Run locally
 
@@ -55,7 +55,7 @@ The DBC integration is in [`src/dbc.ts`](src/dbc.ts). The portable disclosure an
 ## Roadmap
 
 - Explain how time and market-cap based fee schedules evolve after launch.
-- Add scenario quotes using Meteora's quote math, without transactions.
+- Add a full curve path and side-by-side launch scenarios.
 - Add verifiable issuer signatures and pinned provenance for covenants.
 - Watch a launch over time and highlight changes to claimable amounts and graduation state.
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { compareCovenant, createCovenant, parseCovenant } from './covenant'
-import { formatUnits } from './dbc'
+import { formatUnits, parseUnits } from './dbc'
 import type { LaunchData } from './dbc'
 
 const launch = {
@@ -31,5 +31,7 @@ describe('quote units', () => {
   it('preserves large raw values without floating-point rounding', () => {
     expect(formatUnits('9007199254740993123', 6)).toBe('9007199254740.993123')
     expect(formatUnits('1000000', 6)).toBe('1')
+    expect(parseUnits('1.000001', 6)).toBe('1000001')
+    expect(() => parseUnits('1.0000001', 6)).toThrow()
   })
 })

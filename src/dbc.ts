@@ -1,6 +1,7 @@
 import { Connection, PublicKey } from '@solana/web3.js'
-import { DynamicBondingCurveClient, FEE_DENOMINATOR } from '@meteora-ag/dynamic-bonding-curve-sdk'
+import { DynamicBondingCurveClient, FEE_DENOMINATOR, getCurrentPoint, SwapMode } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import type { PoolConfig, VirtualPool } from '@meteora-ag/dynamic-bonding-curve-sdk'
+import BN from 'bn.js'
 
 export const DBC_PROGRAM = 'dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN'
 export type Network = 'mainnet-beta' | 'devnet'
@@ -54,6 +55,62 @@ export function formatUnits(raw: string, decimals: number): string {
   const whole = n / scale
   const fraction = (n % scale).toString().padStart(decimals, '0').replace(/0+$/, '')
   return fraction ? `${whole}.${fraction}` : whole.toString()
+}
+
+export function parseUnits(input: string, decimals: number): string {
+  if (!/^\d+(\.\d+)?$/.test(input.trim())) throw new Error('Enter a positive decimal amount.')
+  const [whole, fraction = ''] = input.trim().split('.')
+  if (fraction.length > decimals) throw new Error(`This quote asset supports at most ${decimals} decimal places.`)
+  const raw = BigInt(whole) * 10n ** BigInt(decimals) + BigInt((fraction || '0').padEnd(decimals, '0'))
+  if (raw <= 0n) throw new Error('Amount must be greater than zero.')
+  if (raw > 18446744073709551615n) throw new Error('Amount exceeds the DBC input limit.')
+  return raw.toString()
+}
+
+export type BuyQuote = {
+  input: string
+  quoteSymbol: string
+  estimatedTokens: string
+  minimumTokens: string
+  baseDecimals: number
+  tradingFee: string
+  protocolFee: string
+  feeAsset: string
+  unfilledInput: string
+  slippageBps: number
+  fetchedAt: string
+}
+
+export async function quoteBuy(launch: LaunchData, amount: string, endpoint = RPC[launch.network]): Promise<BuyQuote> {
+  if (!launch.poolAddress || !launch.baseMint) throw new Error('A live pool is required to quote a trade.')
+  if (launch.migrated) throw new Error('This pool has migrated; DBC quotes no longer apply.')
+  const amountRaw = parseUnits(amount, launch.quoteDecimals)
+  const connection = new Connection(endpoint, 'confirmed')
+  const client = DynamicBondingCurveClient.create(connection, 'confirmed')
+  const pool = await client.state.getPool(launch.poolAddress)
+  if (!pool) throw new Error('Pool could not be read.')
+  const config = await client.state.getPoolConfig(pool.poolState.config)
+  if (!config) throw new Error('Pool config could not be read.')
+  const baseDecimals = await decimalsFor(connection, new PublicKey(launch.baseMint))
+  const currentPoint = await getCurrentPoint(connection, config.activationType)
+  const slippageBps = 100
+  const quote = client.pool.swapQuote2({
+    virtualPool: pool, config, swapBaseForQuote: false, swapMode: SwapMode.PartialFill,
+    amountIn: new BN(amountRaw), hasReferral: false, eligibleForFirstSwapWithMinFee: false,
+    currentPoint, slippageBps,
+  })
+  const feeInBase = config.collectFeeMode === 1
+  return {
+    input: amount, quoteSymbol: launch.quoteSymbol,
+    estimatedTokens: formatUnits(quote.outputAmount.toString(), baseDecimals),
+    minimumTokens: formatUnits(quote.minimumAmountOut!.toString(), baseDecimals),
+    baseDecimals,
+    tradingFee: formatUnits(quote.tradingFee.toString(), feeInBase ? baseDecimals : launch.quoteDecimals),
+    protocolFee: formatUnits(quote.protocolFee.toString(), feeInBase ? baseDecimals : launch.quoteDecimals),
+    feeAsset: feeInBase ? 'base tokens' : launch.quoteSymbol,
+    unfilledInput: formatUnits(quote.amountLeft.toString(), launch.quoteDecimals),
+    slippageBps, fetchedAt: new Date().toISOString(),
+  }
 }
 
 export function toPlain(value: unknown): unknown {
