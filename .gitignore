@@ -6,3 +6,5 @@ preview.png
 live-preview.png
 playwright-report/
 test-results/
+
+*.tsbuildinfo
