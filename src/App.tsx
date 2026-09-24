@@ -19,6 +19,7 @@ function InfoRow({ label, value, hint, mono = false }: { label: string; value: R
 }
 
 function App() {
+  const embed = new URLSearchParams(window.location.search).get('embed') === '1'
   const [network, setNetwork] = useState<Network>('mainnet-beta')
   const [rpcUrl, setRpcUrl] = useState('')
   const [address, setAddress] = useState('')
@@ -101,6 +102,15 @@ function App() {
     await navigator.clipboard.writeText(window.location.href)
   }
 
+  async function shareEmbed() {
+    if (!launch) return
+    const url = new URL(window.location.href)
+    url.searchParams.set('address', launch.address)
+    url.searchParams.set('network', launch.network)
+    url.searchParams.set('embed', '1')
+    await navigator.clipboard.writeText(`<iframe src="${url.toString()}" title="Curve Covenant DBC launch terms" width="100%" height="930" loading="lazy" style="border:0;border-radius:12px"></iframe>`)
+  }
+
   async function runQuote() {
     if (!launch) return
     setQuoteLoading(true); setQuoteError(''); setBuyQuote(null)
@@ -109,7 +119,7 @@ function App() {
     finally { setQuoteLoading(false) }
   }
 
-  return <div className="app-shell">
+  return <div className={embed ? 'app-shell embed-shell' : 'app-shell'}>
     <header className="site-header">
       <a className="brand" href="/"><div className="brand-icon"><Radar size={23} strokeWidth={2.2}/></div><span>curve<span className="brand-accent">covenant</span></span><span className="beta">BETA</span></a>
       <nav className="top-nav"><a href="#how-it-works">How it works</a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer"><Code2 size={16}/> GitHub</a><a href="https://docs.meteora.ag/core-products/dbc/what-is-dbc" target="_blank" rel="noreferrer">About DBC <ArrowUpRight size={15}/></a></nav>
@@ -135,8 +145,9 @@ function App() {
           <div className="search-footer"><span><span className="tiny-dot"/> Supports pool and config accounts, including Token-2022 transfer hooks</span><div className="search-footer-actions"><button onClick={() => { setNetwork('mainnet-beta'); setAddress(SAMPLE_POOL); inspect(SAMPLE_POOL, 'mainnet-beta') }}>Try a live pool <ArrowUpRight size={15}/></button><button onClick={() => fileRef.current?.click()}><FileCheck2 size={15}/> Verify a covenant</button></div><input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={event => importFile(event.target.files?.[0])}/></div>
         </div>
 
+        {embed && error && <div className="error"><X size={16}/>{error}</div>}
         {launch && <div className="result-panel">
-          <div className="result-header"><div><div className="result-label"><span className="live-dot"/> VERIFIED ON-CHAIN <span className="muted">·</span> SLOT {launch.slot.toLocaleString()}</div><h3>{launch.kind === 'pool' ? 'Launch pool' : 'Launch configuration'} <span>{short(launch.address, 5)}</span></h3><p>Read at {new Date(launch.fetchedAt).toLocaleString()} · {launch.network === 'devnet' ? 'Solana devnet' : 'Solana mainnet'}</p></div><div className="result-actions"><button onClick={share}><Copy size={15}/> Copy link</button><button onClick={() => downloadJson('dbc-onchain-snapshot.json', launch)}><Download size={15}/> Snapshot</button></div></div>
+          <div className="result-header"><div><div className="result-label"><span className="live-dot"/> VERIFIED ON-CHAIN <span className="muted">·</span> SLOT {launch.slot.toLocaleString()}</div><h3>{launch.kind === 'pool' ? 'Launch pool' : 'Launch configuration'} <span>{short(launch.address, 5)}</span></h3><p>Read at {new Date(launch.fetchedAt).toLocaleString()} · {launch.network === 'devnet' ? 'Solana devnet' : 'Solana mainnet'}</p></div><div className="result-actions"><button onClick={share}><Copy size={15}/> Copy link</button>{!embed && <button onClick={shareEmbed}><Code2 size={15}/> Copy embed</button>}<button onClick={() => downloadJson('dbc-onchain-snapshot.json', launch)}><Download size={15}/> Snapshot</button></div></div>
           <div className="tabs"><button className={tab === 'overview' ? 'selected' : ''} onClick={() => setTab('overview')}>Overview</button><button className={tab === 'scenario' ? 'selected' : ''} onClick={() => setTab('scenario')}>Scenario lab</button><button className={tab === 'covenant' ? 'selected' : ''} onClick={() => setTab('covenant')}>Covenant</button><button className={tab === 'raw' ? 'selected' : ''} onClick={() => setTab('raw')}>Raw chain data</button></div>
           {tab === 'overview' && <div className="overview">
             <div className="metric-grid"><div className="metric"><span>INITIAL TRADING FEE</span><strong>{pct(launch.initialTradingFeePct)}</strong><small>{launch.feeMode}{launch.dynamicFeeEnabled ? ' + dynamic fee' : ''}</small></div><div className="metric"><span>GRADUATION TARGET</span><strong>{launch.migrationQuoteThreshold}</strong><small>{launch.quoteSymbol} contributed to curve</small></div><div className="metric"><span>MIGRATION DESTINATION</span><strong className="medium-value">{launch.migrationTarget}</strong><small>{launch.migrated === undefined ? 'Configuration' : launch.migrated ? 'Already migrated' : 'Awaiting threshold'}</small></div></div>
@@ -150,6 +161,7 @@ function App() {
             <div className="covenant-form"><label>PROJECT NAME<input placeholder="Your launch or platform name" value={project} onChange={event => setProject(event.target.value)}/></label><label>WHAT THIS LAUNCH IS FOR<textarea placeholder="A plain-language description your community can understand" value={description} onChange={event => setDescription(event.target.value)} rows={3}/></label><div className="claim-heading">PROMISES TO INCLUDE <span>read directly from the current config</span></div><div className="claim-list">{PROMISE_FIELDS.map(field => <label className="claim" key={field.key}><input type="checkbox" checked={selected.includes(field.key)} onChange={event => setSelected(current => event.target.checked ? [...current, field.key] : current.filter(key => key !== field.key))}/><span>{field.label}</span><strong>{String(launch[field.key])}{field.suffix}</strong></label>)}</div><div className="export-actions"><button className="primary-button" onClick={() => exportCovenant(false)}><Download size={17}/> Download unsigned</button><button className="primary-button outline" onClick={() => exportCovenant(true)} disabled={signing}>{signing ? <RefreshCw size={17} className="spin"/> : <LockKeyhole size={17}/>} Sign with Phantom & download</button></div>{error && <div className="error"><X size={16}/>{error}</div>}<p className="form-note">Only the DBC fee claimer or pool creator can create a role-verified signed covenant. Signing a message costs no network fee. The file describes current terms; it does not guarantee future actions.</p></div>
           </div>}
           {tab === 'raw' && <div className="raw-view"><p>The full decoded Meteora SDK account state used in this report. Values too large for JavaScript numbers remain strings.</p><pre>{JSON.stringify(launch.raw, null, 2)}</pre></div>}
+          {embed && <div className="embed-attribution"><span>Verified with Curve Covenant</span><a href={`https://furkanefecancaglar.github.io/curve-covenant/?address=${launch.address}&network=${launch.network}`} target="_blank" rel="noreferrer">Open full report <ArrowUpRight size={14}/></a></div>}
         </div>}
       </section>
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compareCovenant, covenantMessage, createCovenant, parseCovenant, verifyCovenantSignature } from './covenant'
+import { compareCovenant, covenantMessage, createCovenant, parseCovenant, signCovenantWithPhantom, verifyCovenantSignature } from './covenant'
 import { formatUnits, parseUnits } from './dbc'
 import type { LaunchData } from './dbc'
 import { Keypair } from '@solana/web3.js'
@@ -35,6 +35,21 @@ describe('covenants', () => {
     const signed = { ...covenant, signature: { scheme: 'ed25519' as const, signer: signer.publicKey.toBase58(), bytesBase64: btoa(String.fromCharCode(...signature)) } }
     expect(verifyCovenantSignature(signed, associatedLaunch)?.authorizedRole).toBe('DBC fee claimer')
     expect(verifyCovenantSignature({ ...signed, description: 'Changed' }, associatedLaunch)?.valid).toBe(false)
+  })
+  it('requires an on-chain role when signing with a wallet', async () => {
+    const signer = Keypair.generate()
+    const associatedLaunch = { ...launch, feeClaimer: signer.publicKey.toBase58() }
+    const covenant = createCovenant(associatedLaunch, 'Example', '', { initialTradingFeePct: 2 })
+    const originalWindow = globalThis.window
+    Object.defineProperty(globalThis, 'window', { configurable: true, value: {
+      phantom: { solana: { isPhantom: true, connect: async () => ({ publicKey: signer.publicKey }),
+        signMessage: async (message: Uint8Array) => ({ signature: nacl.sign.detached(message, signer.secretKey) }) } },
+    } })
+    try {
+      const signed = await signCovenantWithPhantom(covenant, associatedLaunch)
+      expect(verifyCovenantSignature(signed, associatedLaunch)?.authorizedRole).toBe('DBC fee claimer')
+      await expect(signCovenantWithPhantom(covenant, { ...associatedLaunch, feeClaimer: 'different' })).rejects.toThrow('neither')
+    } finally { Object.defineProperty(globalThis, 'window', { configurable: true, value: originalWindow }) }
   })
 })
 

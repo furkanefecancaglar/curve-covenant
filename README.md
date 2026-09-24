@@ -10,6 +10,16 @@ This is an independent tool, not a Meteora product or financial advice.
 
 Open [the live site](https://furkanefecancaglar.github.io/curve-covenant/) and choose **Try a live pool**, or paste any Meteora DBC pool/config address. A wallet is not required. Use a custom RPC endpoint under **Advanced** if the shared public endpoint is rate limited.
 
+### Embed the live report
+
+After inspecting a pool, click **Copy embed**. The iframe opens a compact report that refreshes from chain whenever a visitor loads it:
+
+```html
+<iframe src="https://furkanefecancaglar.github.io/curve-covenant/?address=4L9LJ3B5niCSLWujRJjPU6scZVbNJz4zw6A9B3aPxTeT&network=mainnet-beta&embed=1" title="Curve Covenant DBC launch terms" width="100%" height="930" loading="lazy" style="border:0;border-radius:12px"></iframe>
+```
+
+Launchpads and terminals can embed a pool report without integrating a backend. The sample address is only a technical fixture; replace it with the launch's own pool.
+
 The included sample pool is a live technical fixture, not an endorsement of its token. The [official DBC program](https://github.com/MeteoraAg/dynamic-bonding-curve-sdk) is `dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN`.
 
 ## Why this exists
