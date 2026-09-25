@@ -14,7 +14,7 @@ The new token is not a tokenized share. This is an experiment in stock-denominat
 | Criterion | Current evidence | Gap |
 | --- | --- | --- |
 | Deep Meteora integration | DBC curve builders, validator, pre-launch quote, combined config/pool transaction, token badge preflight, on-chain inspector | Local XRXx launch and SOL DBC → DAMM v2 lifecycle confirmed; public wallet proof and full stock-token migration remain |
-| Technical execution | TypeScript source, 13 passing tests, successful build, desktop/mobile browser checks, confirmed local SOL/XRXx launches, local SOL graduation, browser form test with a local signer | Mainnet launch path untested with a wallet; no performance/operational history |
+| Technical execution | TypeScript source, 15 passing tests, successful build, desktop/mobile browser checks, confirmed local SOL/XRXx launches, local SOL graduation, browser form test with a local signer | Mainnet launch path untested with a wallet; no performance/operational history |
 | Originality and taste | xStock quote catalog plus a 16-segment front-loaded liquidity design | Similar stock-quoted launches exist; differentiation and actual user value need validation |
 | Impact potential | Tool can be reused across issuer-listed stock quote mints | No demonstrated distribution, builders or launches |
 | Traction/volume | None claimed | Mainnet usage is preferred by sponsor and not yet evidenced |

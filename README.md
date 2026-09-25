@@ -10,7 +10,7 @@ This is an independent early-stage product, not a Meteora or xStocks product. A 
 
 ## Why this specific launch flow
 
-Stock-token quotes make price discovery possible in units of a tokenized equity instead of SOL or USDC. A thin quote market can make an abrupt opening curve particularly hard to reason about. The workbench includes a 16-segment long curve with four times as much SDK liquidity weight in its early segments as in its final segment, plus a decaying fee schedule. Builders can compare it with fixed-fee, simple decaying-fee and two-stage designs. These are experimental technical models, not claims of better market outcomes.
+Stock-token quotes make price discovery possible in units of a tokenized equity instead of SOL or USDC. A thin quote market can make an abrupt opening curve particularly hard to reason about. The workbench includes a 16-segment long curve with four times as much SDK liquidity weight in its early segments as in its final segment, plus a decaying fee schedule. Builders can compare it with fixed-fee, simple decaying-fee and two-stage designs. The two-stage preset reserves 35% of supply as leftover with the launch wallet as receiver; the other presets reserve 0.001%. This is displayed alongside the design. DAMM v2 uses a fixed 1% trading fee after graduation. These are experimental technical models, not claims of better market outcomes.
 
 The xStock catalog currently includes XRXx, FLNCx, QUBTx and AIx. Their mint addresses came from the [issuer's public assets API](https://api.xstocks.fi/api/v2/public/assets) and were checked against Solana mainnet on 2026-09-25. The browser checks mint owner, precision, paused/transfer-hook state and the DBC token badge again before building a stock-quoted transaction. An issuer listing and token badge do not guarantee that the token remains tradable or suitable for a particular market.
 
@@ -18,7 +18,7 @@ The xStock catalog currently includes XRXx, FLNCx, QUBTx and AIx. Their mint add
 
 1. Select SOL on devnet or an xStock on mainnet.
 2. Choose a curve model and edit supply, opening/graduation market caps in quote units, fee schedule, creator share and permanent liquidity lock.
-3. Read the SDK-derived graduation quote threshold and simulate a hypothetical buy before a pool exists. Export the exact SDK config JSON.
+3. Read the SDK-derived graduation quote threshold and simulate a hypothetical buy before a pool exists. Export the exact SDK config JSON or copy a share link that recreates the quote asset and all edited terms.
 4. Provide token name, symbol and an HTTPS metadata JSON URL. The devnet form includes a clearly labeled CCDEMO example hosted in this repo; replace it with matching metadata for your own token. The wallet-confirmed SDK transaction creates config + token mint + DBC virtual pool together. The app checks for both new accounts and links to the explorer.
 5. Paste a DBC pool address into the graduation panel. It checks reserve progress, enables wallet migration after the threshold, and reads DAMM v2 vault balances after graduation.
 6. Use the [companion inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) to read real reserve progress and terms from an existing DBC pool. The inspector also supports a swap quote, embeddable report, and signed disclosure comparison.

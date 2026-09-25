@@ -5,7 +5,7 @@ import { ArrowRight, CheckCircle2, ExternalLink, Loader2, Rocket } from 'lucide-
 import { launchPool } from './publish'
 import type { QuoteAsset } from './quotes'
 
-export default function LaunchPanel({ config, quoteAsset }: { config: ConfigParameters | null; quoteAsset: QuoteAsset }) {
+export default function LaunchPanel({ config, quoteAsset, onCreated }: { config: ConfigParameters | null; quoteAsset: QuoteAsset; onCreated: (address: string) => void }) {
   const [name, setName] = useState(quoteAsset.network === 'devnet' ? 'Curve Covenant Demo' : '')
   const [symbol, setSymbol] = useState(quoteAsset.network === 'devnet' ? 'CCDEMO' : '')
   const [metadataUri, setMetadataUri] = useState(quoteAsset.network === 'devnet' ? 'https://furkanefecancaglar.github.io/curve-covenant/metadata/demo-token.json' : '')
@@ -21,7 +21,10 @@ export default function LaunchPanel({ config, quoteAsset }: { config: ConfigPara
     event.preventDefault()
     if (!config || (isMainnet && !mainnetAcknowledged)) return
     setBusy(true); setError(''); setLaunched(null)
-    try { setLaunched(await launchPool(config, { name, symbol, metadataUri }, quoteAsset)) }
+    try {
+      const result = await launchPool(config, { name, symbol, metadataUri }, quoteAsset)
+      setLaunched(result); onCreated(result.poolAddress)
+    }
     catch (issue) { setError(issue instanceof Error ? issue.message : 'Launch failed.') }
     finally { setBusy(false) }
   }
@@ -37,6 +40,7 @@ export default function LaunchPanel({ config, quoteAsset }: { config: ConfigPara
     </form>
     <p className="launch-caution">Set Phantom to Solana {networkLabel}. Review the transaction before confirming. The token is paired with {quoteAsset.id}; it does not represent equity in {quoteAsset.name}. {isMainnet ? 'The issuer mint and Meteora token badge are checked from chain before the transaction is built.' : 'CCDEMO is a devnet-only example. Devnet SOL is required for account rent and fees.'}</p>
     {error && <div className="publish-error">{error}</div>}
+    {launched && <a className="track-created-pool" href="#graduate">Track this pool and its DAMM v2 graduation <ArrowRight size={16}/></a>}
     {launched && <div className="launch-success"><CheckCircle2 size={20}/><div><strong>DBC pool created on {networkLabel}</strong><a href={`https://solscan.io/account/${launched.poolAddress}${cluster}`} target="_blank" rel="noreferrer">Pool {launched.poolAddress} <ExternalLink size={13}/></a><a href={`https://solscan.io/token/${launched.mintAddress}${cluster}`} target="_blank" rel="noreferrer">Token mint {launched.mintAddress} <ExternalLink size={13}/></a></div></div>}
   </section>
 }

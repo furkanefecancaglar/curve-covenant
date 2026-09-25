@@ -3,9 +3,9 @@ import { ArrowRight, ExternalLink, RefreshCw } from 'lucide-react'
 import { graduatePool, readLifecycle } from './lifecycle'
 import type { Network } from './dbc'
 
-export default function LifecyclePanel() {
-  const [address, setAddress] = useState('')
-  const [network, setNetwork] = useState<Network>('devnet')
+export default function LifecyclePanel({ initialPool }: { initialPool: { address: string; network: Network } | null }) {
+  const [address, setAddress] = useState(initialPool?.address ?? '')
+  const [network, setNetwork] = useState<Network>(initialPool?.network ?? 'devnet')
   const [status, setStatus] = useState<Awaited<ReturnType<typeof readLifecycle>> | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')

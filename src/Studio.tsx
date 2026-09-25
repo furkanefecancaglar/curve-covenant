@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ArrowRight, CheckCircle2, Code2, Download, ExternalLink, Info, Layers3, Rocket, SlidersHorizontal } from 'lucide-react'
+import { ArrowRight, CheckCircle2, Code2, Copy, Download, ExternalLink, Info, Layers3, Rocket, SlidersHorizontal } from 'lucide-react'
 import { buildStudioConfig, PRESETS, simulateOpeningBuy, studioSummary } from './studio'
 import type { PresetId, StudioInputs } from './studio'
 import { QUOTES } from './quotes'
@@ -8,6 +8,8 @@ import { toPlain } from './dbc'
 import LaunchPanel from './LaunchPanel'
 import LifecyclePanel from './LifecyclePanel'
 import CurveChart from './CurveChart'
+import { decodeDesign, encodeDesign } from './design'
+import type { Network } from './dbc'
 import './studio.css'
 
 const comma = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(n)
@@ -32,8 +34,16 @@ function saveJson(name: string, value: unknown) {
 }
 
 export default function Studio() {
-  const [input, setInput] = useState<StudioInputs>({ ...PRESETS.steady.values })
-  const [quoteId, setQuoteId] = useState<QuoteId>('SOL')
+  const [shared] = useState(() => {
+    const encoded = new URLSearchParams(window.location.search).get('design')
+    if (!encoded) return { design: null, error: '' }
+    try { return { design: decodeDesign(encoded), error: '' } }
+    catch (error) { return { design: null, error: error instanceof Error ? error.message : 'Invalid shared design.' } }
+  })
+  const [input, setInput] = useState<StudioInputs>(shared.design?.inputs ?? { ...PRESETS.steady.values })
+  const [quoteId, setQuoteId] = useState<QuoteId>(shared.design?.quoteId ?? 'SOL')
+  const [shareMessage, setShareMessage] = useState('')
+  const [createdPool, setCreatedPool] = useState<{ address: string; network: Network } | null>(null)
   const [buyAmount, setBuyAmount] = useState('1')
   const [elapsedHours, setElapsedHours] = useState('0')
   const quoteAsset = QUOTES[quoteId]
@@ -64,6 +74,13 @@ export default function Studio() {
       inputs: input, sdkConfig: toPlain(result.config),
     })
   }
+  async function shareDesign() {
+    const url = new URL(window.location.href)
+    url.search = ''; url.hash = 'workbench'
+    url.searchParams.set('design', encodeDesign(quoteId, input))
+    try { await navigator.clipboard.writeText(url.toString()); setShareMessage('Design link copied. It includes this quote asset and all launch terms.') }
+    catch { setShareMessage('Clipboard unavailable. Use Download SDK config JSON to save this design.') }
+  }
 
   return <div className="studio-shell">
     <header className="studio-header">
@@ -82,6 +99,8 @@ export default function Studio() {
       </section>
 
       <section className="workbench" id="workbench">
+        {shared.error && <p className="publish-error" role="alert">{shared.error}</p>}
+        {shared.design && <p className="shared-design-note">Shared design loaded. Review the curve and terms before creating a pool.</p>}
         <div className="studio-section-head"><span>01 / QUOTE ASSET</span><h2>Choose what buyers pay with.</h2><p>A new token can be quoted in a tokenized stock instead of SOL. These mints come from the xStocks issuer asset feed; mint precision and Meteora token badge are checked on chain before a mainnet launch transaction is built.</p></div>
         <div className="quote-grid">{Object.values(QUOTES).map(asset => <button key={asset.id} className={`quote-card ${asset.id === quoteId ? 'active' : ''}`} onClick={() => setQuoteId(asset.id)}><span>{asset.category}</span><strong>{asset.id}</strong><small>{asset.name}</small><span className="quote-network">{asset.network === 'devnet' ? 'DEVNET TEST' : 'MAINNET'}</span></button>)}</div>
         <p className="quote-disclosure">The newly launched token is a separate asset priced against the selected quote token. It is not a share of the underlying company. Stock-token trading restrictions can still apply.</p>
@@ -93,6 +112,7 @@ export default function Studio() {
           <div className="studio-editor"><div className="panel-title"><SlidersHorizontal size={20}/><div><h3>Shape the launch</h3><p>Quote: {quoteId} · Base token: SPL · Graduation: DAMM v2</p></div></div>
             <div className="studio-input-grid">{inputFields.map(field => <label key={field.key}><span>{field.label}<span className="field-help" title={field.help}><Info size={13}/></span></span><div className="studio-input"><input type="number" min={field.min} step={field.step} value={input[field.key]} onChange={event => change(field.key, event.target.value)}/><span>{field.unit === 'quote' ? quoteId : field.unit}</span></div></label>)}</div>
             <p className="editor-footnote">Config values describe your DBC launch economics. The wallet transaction below creates the config and a token pool together.</p>
+            <p className="allocation-note">Leftover allocation: <strong>{input.preset === 'momentum' ? '35%' : '0.001%'} of supply</strong>, with your launch wallet set as the receiver. DAMM v2 uses a fixed 1% trading fee after graduation.</p>
             {result.config && <CurveChart config={result.config} supply={input.supply} quoteDecimals={quoteAsset.decimals} symbol={quoteId}/>}
           </div>
           <div className="studio-output"><div className="panel-title"><Rocket size={20}/><div><h3>SDK result</h3><p>Recomputed whenever you change the design</p></div></div>
@@ -101,12 +121,13 @@ export default function Studio() {
               <div className="studio-metrics"><div><span>OPENING VALUE</span><strong>{comma(input.initialMarketCap)} {quoteId}</strong></div><div><span>GRADUATION VALUE</span><strong>{comma(input.migrationMarketCap)} {quoteId}</strong></div><div><span>TRADING FEE</span><strong>{input.startingFeeBps / 100}% → {input.endingFeeBps / 100}%</strong></div><div><span>LIQUIDITY LOCK</span><strong>{input.partnerLockedPct}% permanent</strong></div></div>
               <div className="migration-flow"><span>DBC<br/><small>Price discovery</small></span><span className="flow-arrow">→</span><span>DAMM v2<br/><small>Graduated liquidity</small></span></div>
               <div className="prelaunch-scenario"><div className="scenario-title"><strong>Pre-launch buy simulation</strong><span>OFFICIAL DBC QUOTE MATH</span></div><div className="scenario-fields"><label>Buy amount<div className="studio-input"><input aria-label="Pre-launch buy amount" type="number" min="0.00000001" step="0.1" value={buyAmount} onChange={event => setBuyAmount(event.target.value)}/><span>{quoteId}</span></div></label><label>Hours after opening<div className="studio-input"><input aria-label="Hours after opening" type="number" min="0" max="720" step="1" value={elapsedHours} onChange={event => setElapsedHours(event.target.value)}/><span>hours</span></div></label></div>{scenario.quote ? <div className="scenario-result"><div><span>ESTIMATED TOKENS</span><strong>{comma(Number(scenario.quote.outputTokens))}</strong></div><div><span>TOTAL DBC FEE</span><strong>{scenario.quote.totalFeeQuote} {quoteId}</strong></div><div><span>UNFILLED INPUT</span><strong>{scenario.quote.unfilledQuote} {quoteId}</strong></div></div> : <p className="scenario-error">{scenario.error}</p>}<p>Hypothetical quote with zero earlier buys. Real reserves and outcomes change after launch.</p></div>
-              <div className="studio-actions"><button onClick={exportConfig}><Download size={17}/> Download SDK config JSON</button></div>
+              <div className="studio-actions"><button onClick={exportConfig}><Download size={17}/> Download SDK config JSON</button><button onClick={shareDesign}><Copy size={17}/> Copy design link</button></div>
+              {shareMessage && <p className="shared-design-note" role="status">{shareMessage}</p>}
             </> : <div className="config-error">{result.error}</div>}
           </div>
         </div>
-        <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset}/>
-        <LifecyclePanel/>
+        <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onCreated={address => setCreatedPool({ address, network: quoteAsset.network })}/>
+        <LifecyclePanel key={createdPool?.address ?? 'empty'} initialPool={createdPool}/>
       </section>
       <section className="studio-how" id="how"><div className="studio-section-head"><span>05 / PRODUCT FLOW</span><h2>From pair design to DBC pool.</h2><p>The config and pool launch are real SDK operations. Check the quote reserve, graduate an eligible pool, and follow its liquidity into DAMM v2.</p></div><div className="how-grid"><article><span>01</span><Code2 size={24}/><h3>Verify the quote</h3><p>Stock mint decimals and Meteora token badge are rechecked on Solana mainnet before construction.</p></article><article><span>02</span><Rocket size={24}/><h3>Create the launch</h3><p>One wallet-confirmed transaction creates config, token mint and DBC virtual pool from the selected model.</p></article><article><span>03</span><Layers3 size={24}/><h3>Track graduation</h3><p>Track the reserve threshold, submit graduation, and inspect the resulting DAMM v2 vault balances.</p></article></div></section>
     </main>
