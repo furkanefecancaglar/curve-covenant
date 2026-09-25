@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowRight, CheckCircle2, Code2, Copy, Download, ExternalLink, Info, Layers3, Rocket, SlidersHorizontal } from 'lucide-react'
 import { buildStudioConfig, PRESETS, simulateOpeningBuy, studioSummary } from './studio'
 import type { PresetId, StudioInputs } from './studio'
@@ -10,6 +10,9 @@ import LifecyclePanel from './LifecyclePanel'
 import CurveChart from './CurveChart'
 import { decodeDesign, encodeDesign } from './design'
 import type { Network } from './dbc'
+import PoolLibrary from './PoolLibrary'
+import { POOL_LIBRARY_KEY, poolLocation, poolShareUrl, readPoolLibrary, rememberPool } from './pool-library'
+import type { SavedPool } from './pool-library'
 import './studio.css'
 
 const comma = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(n)
@@ -44,7 +47,33 @@ export default function Studio() {
   const [quoteId, setQuoteId] = useState<QuoteId>(shared.design?.quoteId ?? 'SOL')
   const [shareMessage, setShareMessage] = useState('')
   const [launchLocked, setLaunchLocked] = useState(false)
-  const [createdPool, setCreatedPool] = useState<{ address: string; network: Network } | null>(null)
+  const [linkedPool] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (!params.has('pool')) return { pool: null, error: '' }
+    try { return { pool: poolLocation(params.get('pool'), params.get('network')), error: '' } }
+    catch { return { pool: null, error: 'Invalid pool link. Enter a valid DBC pool address and network below.' } }
+  })
+  const [createdPool, setCreatedPool] = useState<{ address: string; network: Network } | null>(linkedPool.pool)
+  const [savedPools, setSavedPools] = useState(() => {
+    try { return readPoolLibrary(localStorage.getItem(POOL_LIBRARY_KEY)) } catch { return [] }
+  })
+  const [storageWarning, setStorageWarning] = useState('')
+  useEffect(() => {
+    try { localStorage.setItem(POOL_LIBRARY_KEY, JSON.stringify(savedPools)); setStorageWarning('') }
+    catch { setStorageWarning('Browser storage is unavailable. Pools will be remembered only until you close this page.') }
+  }, [savedPools])
+  const observePool = useCallback((pool: { address: string; network: Network }, label?: string) => {
+    setSavedPools(previous => rememberPool(previous, pool, label))
+    window.history.replaceState(null, '', poolShareUrl(window.location.href, pool))
+  }, [])
+  function openPool(pool: { address: string; network: Network }) {
+    setCreatedPool({ address: pool.address, network: pool.network })
+    window.history.replaceState(null, '', poolShareUrl(window.location.href, pool))
+    document.getElementById('graduate')?.scrollIntoView({ behavior: 'smooth' })
+  }
+  function removePool(pool: SavedPool) {
+    setSavedPools(previous => previous.filter(item => item.address !== pool.address || item.network !== pool.network))
+  }
   const [buyAmount, setBuyAmount] = useState('1')
   const [elapsedHours, setElapsedHours] = useState('0')
   const quoteAsset = QUOTES[quoteId]
@@ -86,7 +115,7 @@ export default function Studio() {
   return <div className="studio-shell">
     <header className="studio-header">
       <a className="studio-brand" href={import.meta.env.BASE_URL}><span className="studio-mark"><Layers3 size={22}/></span><span>curve<span>covenant</span></span><small>PAIR LAUNCH</small></a>
-      <nav><a href="#workbench">Build</a><a href="#launch">Launch</a><a href={`${import.meta.env.BASE_URL}?view=inspector`}>Live inspector <ArrowRight size={14}/></a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer"><Code2 size={16}/> Source</a></nav>
+      <nav><a href="#workbench">Build</a><a href="#launch">Launch</a><a href="#saved-pools">Saved pools</a><a href={`${import.meta.env.BASE_URL}?view=inspector`}>Live inspector <ArrowRight size={14}/></a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer"><Code2 size={16}/> Source</a></nav>
     </header>
     <main>
       <section className="studio-hero"><div className="hero-noise"/>
@@ -112,7 +141,7 @@ export default function Studio() {
         <div className="studio-work-grid">
           <div className="studio-editor"><div className="panel-title"><SlidersHorizontal size={20}/><div><h3>Shape the launch</h3><p>Quote: {quoteId} · Base token: SPL · Graduation: DAMM v2</p></div></div>
             <div className="studio-input-grid">{inputFields.map(field => <label key={field.key}><span>{field.label}<span className="field-help" title={field.help}><Info size={13}/></span></span><div className="studio-input"><input type="number" disabled={launchLocked} min={field.min} step={field.step} value={input[field.key]} onChange={event => change(field.key, event.target.value)}/><span>{field.unit === 'quote' ? quoteId : field.unit}</span></div></label>)}</div>
-            <p className="editor-footnote">Config values describe your DBC launch economics. The wallet transaction below creates the config and a token pool together.</p>
+            <p className="editor-footnote">Config values describe your DBC launch economics. The wallet flow below creates the config and token pool.</p>
             <p className="allocation-note">Leftover allocation: <strong>{input.preset === 'momentum' ? '35%' : '0.001%'} of supply</strong>, with your launch wallet set as the receiver. DAMM v2 starts with a 1% base trading fee plus a dynamic fee after graduation.</p>
             {result.config && <CurveChart config={result.config} supply={input.supply} quoteDecimals={quoteAsset.decimals} symbol={quoteId}/>}
           </div>
@@ -127,10 +156,15 @@ export default function Studio() {
             </> : <div className="config-error">{result.error}</div>}
           </div>
         </div>
-        <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={address => setCreatedPool({ address, network: quoteAsset.network })}/>
-        <LifecyclePanel key={createdPool?.address ?? 'empty'} initialPool={createdPool}/>
+        <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={(address, label) => {
+          const pool = { address, network: quoteAsset.network }
+          observePool(pool, label); setCreatedPool(pool)
+        }}/>
+        <PoolLibrary pools={savedPools} onOpen={openPool} onRemove={removePool} warning={storageWarning}/>
+        {linkedPool.error && <p className="publish-error" role="alert">{linkedPool.error}</p>}
+        <LifecyclePanel key={createdPool ? `${createdPool.network}:${createdPool.address}` : 'empty'} initialPool={createdPool} onObserved={observePool}/>
       </section>
-      <section className="studio-how" id="how"><div className="studio-section-head"><span>05 / PRODUCT FLOW</span><h2>From pair design to DBC pool.</h2><p>The config and pool launch are real SDK operations. Check the quote reserve, graduate an eligible pool, and follow its liquidity into DAMM v2.</p></div><div className="how-grid"><article><span>01</span><Code2 size={24}/><h3>Verify the quote</h3><p>Stock mint decimals and Meteora token badge are rechecked on Solana mainnet before construction.</p></article><article><span>02</span><Rocket size={24}/><h3>Create the launch</h3><p>Create config, token mint and DBC pool. Long curves use two wallet approvals; smaller designs can use one.</p></article><article><span>03</span><Layers3 size={24}/><h3>Track graduation</h3><p>Track the reserve threshold, submit graduation, and inspect the resulting DAMM v2 vault balances.</p></article></div></section>
+      <section className="studio-how" id="how"><div className="studio-section-head"><span>06 / PRODUCT FLOW</span><h2>From pair design to DBC pool.</h2><p>The config and pool launch are real SDK operations. Check the quote reserve, graduate an eligible pool, and follow its liquidity into DAMM v2.</p></div><div className="how-grid"><article><span>01</span><Code2 size={24}/><h3>Verify the quote</h3><p>Stock mint decimals and Meteora token badge are rechecked on Solana mainnet before construction.</p></article><article><span>02</span><Rocket size={24}/><h3>Create the launch</h3><p>Create config, token mint and DBC pool. Long curves use two wallet approvals; smaller designs can use one.</p></article><article><span>03</span><Layers3 size={24}/><h3>Track graduation</h3><p>Track the reserve threshold, submit graduation, and inspect the resulting DAMM v2 vault balances.</p></article></div></section>
     </main>
     <footer className="studio-footer"><span>curve<span>covenant</span> / Pair Launch</span><span>Independent tool. Not affiliated with Meteora or the stock issuer.</span><a href={`${import.meta.env.BASE_URL}?view=inspector`}>Live pool inspector <ArrowRight size={14}/></a></footer>
   </div>

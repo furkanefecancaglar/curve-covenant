@@ -6,7 +6,7 @@ import { launchPool, finishLaunch, IncompleteLaunchError } from './publish'
 import type { PendingLaunch } from './publish'
 import type { QuoteAsset } from './quotes'
 
-export default function LaunchPanel({ config, quoteAsset, onCreated, onLockChange }: { config: ConfigParameters | null; quoteAsset: QuoteAsset; onCreated: (address: string) => void; onLockChange: (locked: boolean) => void }) {
+export default function LaunchPanel({ config, quoteAsset, onCreated, onLockChange }: { config: ConfigParameters | null; quoteAsset: QuoteAsset; onCreated: (address: string, label: string) => void; onLockChange: (locked: boolean) => void }) {
   const [name, setName] = useState(quoteAsset.network === 'devnet' ? 'Curve Covenant Demo' : '')
   const [symbol, setSymbol] = useState(quoteAsset.network === 'devnet' ? 'CCDEMO' : '')
   const [metadataUri, setMetadataUri] = useState(quoteAsset.network === 'devnet' ? 'https://furkanefecancaglar.github.io/curve-covenant/metadata/demo-token.json' : '')
@@ -27,7 +27,7 @@ export default function LaunchPanel({ config, quoteAsset, onCreated, onLockChang
     setBusy(true); setError(''); setLaunched(null)
     try {
       const result = pending ? await finishLaunch(pending) : await launchPool(config!, { name, symbol, metadataUri }, quoteAsset, setProgress)
-      setLaunched(result); setPending(null); setProgress(''); onCreated(result.poolAddress)
+      setLaunched(result); setPending(null); setProgress(''); onCreated(result.poolAddress, `${name} / ${quoteAsset.id}`)
     }
     catch (issue) {
       if (issue instanceof IncompleteLaunchError) setPending(issue.pending)

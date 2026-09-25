@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowRight, ExternalLink, RefreshCw } from 'lucide-react'
 import { graduatePool, readLifecycle } from './lifecycle'
 import type { Network } from './dbc'
 import TradePanel from './TradePanel'
 
-export default function LifecyclePanel({ initialPool }: { initialPool: { address: string; network: Network } | null }) {
+export default function LifecyclePanel({ initialPool, onObserved }: { initialPool: { address: string; network: Network } | null; onObserved: (pool: { address: string; network: Network }) => void }) {
   const [address, setAddress] = useState(initialPool?.address ?? '')
   const [network, setNetwork] = useState<Network>(initialPool?.network ?? 'devnet')
   const [status, setStatus] = useState<Awaited<ReturnType<typeof readLifecycle>> | null>(null)
@@ -13,10 +13,20 @@ export default function LifecyclePanel({ initialPool }: { initialPool: { address
   const [signature, setSignature] = useState('')
   async function read() {
     setBusy(true); setError(''); setStatus(null); setSignature('')
-    try { setStatus(await readLifecycle(address, network)) }
+    try { const result = await readLifecycle(address, network); setStatus(result); onObserved(result) }
     catch (issue) { setError(issue instanceof Error ? issue.message : 'Could not read the pool.') }
     finally { setBusy(false) }
   }
+  useEffect(() => {
+    if (!initialPool) return
+    let current = true
+    setBusy(true)
+    readLifecycle(initialPool.address, initialPool.network).then(result => {
+      if (current) { setStatus(result); onObserved(result) }
+    }).catch(issue => { if (current) setError(issue instanceof Error ? issue.message : 'Could not read this pool.') })
+      .finally(() => { if (current) setBusy(false) })
+    return () => { current = false }
+  }, [initialPool, onObserved])
   async function graduate() {
     if (!status) return
     setBusy(true); setError('')
@@ -28,7 +38,7 @@ export default function LifecyclePanel({ initialPool }: { initialPool: { address
   }
   const explorer = status?.network === 'devnet' ? '?cluster=devnet' : ''
   return <section className="lifecycle-panel" id="graduate">
-    <div className="studio-section-head"><span>04 / GRADUATION</span><h2>Carry the launch into DAMM v2.</h2><p>Read a DBC pool's live reserves. Once its threshold is met, submit the migration with your wallet. Graduated pools show their verified DAMM v2 destination and vault balances.</p></div>
+    <div className="studio-section-head"><span>05 / GRADUATION</span><h2>Carry the launch into DAMM v2.</h2><p>Read a DBC pool's live reserves. Once its threshold is met, submit the migration with your wallet. Graduated pools show their verified DAMM v2 destination and vault balances.</p></div>
     <form className="lifecycle-form" onSubmit={event => { event.preventDefault(); void read() }}>
       <label>Solana network<select aria-label="Graduation network" value={network} disabled={busy} onChange={event => { setNetwork(event.target.value as Network); setStatus(null) }}><option value="devnet">Devnet</option><option value="mainnet-beta">Mainnet</option></select></label>
       <label>DBC pool address<input aria-label="Graduation pool address" value={address} disabled={busy} onChange={event => { setAddress(event.target.value); setStatus(null) }} placeholder="Paste a DBC pool address" required/></label>
