@@ -9,6 +9,9 @@ if (launch.kind !== 'config' || launch.migrationTarget !== 'Meteora DAMM v2' ||
   throw new Error('Live DBC config produced an unexpected result')
 }
 console.log(`DBC smoke passed: config ${launch.configAddress}, slot ${launch.slot}`)
-const badge = await verifyQuoteAsset(new Connection('https://solana-rpc.publicnode.com', 'confirmed'), QUOTES.XRXx)
-if (!badge) throw new Error('XRXx DBC token badge missing')
-console.log(`Stock quote smoke passed: XRXx badge ${badge.toBase58()}`)
+const connection = new Connection('https://solana-rpc.publicnode.com', 'confirmed')
+await Promise.all(Object.values(QUOTES).filter(quote => quote.network === 'mainnet-beta').map(async quote => {
+  const badge = await verifyQuoteAsset(connection, quote)
+  if (!badge) throw new Error(`${quote.id} DBC token badge missing`)
+  console.log(`Stock quote smoke passed: ${quote.id} badge ${badge.toBase58()}`)
+}))

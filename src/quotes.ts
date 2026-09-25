@@ -1,6 +1,5 @@
 import { Connection, PublicKey } from '@solana/web3.js'
-import { deriveTokenBadgeAddress } from '@meteora-ag/dynamic-bonding-curve-sdk'
-import { DBC_PROGRAM } from './dbc'
+import { deriveTokenBadgeAddress, DYNAMIC_BONDING_CURVE_PROGRAM_ID } from '@meteora-ag/dynamic-bonding-curve-sdk'
 
 export type QuoteId = 'SOL' | 'XRXx' | 'FLNCx' | 'QUBTx' | 'AIx'
 export type QuoteAsset = { id: QuoteId; name: string; mint: string; decimals: number; network: 'devnet' | 'mainnet-beta'; category: string }
@@ -25,7 +24,9 @@ export async function verifyQuoteAsset(connection: Connection, quote: QuoteAsset
   ])
   const data = mintInfo.value?.data
   const info = data && typeof data === 'object' && 'parsed' in data
-    ? (data.parsed as { info?: { decimals?: number; extensions?: { extension: string; state?: { paused?: boolean; programId?: string | null } }[] } }).info : undefined
+    ? (data.parsed as { info?: { decimals?: number; extensions?: { extension: string; state?: {
+      paused?: boolean; programId?: string | null; accountState?: string; multiplier?: string; newMultiplier?: string
+    } }[] } }).info : undefined
   if (mintInfo.value?.owner.toBase58() !== 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb') {
     throw new Error(`The ${quote.id} mint is not owned by the expected Token-2022 program.`)
   }
@@ -36,7 +37,14 @@ export async function verifyQuoteAsset(connection: Connection, quote: QuoteAsset
   if (info.extensions?.some(extension => extension.extension === 'transferHook' && extension.state?.programId)) {
     throw new Error(`${quote.id} has an active transfer hook that this launch flow does not support.`)
   }
-  if (!badgeInfo || badgeInfo.owner.toBase58() !== DBC_PROGRAM) {
+  if (info.extensions?.some(extension => extension.extension === 'defaultAccountState' && extension.state?.accountState === 'frozen')) {
+    throw new Error(`${quote.id} requires issuer approval for new token accounts.`)
+  }
+  if (info.extensions?.some(extension => extension.extension === 'scaledUiAmountConfig'
+    && (Number(extension.state?.multiplier) !== 1 || Number(extension.state?.newMultiplier) !== 1))) {
+    throw new Error(`${quote.id} has a stock-split display multiplier that this version does not support.`)
+  }
+  if (!badgeInfo || !badgeInfo.owner.equals(DYNAMIC_BONDING_CURVE_PROGRAM_ID)) {
     throw new Error(`Meteora DBC token badge is missing for ${quote.id}. Launch stopped.`)
   }
   return badge

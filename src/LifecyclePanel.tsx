@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowRight, ExternalLink, RefreshCw } from 'lucide-react'
 import { graduatePool, readLifecycle } from './lifecycle'
 import type { Network } from './dbc'
+import TradePanel from './TradePanel'
 
 export default function LifecyclePanel({ initialPool }: { initialPool: { address: string; network: Network } | null }) {
   const [address, setAddress] = useState(initialPool?.address ?? '')
@@ -40,6 +41,7 @@ export default function LifecyclePanel({ initialPool }: { initialPool: { address
       {status.migrated && <><a href={`https://solscan.io/account/${status.dammPool}${explorer}`} target="_blank" rel="noreferrer">DAMM v2 pool: {status.dammPool} <ExternalLink size={14}/></a><div className="lifecycle-balances"><div><span>BASE VAULT</span><strong>{status.reserves?.base}</strong></div><div><span>QUOTE VAULT</span><strong>{status.reserves?.quote}</strong></div></div><p>Vault balances include amounts held by the pool; they are not trading volume.</p></>}
       {signature && <a href={`https://solscan.io/tx/${signature}${explorer}`} target="_blank" rel="noreferrer">Migration transaction <ExternalLink size={14}/></a>}
       <small>Read at {new Date(status.fetchedAt).toLocaleTimeString()} · {status.network}</small>
+      {!status.migrated && !status.ready && <TradePanel key={`${status.network}:${status.address}`} pool={status.address} network={status.network} onTrade={async () => { setStatus(await readLifecycle(status.address, status.network)) }}/>}
     </div>}
   </section>
 }

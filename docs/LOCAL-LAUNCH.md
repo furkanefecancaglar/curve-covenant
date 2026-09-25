@@ -56,3 +56,15 @@ The setup script downloads the current deployments, so a future upgrade may chan
 The actual launch form was exercised in Chromium with an ephemeral local signer implementing Phantom's signing interface. Playwright routed both configured RPC URLs to localhost; the test never sent to the public networks. Selecting XRXx, entering metadata, and submitting the form created local pool `6RAK5qq89aYjHiDkNJUiwmfJHLzvq6yWF1AUVNwSN6Ww`. The graduation panel then read the migrated local SOL pool and displayed both destination vault balances. No browser exceptions occurred.
 
 The UI network labels in this isolated test reflect the selected form option because RPC calls were intercepted. They are not evidence of mainnet or public devnet transactions. This verifies browser application wiring and signing/confirmation handling, not Phantom extension behavior or public deployment.
+
+## Full browser lifecycle regression
+
+Run the local validator, then start the app with `npm run dev -- --port 4175`. In another terminal:
+
+```bash
+CHROMIUM_PATH=/path/to/chromium node scripts/browser-local-flow.mjs
+```
+
+This reproducible test creates a SOL pool through the real form, checks that the pool address transfers into the graduation panel, asks for a 3 SOL buy quote, signs the swap with its displayed minimum output, waits for the graduation threshold, signs the migration, and checks that the resulting vault balances are displayed without browser exceptions. All RPC requests are routed to localhost, and the signing interface uses an ephemeral local test key.
+
+Observed local DBC pool: `5Vk6KfLEH4WDmdCQBVQnkM3uJaaqtvgfVtkrrKzhrtCa`. Observed local DAMM v2 pool: `DGdSsFgVawb8c6SaDZi3RYkojxF5DyZ2sDqjKhUVYE5v`. All stages passed.

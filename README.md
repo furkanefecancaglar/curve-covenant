@@ -20,7 +20,7 @@ The xStock catalog currently includes XRXx, FLNCx, QUBTx and AIx. Their mint add
 2. Choose a curve model and edit supply, opening/graduation market caps in quote units, fee schedule, creator share and permanent liquidity lock.
 3. Read the SDK-derived graduation quote threshold and simulate a hypothetical buy before a pool exists. Export the exact SDK config JSON or copy a share link that recreates the quote asset and all edited terms.
 4. Provide token name, symbol and an HTTPS metadata JSON URL. The devnet form includes a clearly labeled CCDEMO example hosted in this repo; replace it with matching metadata for your own token. The wallet-confirmed SDK transaction creates config + token mint + DBC virtual pool together. The app checks for both new accounts and links to the explorer.
-5. Paste a DBC pool address into the graduation panel. It checks reserve progress, enables wallet migration after the threshold, and reads DAMM v2 vault balances after graduation.
+5. The new pool is filled into the graduation panel automatically; you can also paste an existing DBC pool. Read reserve progress, get a live buy quote with a 1% minimum-output bound, and confirm the buy with your wallet. When the threshold is reached, submit migration and inspect DAMM v2 vault balances.
 6. Use the [companion inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) to read real reserve progress and terms from an existing DBC pool. The inspector also supports a swap quote, embeddable report, and signed disclosure comparison.
 
 The product currently requires a user-hosted metadata JSON URL. It does not upload images, create an xStock, custody funds, operate an unattended migration keeper, or create DLMM positions. Combined SOL and XRXx launches and the complete SOL DBC → DAMM v2 lifecycle have been confirmed on a **local validator**, using the official deployed programs. See [reproduction and evidence](docs/LOCAL-LAUNCH.md). A public devnet/mainnet launch through Phantom has **not** yet been confirmed. Our devnet faucet probe was rate limited on 2026-09-25, so it is not evidence of a deployed pool. There are no claimed active users or trading volume.
@@ -41,6 +41,7 @@ Key files:
 
 - [`src/studio.ts`](src/studio.ts) — four DBC curve/fee designs, SDK validation and pre-launch quote simulation.
 - [`src/quotes.ts`](src/quotes.ts) — issuer-listed xStock mints, mint precision and DBC token badge verification.
+- [`src/trade.ts`](src/trade.ts) — live buy preview, quote expiry, and wallet-signed partial-fill swaps with minimum output enforcement.
 - [`src/lifecycle.ts`](src/lifecycle.ts) — DBC reserve progress, DAMM v2 migration, destination verification and vault reads.
 - [`src/CurveChart.tsx`](src/CurveChart.tsx) — interactive curve visualization from 33 SDK-calculated points.
 - [`src/publish.ts`](src/publish.ts) — Phantom-signed config or combined config + pool creation.
