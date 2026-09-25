@@ -13,8 +13,8 @@ The new token is not a tokenized share. This is an experiment in stock-denominat
 
 | Criterion | Current evidence | Gap |
 | --- | --- | --- |
-| Deep Meteora integration | DBC curve builders, validator, pre-launch quote, combined config/pool transaction, token badge preflight, on-chain inspector | Local XRXx launch and SOL DBC → DAMM v2 lifecycle confirmed; public wallet proof and full stock-token migration remain |
-| Technical execution | TypeScript source, 17 passing tests, successful build, desktop/mobile browser checks, confirmed local SOL/XRXx launches, local SOL graduation, full browser launch → quote → buy → graduation test with a local signer | Mainnet launch path untested with a wallet; no performance/operational history |
+| Deep Meteora integration | DBC curve builders, validator, pre-launch quote, size-aware config/pool transactions, token badge preflight, on-chain inspector | Local SOL and XRXx long-curve DBC → DAMM v2 lifecycles confirmed; public wallet proof remains |
+| Technical execution | TypeScript source, 18 passing tests, successful build, desktop/mobile browser checks, confirmed local SOL/XRXx lifecycles, full browser long-curve launch → quote → buy → graduation and interrupted-step recovery with a local signer | Mainnet launch path untested with a wallet; no performance/operational history |
 | Originality and taste | xStock quote catalog plus a 16-segment front-loaded liquidity design | Similar stock-quoted launches exist; differentiation and actual user value need validation |
 | Impact potential | Tool can be reused across issuer-listed stock quote mints | No demonstrated distribution, builders or launches |
 | Traction/volume | None claimed | Mainnet usage is preferred by sponsor and not yet evidenced |
@@ -33,7 +33,7 @@ The new token is not a tokenized share. This is an experiment in stock-denominat
 
 1. Obtain public devnet SOL and confirm the Phantom browser flow. Local config + pool creation and SOL graduation are complete; see [reproduction](LOCAL-LAUNCH.md).
 2. Exercise stock-quoted mainnet launch only with a funded wallet and explicit transaction review. This costs real SOL; no mainnet transaction has been sent.
-3. Exercise the entire stock-token buy and migration flow, including issuer transfer constraints. The post-graduation DAMM v2 read path is implemented and locally checked. Add pool discovery and validate post-migration trading.
+3. The full stock-token local flow now passes with the cloned issuer mint and a synthetic balance. Validate public issuer-funded trading, add pool discovery, and test post-migration trading. Graduated mainnet pools link directly to their Meteora market.
 4. Validate the 16-segment model with prospective launch builders and compare it with existing stock-quoted launchpads. Record real feedback.
 5. Create a new pitch, product demo and distribution plan based on completed evidence.
 6. Complete Colosseum and Superteam submissions through the actual human accounts, including project X URL. Neither submission has been made.

@@ -5,10 +5,17 @@ import BN from 'bn.js'
 import { buildStudioConfig, PRESETS } from '../src/studio'
 import { QUOTES } from '../src/quotes'
 import type { QuoteId } from '../src/quotes'
+import { buildLaunchPlan } from '../src/launch-plan'
 import { readLifecycle } from '../src/lifecycle'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import type { PresetId } from '../src/studio'
 
-const connection = new Connection('http://127.0.0.1:18899', 'confirmed')
-const payer = Keypair.generate()
+const port = Number(process.env.LOCAL_RPC_PORT ?? 18899)
+if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid local RPC port')
+const connection = new Connection(`http://127.0.0.1:${port}`, 'confirmed')
+const fixture = process.env.STOCK_FIXTURE_DIR
+const payer = fixture ? Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(join(fixture, 'signer.json'), 'utf8')))) : Keypair.generate()
 const config = Keypair.generate()
 const mint = Keypair.generate()
 const quoteId = (process.env.QUOTE ?? 'SOL') as QuoteId
@@ -16,7 +23,9 @@ const quoteAsset = QUOTES[quoteId]
 if (!quoteAsset) throw new Error(`Unknown quote asset: ${quoteId}`)
 const quoteMint = new PublicKey(quoteAsset.mint)
 const graduate = process.env.GRADUATE === '1'
-if (graduate && quoteId !== 'SOL') throw new Error('Lifecycle fixture uses local SOL only.')
+if (graduate && quoteId !== 'SOL' && !fixture) throw new Error('A synthetic local stock balance fixture is required.')
+const preset = PRESETS[(process.env.PRESET ?? 'steady') as PresetId]
+if (!preset) throw new Error('Unknown curve preset')
 
 try {
   const airdrop = await connection.requestAirdrop(payer.publicKey, 10 * LAMPORTS_PER_SOL)
@@ -24,9 +33,9 @@ try {
   const client = DynamicBondingCurveClient.create(connection, 'confirmed')
   const tokenBadge = quoteId === 'SOL' ? undefined : deriveTokenBadgeAddress(quoteMint)
   const curveConfig = buildStudioConfig(graduate
-    ? { ...PRESETS.steady.values, initialMarketCap: 1, migrationMarketCap: 10 }
-    : PRESETS.steady.values, quoteAsset.decimals)
-  const transaction = await client.partner.createConfigAndPool({
+    ? { ...preset.values, initialMarketCap: 1, migrationMarketCap: 10 }
+    : preset.values, quoteAsset.decimals)
+  const plan = await buildLaunchPlan(client, {
     ...curveConfig,
     payer: payer.publicKey, config: config.publicKey,
     feeClaimer: payer.publicKey, leftoverReceiver: payer.publicKey, quoteMint, tokenBadge,
@@ -36,13 +45,22 @@ try {
       poolCreator: payer.publicKey, baseMint: mint.publicKey,
     },
   })
+  const transaction = plan.transaction
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed')
   transaction.feePayer = payer.publicKey
   transaction.recentBlockhash = blockhash
-  transaction.sign(payer, config, mint)
+  transaction.sign(...(plan.mode === 'split' ? [payer, config] : [payer, config, mint]))
   const signature = await connection.sendRawTransaction(transaction.serialize(), { skipPreflight: false })
   const confirmation = await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed')
   if (confirmation.value.err) throw new Error(JSON.stringify(confirmation.value.err))
+  if (plan.mode === 'split') {
+    const poolTx = await client.creator.createPool({ config: config.publicKey, baseMint: mint.publicKey,
+      payer: payer.publicKey, poolCreator: payer.publicKey, tokenBadge,
+      name: 'Curve Covenant Demo', symbol: 'CCDEMO',
+      uri: 'https://furkanefecancaglar.github.io/curve-covenant/metadata/demo-token.json' })
+    await sendAndConfirmTransaction(connection, poolTx, [payer, mint], { commitment: 'confirmed' })
+  }
+  console.log(JSON.stringify({ launchMode: plan.mode, firstTransactionBytes: plan.bytes }))
   const pool = deriveDbcPoolAddress(quoteMint, mint.publicKey, config.publicKey)
   const [configInfo, mintInfo, poolInfo] = await Promise.all([
     connection.getAccountInfo(config.publicKey), connection.getAccountInfo(mint.publicKey), connection.getAccountInfo(pool),

@@ -43,6 +43,7 @@ export default function Studio() {
   const [input, setInput] = useState<StudioInputs>(shared.design?.inputs ?? { ...PRESETS.steady.values })
   const [quoteId, setQuoteId] = useState<QuoteId>(shared.design?.quoteId ?? 'SOL')
   const [shareMessage, setShareMessage] = useState('')
+  const [launchLocked, setLaunchLocked] = useState(false)
   const [createdPool, setCreatedPool] = useState<{ address: string; network: Network } | null>(null)
   const [buyAmount, setBuyAmount] = useState('1')
   const [elapsedHours, setElapsedHours] = useState('0')
@@ -91,7 +92,7 @@ export default function Studio() {
       <section className="studio-hero"><div className="hero-noise"/>
         <div className="studio-hero-content"><div className="studio-eyebrow"><span/> STOCK-QUOTED LAUNCHES · METEORA DBC</div>
           <h1>Launch a token<br/><em>priced in a stock.</em></h1>
-          <p>Build a DBC token launch quoted in a verified tokenized stock. Design the curve, simulate early trades, and create the token and pool in one transaction. Try the same flow with SOL on devnet first.</p>
+          <p>Build a DBC token launch quoted in a verified tokenized stock. Design the curve, simulate early trades, and create the token and pool with your wallet. Try the same flow with SOL on devnet first.</p>
           <div className="studio-hero-actions"><a className="studio-main-btn" href="#workbench">Design a launch <ArrowRight size={18}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}?view=inspector`}>Inspect a live DBC pool <ExternalLink size={15}/></a></div>
           <div className="studio-hero-proof"><span><CheckCircle2 size={15}/> Issuer-listed quote mints</span><span><CheckCircle2 size={15}/> Meteora DBC + DAMM v2</span><span><CheckCircle2 size={15}/> SDK quote simulation</span></div>
         </div>
@@ -102,17 +103,17 @@ export default function Studio() {
         {shared.error && <p className="publish-error" role="alert">{shared.error}</p>}
         {shared.design && <p className="shared-design-note">Shared design loaded. Review the curve and terms before creating a pool.</p>}
         <div className="studio-section-head"><span>01 / QUOTE ASSET</span><h2>Choose what buyers pay with.</h2><p>A new token can be quoted in a tokenized stock instead of SOL. These mints come from the xStocks issuer asset feed; mint precision and Meteora token badge are checked on chain before a mainnet launch transaction is built.</p></div>
-        <div className="quote-grid">{Object.values(QUOTES).map(asset => <button key={asset.id} className={`quote-card ${asset.id === quoteId ? 'active' : ''}`} onClick={() => setQuoteId(asset.id)}><span>{asset.category}</span><strong>{asset.id}</strong><small>{asset.name}</small><span className="quote-network">{asset.network === 'devnet' ? 'DEVNET TEST' : 'MAINNET'}</span></button>)}</div>
+        <div className="quote-grid">{Object.values(QUOTES).map(asset => <button disabled={launchLocked} key={asset.id} className={`quote-card ${asset.id === quoteId ? 'active' : ''}`} onClick={() => setQuoteId(asset.id)}><span>{asset.category}</span><strong>{asset.id}</strong><small>{asset.name}</small><span className="quote-network">{asset.network === 'devnet' ? 'DEVNET TEST' : 'MAINNET'}</span></button>)}</div>
         <p className="quote-disclosure">The newly launched token is a separate asset priced against the selected quote token. It is not a share of the underlying company. Stock-token trading restrictions can still apply.</p>
 
         <div className="studio-section-head preset-heading"><span>02 / LAUNCH MECHANICS</span><h2>Choose a curve and fee model.</h2><p>Each preset is editable and validated by Meteora's DBC SDK. Market cap values are denominated in {quoteId} units.</p></div>
-        <div className="preset-grid">{(Object.entries(PRESETS) as [PresetId, typeof PRESETS[PresetId]][]).map(([id, item], index) => <button key={id} className={`preset-card ${input.preset === id ? 'active' : ''}`} onClick={() => setInput({ ...item.values })}><span className="preset-top"><span>0{index + 1} / {item.audience.toUpperCase()}</span><span className="preset-radio">{input.preset === id && <CheckCircle2 size={17}/>}</span></span><strong>{item.name}</strong><p>{item.thesis}</p><span className="preset-end">{id === 'long' ? '16 SEGMENTS' : id === 'momentum' ? 'TWO CURVE STAGES' : id === 'discovery' ? 'DECAYING FEE' : 'FIXED FEE'} <ArrowRight size={15}/></span></button>)}</div>
+        <div className="preset-grid">{(Object.entries(PRESETS) as [PresetId, typeof PRESETS[PresetId]][]).map(([id, item], index) => <button disabled={launchLocked} key={id} className={`preset-card ${input.preset === id ? 'active' : ''}`} onClick={() => setInput({ ...item.values })}><span className="preset-top"><span>0{index + 1} / {item.audience.toUpperCase()}</span><span className="preset-radio">{input.preset === id && <CheckCircle2 size={17}/>}</span></span><strong>{item.name}</strong><p>{item.thesis}</p><span className="preset-end">{id === 'long' ? '16 SEGMENTS' : id === 'momentum' ? 'TWO CURVE STAGES' : id === 'discovery' ? 'DECAYING FEE' : 'FIXED FEE'} <ArrowRight size={15}/></span></button>)}</div>
 
         <div className="studio-work-grid">
           <div className="studio-editor"><div className="panel-title"><SlidersHorizontal size={20}/><div><h3>Shape the launch</h3><p>Quote: {quoteId} · Base token: SPL · Graduation: DAMM v2</p></div></div>
-            <div className="studio-input-grid">{inputFields.map(field => <label key={field.key}><span>{field.label}<span className="field-help" title={field.help}><Info size={13}/></span></span><div className="studio-input"><input type="number" min={field.min} step={field.step} value={input[field.key]} onChange={event => change(field.key, event.target.value)}/><span>{field.unit === 'quote' ? quoteId : field.unit}</span></div></label>)}</div>
+            <div className="studio-input-grid">{inputFields.map(field => <label key={field.key}><span>{field.label}<span className="field-help" title={field.help}><Info size={13}/></span></span><div className="studio-input"><input type="number" disabled={launchLocked} min={field.min} step={field.step} value={input[field.key]} onChange={event => change(field.key, event.target.value)}/><span>{field.unit === 'quote' ? quoteId : field.unit}</span></div></label>)}</div>
             <p className="editor-footnote">Config values describe your DBC launch economics. The wallet transaction below creates the config and a token pool together.</p>
-            <p className="allocation-note">Leftover allocation: <strong>{input.preset === 'momentum' ? '35%' : '0.001%'} of supply</strong>, with your launch wallet set as the receiver. DAMM v2 uses a fixed 1% trading fee after graduation.</p>
+            <p className="allocation-note">Leftover allocation: <strong>{input.preset === 'momentum' ? '35%' : '0.001%'} of supply</strong>, with your launch wallet set as the receiver. DAMM v2 starts with a 1% base trading fee plus a dynamic fee after graduation.</p>
             {result.config && <CurveChart config={result.config} supply={input.supply} quoteDecimals={quoteAsset.decimals} symbol={quoteId}/>}
           </div>
           <div className="studio-output"><div className="panel-title"><Rocket size={20}/><div><h3>SDK result</h3><p>Recomputed whenever you change the design</p></div></div>
@@ -126,10 +127,10 @@ export default function Studio() {
             </> : <div className="config-error">{result.error}</div>}
           </div>
         </div>
-        <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onCreated={address => setCreatedPool({ address, network: quoteAsset.network })}/>
+        <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={address => setCreatedPool({ address, network: quoteAsset.network })}/>
         <LifecyclePanel key={createdPool?.address ?? 'empty'} initialPool={createdPool}/>
       </section>
-      <section className="studio-how" id="how"><div className="studio-section-head"><span>05 / PRODUCT FLOW</span><h2>From pair design to DBC pool.</h2><p>The config and pool launch are real SDK operations. Check the quote reserve, graduate an eligible pool, and follow its liquidity into DAMM v2.</p></div><div className="how-grid"><article><span>01</span><Code2 size={24}/><h3>Verify the quote</h3><p>Stock mint decimals and Meteora token badge are rechecked on Solana mainnet before construction.</p></article><article><span>02</span><Rocket size={24}/><h3>Create the launch</h3><p>One wallet-confirmed transaction creates config, token mint and DBC virtual pool from the selected model.</p></article><article><span>03</span><Layers3 size={24}/><h3>Track graduation</h3><p>Track the reserve threshold, submit graduation, and inspect the resulting DAMM v2 vault balances.</p></article></div></section>
+      <section className="studio-how" id="how"><div className="studio-section-head"><span>05 / PRODUCT FLOW</span><h2>From pair design to DBC pool.</h2><p>The config and pool launch are real SDK operations. Check the quote reserve, graduate an eligible pool, and follow its liquidity into DAMM v2.</p></div><div className="how-grid"><article><span>01</span><Code2 size={24}/><h3>Verify the quote</h3><p>Stock mint decimals and Meteora token badge are rechecked on Solana mainnet before construction.</p></article><article><span>02</span><Rocket size={24}/><h3>Create the launch</h3><p>Create config, token mint and DBC pool. Long curves use two wallet approvals; smaller designs can use one.</p></article><article><span>03</span><Layers3 size={24}/><h3>Track graduation</h3><p>Track the reserve threshold, submit graduation, and inspect the resulting DAMM v2 vault balances.</p></article></div></section>
     </main>
     <footer className="studio-footer"><span>curve<span>covenant</span> / Pair Launch</span><span>Independent tool. Not affiliated with Meteora or the stock issuer.</span><a href={`${import.meta.env.BASE_URL}?view=inspector`}>Live pool inspector <ArrowRight size={14}/></a></footer>
   </div>

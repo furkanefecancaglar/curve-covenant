@@ -14,7 +14,7 @@ export async function connectWallet() {
 }
 
 export async function sendWalletTransaction(connection: Connection, wallet: Phantom,
-  payer: PublicKey, transaction: Transaction, signers: Keypair[] = []) {
+  payer: PublicKey, transaction: Transaction, signers: Keypair[] = [], onSubmitted?: (signature: string) => void) {
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed')
   transaction.feePayer = payer
   transaction.recentBlockhash = blockhash
@@ -22,6 +22,7 @@ export async function sendWalletTransaction(connection: Connection, wallet: Phan
   const signed = await wallet.signTransaction(transaction)
   // Send through the same RPC used for construction, rather than the wallet's selected network.
   const signature = await connection.sendRawTransaction(signed.serialize(), { skipPreflight: false, maxRetries: 3 })
+  onSubmitted?.(signature)
   const confirmation = await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed')
   if (confirmation.value.err) throw new Error(`Transaction ${signature} failed: ${JSON.stringify(confirmation.value.err)}`)
   return signature

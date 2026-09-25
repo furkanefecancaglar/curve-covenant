@@ -1,6 +1,6 @@
 import {
-  ActivationType, BaseFeeMode, CollectFeeMode, DammV2DynamicFeeMode,
-  MigratedCollectFeeMode, MigrationFeeOption, MigrationOption,
+  ActivationType, BaseFeeMode, CollectFeeMode,
+  MigrationFeeOption, MigrationOption,
   TokenAuthorityOption, TokenDecimal, TokenType,
   DynamicBondingCurveClient, SwapMode, buildCurveWithLiquidityWeights, buildCurveWithMarketCap, buildCurveWithTwoSegments, validateConfigParameters, getPriceFromSqrtPrice,
 } from '@meteora-ag/dynamic-bonding-curve-sdk'
@@ -83,9 +83,7 @@ export function buildStudioConfig(input: StudioInputs, quoteDecimals = 9): Confi
       enableFirstSwapWithMinFee: false },
     migration: { migrationOption: MigrationOption.MET_DAMM_V2,
       migrationFeeOption: MigrationFeeOption.FixedBps100,
-      migrationFee: { feePercentage: 0, creatorFeePercentage: 0 },
-      migratedPoolFee: { collectFeeMode: MigratedCollectFeeMode.QuoteToken,
-        dynamicFee: DammV2DynamicFeeMode.Disabled, poolFeeBps: 30 } },
+      migrationFee: { feePercentage: 0, creatorFeePercentage: 0 } },
     liquidityDistribution: { partnerLiquidityPercentage: 100 - input.partnerLockedPct,
       partnerPermanentLockedLiquidityPercentage: input.partnerLockedPct,
       creatorLiquidityPercentage: 0, creatorPermanentLockedLiquidityPercentage: 0 },

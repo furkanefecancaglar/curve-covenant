@@ -49,7 +49,7 @@ DBC:     4c26a8a5da99f8ce932fa0300c46675b527090021fbb74214c9486bedda9f23b
 DAMM v2: 4d5b920baebc090f89b2e8796a3452ed067c9667a143058c96a312f2c1e6848b
 ```
 
-The setup script downloads the current deployments, so a future upgrade may change these hashes and behavior. A full stock-token swap/migration with real issuer constraints and any public wallet launch are still outstanding.
+The setup script downloads the current deployments, so a future upgrade may change these hashes and behavior. The stock-token local lifecycle is now covered below. A public wallet launch and real issuer-funded trading remain outstanding.
 
 ## Browser integration check
 
@@ -68,3 +68,46 @@ CHROMIUM_PATH=/path/to/chromium node scripts/browser-local-flow.mjs
 This reproducible test creates a SOL pool through the real form, checks that the pool address transfers into the graduation panel, asks for a 3 SOL buy quote, signs the swap with its displayed minimum output, waits for the graduation threshold, signs the migration, and checks that the resulting vault balances are displayed without browser exceptions. All RPC requests are routed to localhost, and the signing interface uses an ephemeral local test key.
 
 Observed local DBC pool: `5Vk6KfLEH4WDmdCQBVQnkM3uJaaqtvgfVtkrrKzhrtCa`. Observed local DAMM v2 pool: `DGdSsFgVawb8c6SaDZi3RYkojxF5DyZ2sDqjKhUVYE5v`. All stages passed.
+
+## Stock-token long-curve lifecycle (2026-09-26)
+
+This fixture uses the actual cloned XRXx mint, including its Token-2022 extensions, its DBC badge, the current deployed programs, and the current canonical DAMM v2 migration config. It gives a local test token account a **synthetic 1,000 XRXx balance in genesis**. It neither mints nor acquires real xStocks and makes no mainnet write. The generated signer is temporary and saved with mode 0600 outside the repository.
+
+Start the normal local validator on port 18899 first. Then:
+
+```bash
+npx tsx scripts/prepare-stock-fixture.ts
+# The command prints a fresh /tmp/curve-stock-fixture-... directory.
+EXTRA_ACCOUNTS_DIR=/tmp/curve-stock-fixture-.../accounts \
+LOCAL_GOSSIP_PORT=19100 LOCAL_DYNAMIC_PORT_RANGE=19101-19130 \
+LOCAL_FAUCET_PORT=19950 LOCAL_RPC_PORT=19299 \
+bash scripts/start-local-validator.sh /path/to/meteora-invent/studio
+```
+
+With this second validator running, test the stock launch in another terminal:
+
+```bash
+STOCK_FIXTURE_DIR=/tmp/curve-stock-fixture-... \
+LOCAL_RPC_PORT=19299 QUOTE=XRXx GRADUATE=1 PRESET=long npm run test:local
+
+# App must be running on port 4175. This also tests rejecting and resuming step 2.
+STOCK_FIXTURE_DIR=/tmp/curve-stock-fixture-... LOCAL_RPC_PORT=19299 \
+LONG_CURVE=1 CANCEL_SECOND=1 CHROMIUM_PATH=/path/to/chromium \
+node scripts/browser-local-flow.mjs
+```
+
+Two implementation defects were found and corrected:
+
+1. The 16-segment stock launch's combined transaction measured 1,603 bytes, above Solana's 1,232-byte packet limit. The product now measures the actual SDK transaction and splits oversized launches into config creation (1,110 bytes in this fixture) and token/pool creation. A declined second approval can resume with the same config and mint in the same tab. Smaller curves still use the combined transaction. An offline regression signs the SDK transactions for all four presets and both SOL/XRXx to check their real serialized size.
+2. The bundled Invent DAMM migration config had `permission=0`; the current mainnet copy has `permission=1` for stock-token support. The validator setup now fetches that current account. This config also enables dynamic fees: the product's old “fixed 1%” wording was wrong. The UI now reads the destination's initial base and dynamic fee settings from chain. Ignored custom fee parameters were removed from the fixed-fee config builder.
+
+Observed full browser result, using the synthetic local balance:
+
+- DBC pool: `8LH1FJ3fYXKoowcfRMvcxoRVtcWvbd7CNncPm9f4GAvV`
+- DAMM v2 pool: `8AcsMrWyWtqur7ywHkse4RPjx8hz6H5LQmEKJZCoRcuj`
+- Sequence: config approval → deliberately declined pool approval → resumed pool approval → buy → graduation → destination vault reads.
+- Five signing attempts, zero browser exceptions.
+- Final vault balances: 192,852,846.56431 base tokens and 1.92852777 quote tokens.
+- Destination terms displayed: 1% initial base fee plus dynamic fee.
+
+The public-network labels in this isolated browser test are intercepted to localhost. This is local integration evidence, not mainnet usage or Phantom extension certification. Issuer changes to mint controls after the snapshot are not covered.

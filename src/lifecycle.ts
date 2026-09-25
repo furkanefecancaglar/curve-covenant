@@ -1,6 +1,6 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { DAMM_V2_MIGRATION_FEE_ADDRESS, DAMM_V2_PROGRAM_ID, deriveDammV2PoolAddress,
-  deriveDammV2TokenVaultAddress, DynamicBondingCurveClient } from '@meteora-ag/dynamic-bonding-curve-sdk'
+  deriveDammV2TokenVaultAddress, DynamicBondingCurveClient, createDammV2Program } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import { formatUnits, RPC } from './dbc'
 import type { Network } from './dbc'
 import { connectWallet, sendWalletTransaction } from './wallet'
@@ -16,6 +16,12 @@ export async function readLifecycle(address: string, network: Network, endpoint 
   if (config.migrationOption !== 1) throw new Error('This pool targets DAMM v1. Select a DAMM v2 launch.')
   const dammConfig = DAMM_V2_MIGRATION_FEE_ADDRESS[config.migrationFeeOption]
   if (!dammConfig) throw new Error('Unsupported DAMM v2 migration configuration.')
+  const migrationConfig = await createDammV2Program(connection).account.config.fetch(dammConfig)
+  const baseFeeBytes = migrationConfig.poolFees.baseFee.data.slice(0, 8)
+  const baseFeeNumerator = baseFeeBytes.reduce((sum, value, index) => sum + BigInt(value) * (256n ** BigInt(index)), 0n)
+  const destinationFees = config.migrationFeeOption === 6
+    ? { baseFeePct: config.migratedPoolFeeBps / 100, dynamicEnabled: config.migratedDynamicFee !== 0 }
+    : { baseFeePct: Number(baseFeeNumerator) / 10_000_000, dynamicEnabled: migrationConfig.poolFees.dynamicFee.initialized !== 0 }
   const quoteSupply = await connection.getTokenSupply(config.quoteMint)
   const dammPool = deriveDammV2PoolAddress(dammConfig, state.poolState.baseMint, config.quoteMint)
   const migrated = state.poolState.isMigrated === 1
@@ -33,7 +39,7 @@ export async function readLifecycle(address: string, network: Network, endpoint 
   }
   return { address: pool.toBase58(), network, baseMint: state.poolState.baseMint.toBase58(), quoteMint: config.quoteMint.toBase58(),
     dammConfig: dammConfig.toBase58(), dammPool: dammPool.toBase58(), migrated,
-    ready: !migrated && reserve.gte(threshold), reserves,
+    ready: !migrated && reserve.gte(threshold), reserves, destinationFees,
     progress: migrated ? 100 : Math.min(100, Number(reserve.muln(10000).div(threshold).toString()) / 100),
     reserve: formatUnits(reserve.toString(), quoteSupply.value.decimals),
     threshold: formatUnits(threshold.toString(), quoteSupply.value.decimals), fetchedAt: new Date().toISOString() }
