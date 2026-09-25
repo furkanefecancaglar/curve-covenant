@@ -1,7 +1,7 @@
 {
   "name": "curve-covenant",
   "version": "1.0.0",
-  "description": "On-chain launch disclosures for Meteora DBC",
+  "description": "Stock-quoted Meteora DBC launches with curve simulation and DAMM v2 graduation",
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
@@ -9,7 +9,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "smoke": "tsx scripts/smoke.ts",
-    "verify": "tsx scripts/verify-covenant.ts"
+    "verify": "tsx scripts/verify-covenant.ts",
+    "test:local": "tsx scripts/local-launch-probe.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,6 @@
+{
+  "name": "Curve Covenant Demo",
+  "symbol": "CCDEMO",
+  "description": "A test token for demonstrating a Meteora DBC launch on Solana devnet. It has no claim on assets or services.",
+  "image": "https://furkanefecancaglar.github.io/curve-covenant/metadata/demo-token.svg"
+}

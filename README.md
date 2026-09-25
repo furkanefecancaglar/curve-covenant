@@ -1,97 +1,66 @@
-# Curve Covenant
+# Curve Covenant Pair Launch
 
-**Live, human-readable terms for Meteora Dynamic Bonding Curve (DBC) launches.**
+**A Meteora DBC launch workbench for tokens quoted in tokenized stocks.**
 
-Curve Covenant reads a DBC pool or config directly from Solana using Meteora's official TypeScript SDK. It shows the initial trading fee, fee schedule, quote asset and graduation threshold, migration target, creator and partner fee and liquidity shares, token authority, and live pool progress. Its scenario lab uses Meteora's swap quote math to estimate a buy, fee split, and partial fill without sending a transaction. A launch team can export terms as a portable JSON covenant. Anyone can import that file later and compare each declared field against a fresh on-chain read.
+[Live product](https://furkanefecancaglar.github.io/curve-covenant/) · [Live DBC inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) · [Competition track](https://superteam.fun/earn/listing/meteora-dbc)
 
-This is an independent tool, not a Meteora product or financial advice.
+Meteora DBC supports stock tokens as quote assets. Pair Launch lets a builder select an issuer-listed xStock, choose a launch curve, simulate a hypothetical early buy with the official DBC quote math, and build one wallet-confirmed transaction that creates the DBC config, SPL token mint and virtual pool. A SOL/devnet option lets builders rehearse the same flow without mainnet funds. The graduation panel reads live DBC reserve progress, builds the DAMM v2 migration transaction, and verifies the destination pool and its vault balances. A complete SOL launch → buy → DAMM v2 graduation has been confirmed on a local validator; no public network graduation is claimed.
 
-## Try it
+This is an independent early-stage product, not a Meteora or xStocks product. A new token quoted in an xStock is **not** ownership in the underlying company. Mainnet launches use real SOL for rent and fees; the user must review and confirm each wallet transaction.
 
-Open [the live site](https://furkanefecancaglar.github.io/curve-covenant/) and choose **Try a live pool**, or paste any Meteora DBC pool/config address. A wallet is not required. Use a custom RPC endpoint under **Advanced** if the shared public endpoint is rate limited.
+## Why this specific launch flow
 
-Watch the [two-minute product demo](https://furkanefecancaglar.github.io/curve-covenant/demo.mp4) and [project presentation](https://furkanefecancaglar.github.io/curve-covenant/pitch.mp4). The demo reads a public sample pool; its token is unrelated to Curve Covenant.
+Stock-token quotes make price discovery possible in units of a tokenized equity instead of SOL or USDC. A thin quote market can make an abrupt opening curve particularly hard to reason about. The workbench includes a 16-segment long curve with four times as much SDK liquidity weight in its early segments as in its final segment, plus a decaying fee schedule. Builders can compare it with fixed-fee, simple decaying-fee and two-stage designs. These are experimental technical models, not claims of better market outcomes.
 
-### Embed the live report
+The xStock catalog currently includes XRXx, FLNCx, QUBTx and AIx. Their mint addresses came from the [issuer's public assets API](https://api.xstocks.fi/api/v2/public/assets) and were checked against Solana mainnet on 2026-09-25. The browser checks mint owner, precision, paused/transfer-hook state and the DBC token badge again before building a stock-quoted transaction. An issuer listing and token badge do not guarantee that the token remains tradable or suitable for a particular market.
 
-After inspecting a pool, click **Copy embed**. The iframe opens a compact report that refreshes from chain whenever a visitor loads it:
+## Flow
 
-```html
-<iframe src="https://furkanefecancaglar.github.io/curve-covenant/?address=4L9LJ3B5niCSLWujRJjPU6scZVbNJz4zw6A9B3aPxTeT&network=mainnet-beta&embed=1" title="Curve Covenant DBC launch terms" width="100%" height="930" loading="lazy" style="border:0;border-radius:12px"></iframe>
-```
+1. Select SOL on devnet or an xStock on mainnet.
+2. Choose a curve model and edit supply, opening/graduation market caps in quote units, fee schedule, creator share and permanent liquidity lock.
+3. Read the SDK-derived graduation quote threshold and simulate a hypothetical buy before a pool exists. Export the exact SDK config JSON.
+4. Provide token name, symbol and an HTTPS metadata JSON URL. The devnet form includes a clearly labeled CCDEMO example hosted in this repo; replace it with matching metadata for your own token. The wallet-confirmed SDK transaction creates config + token mint + DBC virtual pool together. The app checks for both new accounts and links to the explorer.
+5. Paste a DBC pool address into the graduation panel. It checks reserve progress, enables wallet migration after the threshold, and reads DAMM v2 vault balances after graduation.
+6. Use the [companion inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) to read real reserve progress and terms from an existing DBC pool. The inspector also supports a swap quote, embeddable report, and signed disclosure comparison.
 
-Launchpads and terminals can embed a pool report without integrating a backend. The sample address is only a technical fixture; replace it with the launch's own pool.
+The product currently requires a user-hosted metadata JSON URL. It does not upload images, create an xStock, custody funds, operate an unattended migration keeper, or create DLMM positions. Combined SOL and XRXx launches and the complete SOL DBC → DAMM v2 lifecycle have been confirmed on a **local validator**, using the official deployed programs. See [reproduction and evidence](docs/LOCAL-LAUNCH.md). A public devnet/mainnet launch through Phantom has **not** yet been confirmed. Our devnet faucet probe was rate limited on 2026-09-25, so it is not evidence of a deployed pool. There are no claimed active users or trading volume.
 
-The included sample pool is a live technical fixture, not an endorsement of its token. The [official DBC program](https://github.com/MeteoraAg/dynamic-bonding-curve-sdk) is `dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN`.
-
-## Why this exists
-
-DBC launchpads can configure fee schedules, graduation thresholds, post-migration liquidity distribution, token authority, and more. Those choices are visible on-chain but difficult for many people to interpret together. A reusable disclosure format lets launch teams publish precise terms and lets users verify them independently.
-
-The app supports standard and transfer-hook variants of both DBC pools and configs through `DynamicBondingCurveClient.state`. Its scenario lab calls `DynamicBondingCurveClient.pool.swapQuote2` in partial-fill mode on fresh pool state. It uses exact integer arithmetic for raw quote token units and validates account ownership against the DBC program before decoding. It never asks users to sign a transaction.
-
-## Run locally
+## Development
 
 ```bash
 npm ci
 npm run dev
-```
-
-Run checks:
-
-```bash
 npm test
 npm run build
+npm run smoke
 ```
 
-Requires Node.js 22 or newer. The app is a static Vite/React site; all chain reads happen directly in the browser. Mainnet defaults to PublicNode because Solana's own shared mainnet RPC rejects many browser origins. Devnet uses Solana's public devnet RPC. Neither endpoint is hard-coded into a backend; users can supply their own RPC.
+Node.js 22+ is required. The app is a static Vite/React site. Meteora SDK calculations and Solana RPC reads happen in the browser. Mainnet reads default to PublicNode because Solana's public mainnet RPC can reject browser origins; the inspector allows a custom RPC.
 
-## Covenant format
+Key files:
 
-Version `curve-covenant/v1` is a JSON object containing the network, config and optional pool address, project name, description, creation time, and selected claims. Comparison is exact for the selected decoded on-chain fields. If a claim differs from the current config, the UI shows both the declared and live values.
+- [`src/studio.ts`](src/studio.ts) — four DBC curve/fee designs, SDK validation and pre-launch quote simulation.
+- [`src/quotes.ts`](src/quotes.ts) — issuer-listed xStock mints, mint precision and DBC token badge verification.
+- [`src/lifecycle.ts`](src/lifecycle.ts) — DBC reserve progress, DAMM v2 migration, destination verification and vault reads.
+- [`src/CurveChart.tsx`](src/CurveChart.tsx) — interactive curve visualization from 33 SDK-calculated points.
+- [`src/publish.ts`](src/publish.ts) — Phantom-signed config or combined config + pool creation.
+- [`src/Studio.tsx`](src/Studio.tsx) and [`src/LaunchPanel.tsx`](src/LaunchPanel.tsx) — product UI.
+- [`src/dbc.ts`](src/dbc.ts) and [`src/covenant.ts`](src/covenant.ts) — live inspector and signed term checks.
 
-The optional signature uses Phantom's fee-free `signMessage()` method and Ed25519 verification. The signer must equal either the config's on-chain fee claimer or the pool's creator to receive a role-verified badge. An unsigned file or a valid signature from an unrelated wallet is shown separately. Signed data is domain-separated and includes every disclosed field, so changing a field invalidates the signature.
+The included `scripts/devnet-probe.ts` demonstrates a standalone ephemeral-keypair devnet config creation. It requests test SOL from the public faucet and may fail when that faucet is unavailable; no private key is stored.
 
-Anyone can create an unsigned covenant file. A signature proves that the listed wallet signed those bytes, not that the wallet's human owner is trustworthy or that future actions are guaranteed. Publishing through a recognized project channel provides additional context.
+## Competition status
 
-### Verify from a terminal
-
-The CLI emits JSON and exits with code 1 if a claim fails, a signature is invalid, or a required role signature is missing. It reads current Solana state through the same decoder as the website:
-
-```bash
-npm run verify -- examples/public-sample-covenant.json
-npm run verify -- path/to/issuer-covenant.json --require-role-signature
-```
-
-The included sample covenant is explicitly unsigned and serves only as a format and chain-reading example. Automation can consume the `passed`, `checks`, and `signature` fields; a custom endpoint can be supplied with `--rpc URL`.
-
-## Architecture
-
-```text
-Solana RPC ──> Meteora DBC SDK decoder ──> normalized launch report
-                                           │
-                                           ├──> readable inspector
-                                           ├──> raw account snapshot
-                                           └──> covenant JSON ⇄ live comparison
-```
-
-The DBC integration is in [`src/dbc.ts`](src/dbc.ts). The portable disclosure and comparison logic is in [`src/covenant.ts`](src/covenant.ts). All decoded raw account fields remain available in the UI for independent checking.
-
-## Roadmap
-
-- Explain how time and market-cap based fee schedules evolve after launch.
-- Add a full curve path and side-by-side launch scenarios.
-- Add durable public provenance and signed disclosure history for covenants.
-- Watch a launch over time and highlight changes to claimable amounts and graduation state.
+The [readiness file](docs/SUBMISSION.md) maps the product to Meteora and Colosseum criteria. It documents the remaining public wallet launch proof, user validation, stock-token migration testing, and new presentation/demo work. The previous inspector-only videos and deck were removed. No Colosseum or Superteam submission and no prize are claimed.
 
 ## Sources
 
-- [Meteora DBC overview](https://docs.meteora.ag/core-products/dbc/what-is-dbc)
+- [Meteora DBC developer guide](https://docs.meteora.ag/developer-guides/dbc)
+- [Meteora Invent launchpad scaffold](https://docs.meteora.ag/invent/scaffold/fun-launch)
+- [Meteora Invent actions](https://docs.meteora.ag/invent/actions)
 - [Official DBC SDK](https://github.com/MeteoraAg/dynamic-bonding-curve-sdk)
-- [DBC account model](https://github.com/MeteoraAg/docs/blob/main/developer-guides/dbc/program/accounts.mdx)
+- [xStocks issuer asset API](https://api.xstocks.fi/api/v2/public/assets)
 
 ## License
 
-MIT. The on-chain Meteora programs have their own license; this project's license only covers Curve Covenant source code.
-
-![Scenario lab live pool demo](docs/screenshots/scenario.png)
+MIT. Meteora components retain their own licenses.

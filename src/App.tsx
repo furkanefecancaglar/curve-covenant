@@ -4,6 +4,7 @@ import { DBC_PROGRAM, loadLaunch, quoteBuy, RPC } from './dbc'
 import type { BuyQuote, LaunchData, Network } from './dbc'
 import { compareCovenant, createCovenant, downloadJson, parseCovenant, PROMISE_FIELDS, signCovenantWithPhantom, verifyCovenantSignature } from './covenant'
 import type { Covenant, PromiseField } from './covenant'
+import Studio from './Studio'
 
 const short = (value: string, chars = 7) => `${value.slice(0, chars)}…${value.slice(-chars)}`
 const pct = (value: number) => `${value.toLocaleString('en-US', { maximumFractionDigits: 4 })}%`
@@ -18,7 +19,7 @@ function InfoRow({ label, value, hint, mono = false }: { label: string; value: R
   return <div className="info-row"><div className="info-label">{label}{hint && <span title={hint}><CircleHelp size={13}/></span>}</div><div className={mono ? 'info-value mono' : 'info-value'}>{value}</div></div>
 }
 
-function App() {
+function Inspector() {
   const embed = new URLSearchParams(window.location.search).get('embed') === '1'
   const [network, setNetwork] = useState<Network>('mainnet-beta')
   const [rpcUrl, setRpcUrl] = useState('')
@@ -122,7 +123,7 @@ function App() {
   return <div className={embed ? 'app-shell embed-shell' : 'app-shell'}>
     <header className="site-header">
       <a className="brand" href={import.meta.env.BASE_URL}><div className="brand-icon"><Radar size={23} strokeWidth={2.2}/></div><span>curve<span className="brand-accent">covenant</span></span><span className="beta">BETA</span></a>
-      <nav className="top-nav"><a href="#how-it-works">How it works</a><a href="#videos">Videos</a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer"><Code2 size={16}/> GitHub</a><a href="https://docs.meteora.ag/core-products/dbc/what-is-dbc" target="_blank" rel="noreferrer">About DBC <ArrowUpRight size={15}/></a></nav>
+      <nav className="top-nav"><a href={import.meta.env.BASE_URL}>Launch Studio</a><a href="#how-it-works">How it works</a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer"><Code2 size={16}/> GitHub</a><a href="https://docs.meteora.ag/core-products/dbc/what-is-dbc" target="_blank" rel="noreferrer">About DBC <ArrowUpRight size={15}/></a></nav>
     </header>
 
     <main>
@@ -161,15 +162,16 @@ function App() {
             <div className="covenant-form"><label>PROJECT NAME<input placeholder="Your launch or platform name" value={project} onChange={event => setProject(event.target.value)}/></label><label>WHAT THIS LAUNCH IS FOR<textarea placeholder="A plain-language description your community can understand" value={description} onChange={event => setDescription(event.target.value)} rows={3}/></label><div className="claim-heading">PROMISES TO INCLUDE <span>read directly from the current config</span></div><div className="claim-list">{PROMISE_FIELDS.map(field => <label className="claim" key={field.key}><input type="checkbox" checked={selected.includes(field.key)} onChange={event => setSelected(current => event.target.checked ? [...current, field.key] : current.filter(key => key !== field.key))}/><span>{field.label}</span><strong>{String(launch[field.key])}{field.suffix}</strong></label>)}</div><div className="export-actions"><button className="primary-button" onClick={() => exportCovenant(false)}><Download size={17}/> Download unsigned</button><button className="primary-button outline" onClick={() => exportCovenant(true)} disabled={signing}>{signing ? <RefreshCw size={17} className="spin"/> : <LockKeyhole size={17}/>} Sign with Phantom & download</button></div>{error && <div className="error"><X size={16}/>{error}</div>}<p className="form-note">Only the DBC fee claimer or pool creator can create a role-verified signed covenant. Signing a message costs no network fee. The file describes current terms; it does not guarantee future actions.</p></div>
           </div>}
           {tab === 'raw' && <div className="raw-view"><p>The full decoded Meteora SDK account state used in this report. Values too large for JavaScript numbers remain strings.</p><pre>{JSON.stringify(launch.raw, null, 2)}</pre></div>}
-          {embed && <div className="embed-attribution"><span>Verified with Curve Covenant</span><a href={`https://furkanefecancaglar.github.io/curve-covenant/?address=${launch.address}&network=${launch.network}`} target="_blank" rel="noreferrer">Open full report <ArrowUpRight size={14}/></a></div>}
+          {embed && <div className="embed-attribution"><span>Verified with Curve Covenant</span><a href={`https://furkanefecancaglar.github.io/curve-covenant/?view=inspector&address=${launch.address}&network=${launch.network}`} target="_blank" rel="noreferrer">Open full report <ArrowUpRight size={14}/></a></div>}
         </div>}
       </section>
 
       <section className="how-section" id="how-it-works"><div className="section-heading"><div><span className="section-kicker">03 / THE METHOD</span><h2>Trust is a process. Make it visible.</h2></div></div><div className="steps"><div><span className="step-num">01</span><div className="step-icon"><Search size={26}/></div><h3>Inspect</h3><p>Paste a DBC pool or config address. We decode the live Meteora account with the official SDK.</p><ChevronRight className="step-arrow" size={23}/></div><div><span className="step-num">02</span><div className="step-icon"><FileCheck2 size={26}/></div><h3>Declare</h3><p>Select the terms that matter. Export a portable covenant tied to that exact on-chain config.</p><ChevronRight className="step-arrow" size={23}/></div><div><span className="step-num">03</span><div className="step-icon"><ShieldCheck size={26}/></div><h3>Verify</h3><p>Anyone can import the covenant and check each promise against fresh chain data.</p></div></div></section>
-      <section className="video-section" id="videos"><div className="section-heading"><div><span className="section-kicker">04 / WATCH</span><h2>See the product in action.</h2></div></div><div className="video-grid"><article><video controls preload="metadata" src={`${import.meta.env.BASE_URL}demo.mp4`} aria-label="Curve Covenant product demo"/><h3>Product demo <span>2 min</span></h3><p>A live pool read, a buy scenario, covenant verification and an embeddable report.</p></article><article><video controls preload="metadata" src={`${import.meta.env.BASE_URL}pitch.mp4`} aria-label="Curve Covenant presentation"/><h3>Project presentation <span>2 min 9 sec</span></h3><p>Why DBC launches need portable, verifiable disclosures and how Curve Covenant fits into the ecosystem.</p></article></div></section>
     </main>
     <footer><div><div className="brand footer-brand"><div className="brand-icon"><Radar size={20}/></div><span>curve<span className="brand-accent">covenant</span></span></div><p>Open launch terms for open markets.</p></div><div className="footer-links"><a href="https://github.com/MeteoraAg/dynamic-bonding-curve-sdk" target="_blank" rel="noreferrer">Meteora SDK <ArrowUpRight size={14}/></a><a href="https://solana.com" target="_blank" rel="noreferrer">Solana <ArrowUpRight size={14}/></a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer">Source code <ArrowUpRight size={14}/></a></div><span className="footnote">Independent tool. Not affiliated with Meteora.</span></footer>
   </div>
 }
 
-export default App
+export default function App() {
+  return new URLSearchParams(window.location.search).get('view') === 'inspector' ? <Inspector/> : <Studio/>
+}
