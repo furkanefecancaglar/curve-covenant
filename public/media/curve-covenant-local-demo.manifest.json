@@ -1,0 +1,191 @@
+{
+  "recordedAt": "2026-09-26T02:26:00.677Z",
+  "network": "local-validator",
+  "syntheticStockBalance": true,
+  "signer": "local-test-interface",
+  "narration": "synthetic / en-US-AriaNeural",
+  "sourceCommit": "adfa412b7191b520a7d79e594b34745708509724",
+  "timeline": [
+    {
+      "id": "opening",
+      "title": "Measure the curve before launch",
+      "narration": "A smoother opening price can still give early buyers more tokens. Curve Covenant exposes both outcomes before launch. This recording uses a local validator, synthetic Xerox tokens, and a test signer.",
+      "start": 12.926171526000001,
+      "end": 27.947701731000002,
+      "duration": 15.021530205000001,
+      "actionSeconds": 0.023890772999997978,
+      "audioSeconds": 14.016
+    },
+    {
+      "id": "whale",
+      "title": "One benefit. One cost. Same starting conditions.",
+      "narration": "Both curves use the same supply, opening price, quote reserve threshold, and fee schedule. In this whale scenario, the long curve reduces the first price jump from three hundred eleven percent to two hundred thirty nine percent. But the early cohort receives two point five three percentage points more of total buy output. The ending prices also differ.",
+      "start": 27.949971097000002,
+      "end": 51.40270841000001,
+      "duration": 23.452737313000007,
+      "actionSeconds": 6.026169703000001,
+      "audioSeconds": 22.44
+    },
+    {
+      "id": "selling",
+      "title": "Selling changes the next trade",
+      "narration": "Switch to selling pressure. An opening buyer sells half their tokens, followed by retail buying. Every event updates price, reserves, fees, and inventory. The report measures buying needed to recover the pre sale price. Neither curve graduates here.",
+      "start": 51.404417769,
+      "end": 70.940705325,
+      "duration": 19.536287555999998,
+      "actionSeconds": 5.100359377000004,
+      "audioSeconds": 18.528
+    },
+    {
+      "id": "export",
+      "title": "Export the evidence. Keep the exact configuration.",
+      "narration": "Export the integer ledger as JSON, or download a visual summary. Select the long curve for launch. The exact compared configuration goes to the transaction builder. A versioned share link restores that same configuration.",
+      "start": 70.942961046,
+      "end": 87.455695801,
+      "duration": 16.51273475500001,
+      "actionSeconds": 4.381593887000008,
+      "audioSeconds": 15.504
+    },
+    {
+      "id": "launch",
+      "title": "Create the actual local pool",
+      "narration": "The sixteen segment configuration needs two transactions. The test signer confirms them, and the application reads the created pool. This verifies application wiring against a real local validator. It is not a Phantom extension or mainnet demonstration.",
+      "start": 87.45728404500001,
+      "end": 106.03820298100001,
+      "duration": 18.580918936000003,
+      "actionSeconds": 1.9676196220000008,
+      "audioSeconds": 17.568
+    },
+    {
+      "id": "buy",
+      "title": "Quote, buy, then read the balance",
+      "narration": "Read wallet balances, then request a small buy quote. Review the minimum output before signing. After confirmation, the application refreshes both balances from the token accounts used for trading.",
+      "start": 106.03988491000001,
+      "end": 120.407732114,
+      "duration": 14.367847203999986,
+      "actionSeconds": 3.586560392999985,
+      "audioSeconds": 13.368
+    },
+    {
+      "id": "sell",
+      "title": "Sell half. Check the actual change.",
+      "narration": "Sell half the tokens just received. The input uses base token precision, and the transaction enforces the displayed minimum quote output. Confirmation decreases the base balance and increases the quote balance.",
+      "start": 120.409237855,
+      "end": 135.57673348899996,
+      "duration": 15.167495633999962,
+      "actionSeconds": 2.726484745999997,
+      "audioSeconds": 14.16
+    },
+    {
+      "id": "graduate",
+      "title": "Cross the threshold and migrate",
+      "narration": "A further buy reaches the threshold with a partial fill. Migration creates the DAMM version two pool. The application verifies the destination and displays both vault balances. These are local transactions.",
+      "start": 135.57938735599998,
+      "end": 151.05185613199998,
+      "duration": 15.472468776,
+      "actionSeconds": 2.3085872469999913,
+      "audioSeconds": 14.472
+    },
+    {
+      "id": "proof",
+      "title": "Predictions checked against actual execution",
+      "narration": "Validation covered fifty six swaps across eight local pools: SOL and Xerox, both curves, fixed and declining fees. Predicted raw prices, reserves, fees, inventory, and quote transfers matched execution. Complete data and hashes are in the repository.",
+      "start": 151.062875443,
+      "end": 170.291707074,
+      "duration": 19.22883163099999,
+      "actionSeconds": 0.05566608399999495,
+      "audioSeconds": 18.216
+    },
+    {
+      "id": "close",
+      "title": "Measure. Choose. Launch. Verify.",
+      "narration": "These scenarios expose trade offs, not forecasts or a universal winner. External quote liquidity and stock price changes are not modeled. Public Phantom evidence and builder trials remain next. Explore the product and reproducible source.",
+      "start": 170.29319299099998,
+      "end": 187.859692498,
+      "duration": 17.566499507000003,
+      "actionSeconds": 0.008520695000015621,
+      "audioSeconds": 16.56
+    }
+  ],
+  "duration": 174.90735151699997,
+  "pool": "5FhyUMuFE6EwG5d8DWNLXDMLTisZ5YSUDLBC6KL4mWyx",
+  "comparedConfigMatchesChain": true,
+  "signCount": 6,
+  "receipts": [
+    {
+      "stage": "launch",
+      "signature": "5u1ihVyqFJC8YSge33tuKVs6uA2rpokzCAVuC6usBGRDjyngmThoRDS9RdXHKgBWnU3duEFKT8DVog7uifZAqwQd",
+      "slot": 5111,
+      "blockTime": 1790389452,
+      "feeLamports": 10000,
+      "error": null
+    },
+    {
+      "stage": "launch",
+      "signature": "4mtpYbYLSXWgQAdSiwDeWzSbk2qGcVi7gcqYdHJE3JHMgm69tCkd3KtSZLFLQeYh4tju5NZaFXHcTX4eBD3XdQzY",
+      "slot": 5112,
+      "blockTime": 1790389453,
+      "feeLamports": 10000,
+      "error": null
+    },
+    {
+      "stage": "buy",
+      "signature": "2mCXoZmhxk7KujwoSfjyT1AhWFT4S2Jp2Wo54vLxyoYXdTJPpftsw7SrJpo54aVdVuQKu7BvaaBY5UJ95jR589A7",
+      "slot": 5160,
+      "blockTime": 1790389473,
+      "feeLamports": 5000,
+      "error": null
+    },
+    {
+      "stage": "sell",
+      "signature": "4CRS9mPebWDjuDiRGCq3eLt938arfnfDLQBw8R72QWrJvuNUiC1xLnL66mqB8hVL4dZkR3yoVu5PNQEzkBYkexLb",
+      "slot": 5193,
+      "blockTime": 1790389487,
+      "feeLamports": 5000,
+      "error": null
+    },
+    {
+      "stage": "graduate",
+      "signature": "66NkhM8XTJmf5QvepJHzdns1j9KkMmjHA1CicKJ6ZEasvYzBKE4ZwLASoizristwELo6kboo6c2otxiCr2UnamFN",
+      "slot": 5225,
+      "blockTime": 1790389500,
+      "feeLamports": 5000,
+      "error": null
+    },
+    {
+      "stage": "graduate",
+      "signature": "3kpyEBbYWwN3joEF3mTwwRQUvx8s8Trpg4x2n9FXYPvWPSTDpWYhmj9PNYhrHLSBuWcz5mpCM4woU6Mc7HYh4amL",
+      "slot": 5228,
+      "blockTime": 1790389501,
+      "feeLamports": 15000,
+      "error": null
+    }
+  ],
+  "genesisHash": "HGZBG1ESa8meG2W1FTxMgwNbh9ZRV7ViLy8BdLhDeQt5",
+  "downloads": [
+    {
+      "name": "scenario-XRXx-whale.json",
+      "sha256": "72df1db79bd2a6d38cfd1df1d4bd8fa8a6cbed90feccf89098f97edc2426e907"
+    },
+    {
+      "name": "scenario-XRXx-whale.svg",
+      "sha256": "3d9516c3cfc9be572f261fb532348c1fe38f6a4e3b40e82522bd5b60327800ef"
+    },
+    {
+      "name": "dbc-xrxx-long-config.json",
+      "sha256": "b7ecf50ea9a7985bbc0a1c13c07c38db0958af658b05627d5002d2f8c492d94e"
+    }
+  ],
+  "pageErrors": [],
+  "artifact": "curve-covenant-local-demo.mp4",
+  "durationSeconds": 175.140708,
+  "width": 1920,
+  "height": 1080,
+  "narrationType": "synthetic",
+  "originalCaptureSha256": "64b400cc3dc8814f484c34859280fa3890d7826264c0b3e4d3be90089fbe16ac",
+  "slideHashes": {},
+  "videoSha256": "b149323e660f666e861993051f2e4d557c407965bbc18fd1820088d682a61ce1",
+  "scriptSha256": "16cbfd9318c91e68bd4d4a74dcb8b166647ee8b44fb023050847390cc9b9d1e4",
+  "subtitlesSha256": "f51027e52aeb08aa269959c0a7069f91c554a280fb59061fdc66eada422c07ab",
+  "editing": "Sequential normal-speed scene cuts; narration and captions added. Local environment banner persists."
+}

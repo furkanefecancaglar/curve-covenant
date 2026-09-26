@@ -1,0 +1,52 @@
+[
+  {
+    "id": "opening",
+    "title": "Measure the curve before launch",
+    "text": "A smoother opening price can still give early buyers more tokens. Curve Covenant exposes both outcomes before launch. This recording uses a local validator, synthetic Xerox tokens, and a test signer."
+  },
+  {
+    "id": "whale",
+    "title": "One benefit. One cost. Same starting conditions.",
+    "text": "Both curves use the same supply, opening price, quote reserve threshold, and fee schedule. In this whale scenario, the long curve reduces the first price jump from three hundred eleven percent to two hundred thirty nine percent. But the early cohort receives two point five three percentage points more of total buy output. The ending prices also differ."
+  },
+  {
+    "id": "selling",
+    "title": "Selling changes the next trade",
+    "text": "Switch to selling pressure. An opening buyer sells half their tokens, followed by retail buying. Every event updates price, reserves, fees, and inventory. The report measures buying needed to recover the pre sale price. Neither curve graduates here."
+  },
+  {
+    "id": "export",
+    "title": "Export the evidence. Keep the exact configuration.",
+    "text": "Export the integer ledger as JSON, or download a visual summary. Select the long curve for launch. The exact compared configuration goes to the transaction builder. A versioned share link restores that same configuration."
+  },
+  {
+    "id": "launch",
+    "title": "Create the actual local pool",
+    "text": "The sixteen segment configuration needs two transactions. The test signer confirms them, and the application reads the created pool. This verifies application wiring against a real local validator. It is not a Phantom extension or mainnet demonstration."
+  },
+  {
+    "id": "buy",
+    "title": "Quote, buy, then read the balance",
+    "text": "Read wallet balances, then request a small buy quote. Review the minimum output before signing. After confirmation, the application refreshes both balances from the token accounts used for trading."
+  },
+  {
+    "id": "sell",
+    "title": "Sell half. Check the actual change.",
+    "text": "Sell half the tokens just received. The input uses base token precision, and the transaction enforces the displayed minimum quote output. Confirmation decreases the base balance and increases the quote balance."
+  },
+  {
+    "id": "graduate",
+    "title": "Cross the threshold and migrate",
+    "text": "A further buy reaches the threshold with a partial fill. Migration creates the DAMM version two pool. The application verifies the destination and displays both vault balances. These are local transactions."
+  },
+  {
+    "id": "proof",
+    "title": "Predictions checked against actual execution",
+    "text": "Validation covered fifty six swaps across eight local pools: SOL and Xerox, both curves, fixed and declining fees. Predicted raw prices, reserves, fees, inventory, and quote transfers matched execution. Complete data and hashes are in the repository."
+  },
+  {
+    "id": "close",
+    "title": "Measure. Choose. Launch. Verify.",
+    "text": "These scenarios expose trade offs, not forecasts or a universal winner. External quote liquidity and stock price changes are not modeled. Public Phantom evidence and builder trials remain next. Explore the product and reproducible source."
+  }
+]

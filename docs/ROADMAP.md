@@ -27,7 +27,7 @@ Repeat through submission and after the hackathon while meaningful work remains.
 | 3 | Evidence-to-launch connection | Exact compared config → launch and versioned share link; browser XRXx flow; created on-chain parameters checked; hashed proof manifest | Complete locally; public Phantom evidence is gate 4 |
 | 4 | Public mainnet Phantom evidence | Actual confirmed create, buy and sell signatures for funded wallet; SOL and xStock scope clearly separated; migration if feasible | Pending: real wallet access, chosen spending budget and signatures |
 | 5 | Demand and differentiation | 3–5 real builder trials; dated feedback and observed decisions; competitor claims checked against current products | Pending: real participants; outreach requires user's explicit instruction |
-| 6 | Submission package | Current README, form-ready claim/evidence text, sample reports, pitch/demo scripts and builder-trial protocol | Text prepared; actual recordings, public transaction manifest and founder details pending |
+| 6 | Submission package | Current README, form-ready claim/evidence text, sample reports, pitch/demo scripts and builder-trial protocol | Text, narrated technical presentation and actual local demo prepared; public transaction manifest and founder details pending |
 | 7 | Submit and verify receipt | Colosseum + Meteora sidetrack receipts from actual accounts, deadline verified, all links usable | Pending: account access and submission details |
 | 8 | After submission | Fix observed issues, extend validated use cases, follow up with actual users, evidence-based product and revenue experiments | Continuous backlog |
 
@@ -59,4 +59,8 @@ Prepare the public-wallet evidence collector and budgeted launch review while wa
 
 Scenario implementation and local evidence shipped in `48e2380`. Unit checks: 45 passed. Offline scenario browser: all four schedules, exact config launch export/share restore, JSON/SVG exports and 390 px layout passed with zero public RPC requests. Full scenario-selected XRXx local browser lifecycle passed.
 
-Next independent work: produce the clearly labeled local demo recording and continue preparing the public-wallet transaction review once the wallet address arrives. Current documents: [submission](SUBMISSION.md), [demo script](DEMO-SCRIPT.md), [mainnet worksheet](MAINNET-EVIDENCE.md), [builder trial protocol](BUILDER-TRIALS.md). No outreach or external submission has been sent.
+Media milestone: the clearly labeled local demo and technical presentation are produced with captions and provenance; see [MEDIA.md](MEDIA.md). Next independent work: prepare a reusable public-wallet transaction preflight/evidence collector while waiting for the wallet address. Actual mainnet signatures, builder feedback and account submissions remain external dependencies. Current documents: [submission](SUBMISSION.md), [demo script](DEMO-SCRIPT.md), [mainnet worksheet](MAINNET-EVIDENCE.md), [builder trial protocol](BUILDER-TRIALS.md). No outreach or external submission has been sent.
+
+## Media checkpoint — 2026-09-26
+
+Narrated 1080p technical presentation (about 2:16) and actual local product demo (about 2:55) are available at `/demo.html`. Both have burned captions, downloadable SRTs and hash manifests. The demo records six confirmed local transactions and the pool `5FhyUMuFE6EwG5d8DWNLXDMLTisZ5YSUDLBC6KL4mWyx`; it uses synthetic XRXx and a local test signing interface. Full decode, audio presence, durations, Chromium playback and 390 px layout were checked. This closes the local-media deliverable, not the mainnet or user-demand gates.

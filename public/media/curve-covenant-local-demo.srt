@@ -1,0 +1,147 @@
+1
+00:00:00,100 --> 00:00:04,454
+A smoother opening price can still give early buyers more tokens.
+
+2
+00:00:04,404 --> 00:00:08,166
+Curve Covenant exposes both outcomes before launch.
+
+3
+00:00:08,166 --> 00:00:13,952
+This recording uses a local validator, synthetic Xerox tokens, and a test signer.
+
+4
+00:00:15,133 --> 00:00:21,225
+Both curves use the same supply, opening price, quote reserve threshold, and fee schedule.
+
+5
+00:00:21,175 --> 00:00:29,128
+In this whale scenario, the long curve reduces the first price jump from three hundred eleven percent to two hundred thirty nine percent.
+
+6
+00:00:29,128 --> 00:00:34,830
+But the early cohort receives two point five three percentage points more of total buy output.
+
+7
+00:00:34,830 --> 00:00:37,413
+The ending prices also differ.
+
+8
+00:00:38,600 --> 00:00:40,788
+Switch to selling pressure.
+
+9
+00:00:40,738 --> 00:00:45,452
+An opening buyer sells half their tokens, followed by retail buying.
+
+10
+00:00:45,452 --> 00:00:50,321
+Every event updates price, reserves, fees, and inventory.
+
+11
+00:00:50,321 --> 00:00:54,428
+The report measures buying needed to recover the pre sale price.
+
+12
+00:00:54,428 --> 00:00:56,964
+Neither curve graduates here.
+
+13
+00:00:58,166 --> 00:01:02,877
+Export the integer ledger as JSON, or download a visual summary.
+
+14
+00:01:02,827 --> 00:01:05,435
+Select the long curve for launch.
+
+15
+00:01:05,435 --> 00:01:09,768
+The exact compared configuration goes to the transaction builder.
+
+16
+00:01:09,768 --> 00:01:13,518
+A versioned share link restores that same configuration.
+
+17
+00:01:14,699 --> 00:01:18,946
+The sixteen segment configuration needs two transactions.
+
+18
+00:01:18,896 --> 00:01:23,694
+The test signer confirms them, and the application reads the created pool.
+
+19
+00:01:23,694 --> 00:01:28,229
+This verifies application wiring against a real local validator.
+
+20
+00:01:28,229 --> 00:01:32,099
+It is not a Phantom extension or mainnet demonstration.
+
+21
+00:01:33,299 --> 00:01:37,249
+Read wallet balances, then request a small buy quote.
+
+22
+00:01:37,199 --> 00:01:40,163
+Review the minimum output before signing.
+
+23
+00:01:40,163 --> 00:01:46,508
+After confirmation, the application refreshes both balances from the token accounts used for trading.
+
+24
+00:01:47,699 --> 00:01:50,518
+Sell half the tokens just received.
+
+25
+00:01:50,468 --> 00:01:56,991
+The input uses base token precision, and the transaction enforces the displayed minimum quote output.
+
+26
+00:01:56,991 --> 00:02:01,694
+Confirmation decreases the base balance and increases the quote balance.
+
+27
+00:02:02,898 --> 00:02:06,371
+A further buy reaches the threshold with a partial fill.
+
+28
+00:02:06,321 --> 00:02:09,667
+Migration creates the DAMM version two pool.
+
+29
+00:02:09,667 --> 00:02:14,714
+The application verifies the destination and displays both vault balances.
+
+30
+00:02:14,714 --> 00:02:17,214
+These are local transactions.
+
+31
+00:02:18,398 --> 00:02:26,669
+Validation covered fifty six swaps across eight local pools: SOL and Xerox, both curves, fixed and declining fees.
+
+32
+00:02:26,619 --> 00:02:33,178
+Predicted raw prices, reserves, fees, inventory, and quote transfers matched execution.
+
+33
+00:02:33,178 --> 00:02:36,464
+Complete data and hashes are in the repository.
+
+34
+00:02:37,631 --> 00:02:42,795
+These scenarios expose trade offs, not forecasts or a universal winner.
+
+35
+00:02:42,745 --> 00:02:47,042
+External quote liquidity and stock price changes are not modeled.
+
+36
+00:02:47,042 --> 00:02:50,804
+Public Phantom evidence and builder trials remain next.
+
+37
+00:02:50,804 --> 00:02:54,042
+Explore the product and reproducible source.

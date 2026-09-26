@@ -1,0 +1,91 @@
+1
+00:00:00,100 --> 00:00:06,133
+Curve Covenant helps a launch creator choose a bonding curve before deploying an xStock paired token.
+
+2
+00:00:06,083 --> 00:00:14,916
+The product starts with a concrete decision: should a creator prioritize a smaller opening price jump, or a lower share of tokens going to early buyers?
+
+3
+00:00:14,916 --> 00:00:17,511
+Those outcomes can conflict.
+
+4
+00:00:17,511 --> 00:00:23,464
+Our initial customer hypothesis is launchpad teams and creators who need to review that choice.
+
+5
+00:00:24,633 --> 00:00:32,987
+Under an identical whale schedule, the long curve reduces the first price jump from three hundred eleven percent to two hundred thirty nine percent.
+
+6
+00:00:32,937 --> 00:00:38,390
+But early buyers receive two point five three percentage points more of gross buy output.
+
+7
+00:00:38,390 --> 00:00:41,592
+The long curve also ends at a higher price.
+
+8
+00:00:41,592 --> 00:00:44,568
+We show the cost alongside the benefit.
+
+9
+00:00:44,568 --> 00:00:49,723
+This is a hypothetical result, not a promise of fairness or market performance.
+
+10
+00:00:50,881 --> 00:00:56,473
+The product runs retail, whale, selling pressure, and graduation scenarios.
+
+11
+00:00:56,423 --> 00:01:02,269
+Every transaction updates the next state, and sellers cannot sell tokens they do not hold.
+
+12
+00:01:02,269 --> 00:01:09,459
+Builders inspect price paths, fees, costs, and reserves, then export the ledger or a visual report.
+
+13
+00:01:09,459 --> 00:01:15,602
+The exact compared configuration can be passed to a wallet based launch and restored from a share link.
+
+14
+00:01:16,769 --> 00:01:21,409
+Meteora DBC supplies the quote math and launch transactions.
+
+15
+00:01:21,359 --> 00:01:27,788
+We independently checked the scenario state against fifty six executed swaps across eight local pools.
+
+16
+00:01:27,788 --> 00:01:33,704
+Prices, reserves, fees, balances, and transfers matched in integer units.
+
+17
+00:01:33,704 --> 00:01:40,597
+The browser flow also created, bought, sold, refreshed balances, and graduated to DAMM version two.
+
+18
+00:01:40,597 --> 00:01:46,847
+Public Phantom execution remains unverified; the stock balances in these tests are synthetic.
+
+19
+00:01:48,009 --> 00:01:55,161
+The next distribution experiment is three to five observed trials with real launch creators or launchpad developers.
+
+20
+00:01:55,111 --> 00:01:59,349
+We will measure whether a report changes their configuration decision.
+
+21
+00:01:59,349 --> 00:02:03,599
+No adoption, revenue, or testimonials are claimed yet.
+
+22
+00:02:03,599 --> 00:02:10,563
+If teams need the comparison inside their own launchpad, an embeddable module is the next product hypothesis.
+
+23
+00:02:10,563 --> 00:02:15,218
+Public wallet evidence and those user trials are the immediate priorities.

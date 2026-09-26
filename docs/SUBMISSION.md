@@ -58,6 +58,7 @@ Potential next steps depend on those trials: reusable validated presets, an embe
 ## Links ready today
 
 - Live: https://furkanefecancaglar.github.io/curve-covenant/
+- Pitch and clearly labeled local product demo: https://furkanefecancaglar.github.io/curve-covenant/demo.html
 - Source: https://github.com/furkanefecancaglar/curve-covenant
 - Method and local proof: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/SCENARIO-METHOD.md
 - Whale JSON: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/evidence/scenarios/whale.json
@@ -66,7 +67,7 @@ Potential next steps depend on those trials: reusable validated presets, an embe
 
 ## Outstanding submission fields
 
-Founder/team biography and contact/X details must come from the actual participants. Pitch and demo video URLs, public mainnet transaction URLs, user-validation evidence and portal receipt URLs are not yet available. The previous inspector-only videos were removed and must not be reused as a demo of this version.
+Founder/team biography and contact/X details must come from the actual participants. A 2:16 technical pitch and 2:55 local-validator product demo are available with synthetic narration, captions and provenance. Public mainnet transaction URLs, real user-validation evidence and portal receipt URLs are not yet available. The technical pitch does not substitute for actual founder/team details. The previous inspector-only videos were removed and must not be reused as a demo of this version.
 
 ## Deadlines and submission status
 

@@ -2,7 +2,7 @@
 
 **Measure curve trade-offs for xStock-paired DBC launches, then launch the configuration you chose.**
 
-[Live product](https://furkanefecancaglar.github.io/curve-covenant/) · [Live DBC inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) · [Competition track](https://superteam.fun/earn/listing/meteora-dbc)
+[Live product](https://furkanefecancaglar.github.io/curve-covenant/) · [Pitch & local demo](https://furkanefecancaglar.github.io/curve-covenant/demo.html) · [Live DBC inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) · [Competition track](https://superteam.fun/earn/listing/meteora-dbc)
 
 Meteora DBC supports stock tokens as quote assets. Pair Launch lets a builder select an issuer-listed xStock, choose a launch curve, simulate a hypothetical early buy with the official DBC quote math, and build wallet-confirmed transactions that create the DBC config, SPL token mint and virtual pool. A SOL/devnet option lets builders rehearse the same flow without mainnet funds. The graduation panel reads live DBC reserve progress, builds the DAMM v2 migration transaction, and verifies the destination pool and its vault balances. Complete SOL and XRXx long-curve launch → buy → DAMM v2 graduation have been confirmed on a local validator; no public network graduation is claimed.
 
@@ -66,7 +66,7 @@ The included `scripts/devnet-probe.ts` demonstrates a standalone ephemeral-keypa
 
 ## Competition status
 
-The [readiness file](docs/SUBMISSION.md) maps the product to Meteora and Colosseum criteria. It documents the remaining public wallet launch proof, user validation, stock-token migration testing, and new presentation/demo work. The previous inspector-only videos and deck were removed. No Colosseum or Superteam submission and no prize are claimed.
+The [readiness file](docs/SUBMISSION.md) maps the product to Meteora and Colosseum criteria. It documents the remaining public wallet launch proof, user validation, stock-token migration testing, and new presentation/demo work. A narrated technical presentation and actual local-validator product demo are available on the [video page](https://furkanefecancaglar.github.io/curve-covenant/demo.html), with captions and provenance. The previous inspector-only videos and deck were removed. No Colosseum or Superteam submission and no prize are claimed.
 
 ## Sources
 

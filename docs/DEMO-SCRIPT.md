@@ -1,6 +1,6 @@
 # Pitch and demo production sheet
 
-Status: script ready; recordings not yet produced. Every recorded environment must remain visibly labeled. Local-validator transactions must never be described as mainnet.
+Status: narrated technical presentation and local product demo produced; see [media artifacts and reproduction](MEDIA.md). The final narration is stored in `demo-scenes.json` and `pitch-scenes.json`. The outline below guided production; it is not a literal frame timestamp index. Every recorded environment must remain visibly labeled. Local-validator transactions must never be described as mainnet.
 
 ## Product demo — target 2:45
 

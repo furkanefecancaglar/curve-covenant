@@ -133,7 +133,7 @@ export default function Studio() {
         <div className="studio-hero-content"><div className="studio-eyebrow"><span/> STOCK-QUOTED LAUNCHES · METEORA DBC</div>
           <h1>Measure the curve.<br/><em>Then launch.</em></h1>
           <p>Compare xStock-paired DBC curves under sequential buys, early whale pressure and selling. Inspect the trade-offs, export the evidence, then launch the configuration you chose. Rehearse with SOL on devnet.</p>
-          <div className="studio-hero-actions"><a className="studio-main-btn" href="#scenarios">Compare scenarios <ArrowRight size={18}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}?view=inspector`}>Inspect a live DBC pool <ExternalLink size={15}/></a></div>
+          <div className="studio-hero-actions"><a className="studio-main-btn" href="#scenarios">Compare scenarios <ArrowRight size={18}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}demo.html`}>Watch pitch & demo <ExternalLink size={15}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}?view=inspector`}>Inspect a live DBC pool <ExternalLink size={15}/></a></div>
           <div className="studio-hero-proof"><span><CheckCircle2 size={15}/> Issuer-listed quote mints</span><span><CheckCircle2 size={15}/> Meteora DBC + DAMM v2</span><span><CheckCircle2 size={15}/> SDK quote simulation</span></div>
         </div>
         <div className="studio-diagram" aria-hidden="true"><div className="diagram-node">01<span>Pick a stock quote</span></div><div className="diagram-line"/><div className="diagram-node">02<span>Launch on DBC</span></div><div className="diagram-line"/><div className="diagram-node">03<span>Graduate to DAMM v2</span></div></div>
