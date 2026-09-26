@@ -61,7 +61,7 @@ export function formatUnits(raw: string, decimals: number): string {
 export function parseUnits(input: string, decimals: number): string {
   if (!/^\d+(\.\d+)?$/.test(input.trim())) throw new Error('Enter a positive decimal amount.')
   const [whole, fraction = ''] = input.trim().split('.')
-  if (fraction.length > decimals) throw new Error(`This quote asset supports at most ${decimals} decimal places.`)
+  if (fraction.length > decimals) throw new Error(`This asset supports at most ${decimals} decimal places.`)
   const raw = BigInt(whole) * 10n ** BigInt(decimals) + BigInt((fraction || '0').padEnd(decimals, '0'))
   if (raw <= 0n) throw new Error('Amount must be greater than zero.')
   if (raw > 18446744073709551615n) throw new Error('Amount exceeds the DBC input limit.')
@@ -82,10 +82,17 @@ export type BuyQuote = {
   fetchedAt: string
 }
 
-export async function quoteBuy(launch: LaunchData, amount: string, endpoint = RPC[launch.network]): Promise<BuyQuote> {
+export type TradeSide = 'buy' | 'sell'
+export type SwapQuote = {
+  side: TradeSide; input: string; inputDecimals: number; outputDecimals: number
+  inputSymbol: string; outputSymbol: string; estimatedOutput: string; minimumOutput: string
+  tradingFee: string; protocolFee: string; feeAsset: string; unfilledInput: string
+  slippageBps: number; fetchedAt: string
+}
+
+export async function quoteSwap(launch: LaunchData, amount: string, side: TradeSide, endpoint = RPC[launch.network]): Promise<SwapQuote> {
   if (!launch.poolAddress || !launch.baseMint) throw new Error('A live pool is required to quote a trade.')
   if (launch.migrated) throw new Error('This pool has migrated; DBC quotes no longer apply.')
-  const amountRaw = parseUnits(amount, launch.quoteDecimals)
   const connection = new Connection(endpoint, 'confirmed')
   const client = DynamicBondingCurveClient.create(connection, 'confirmed')
   const pool = await client.state.getPool(launch.poolAddress)
@@ -93,25 +100,39 @@ export async function quoteBuy(launch: LaunchData, amount: string, endpoint = RP
   const config = await client.state.getPoolConfig(pool.poolState.config)
   if (!config) throw new Error('Pool config could not be read.')
   const baseDecimals = await decimalsFor(connection, new PublicKey(launch.baseMint))
+  const selling = side === 'sell'
+  const inputDecimals = selling ? baseDecimals : launch.quoteDecimals
+  const outputDecimals = selling ? launch.quoteDecimals : baseDecimals
   const currentPoint = await getCurrentPoint(connection, config.activationType)
   const slippageBps = 100
   const quote = client.pool.swapQuote2({
-    virtualPool: pool, config, swapBaseForQuote: false, swapMode: SwapMode.PartialFill,
-    amountIn: new BN(amountRaw), hasReferral: false, eligibleForFirstSwapWithMinFee: false,
+    virtualPool: pool, config, swapBaseForQuote: selling, swapMode: SwapMode.PartialFill,
+    amountIn: new BN(parseUnits(amount, inputDecimals)), hasReferral: false, eligibleForFirstSwapWithMinFee: false,
     currentPoint, slippageBps,
   })
-  const feeInBase = config.collectFeeMode === 1
+  // Both fee modes collect quote tokens on sells. Only output-fee buys collect base.
+  const feeInBase = !selling && config.collectFeeMode === 1
   return {
-    input: amount, quoteSymbol: launch.quoteSymbol,
-    estimatedTokens: formatUnits(quote.outputAmount.toString(), baseDecimals),
-    minimumTokens: formatUnits(quote.minimumAmountOut!.toString(), baseDecimals),
-    baseDecimals,
+    side, input: amount, inputDecimals, outputDecimals,
+    inputSymbol: selling ? 'base tokens' : launch.quoteSymbol,
+    outputSymbol: selling ? launch.quoteSymbol : 'base tokens',
+    estimatedOutput: formatUnits(quote.outputAmount.toString(), outputDecimals),
+    minimumOutput: formatUnits(quote.minimumAmountOut!.toString(), outputDecimals),
     tradingFee: formatUnits(quote.tradingFee.toString(), feeInBase ? baseDecimals : launch.quoteDecimals),
     protocolFee: formatUnits(quote.protocolFee.toString(), feeInBase ? baseDecimals : launch.quoteDecimals),
     feeAsset: feeInBase ? 'base tokens' : launch.quoteSymbol,
-    unfilledInput: formatUnits(quote.amountLeft.toString(), launch.quoteDecimals),
+    unfilledInput: formatUnits(quote.amountLeft.toString(), inputDecimals),
     slippageBps, fetchedAt: new Date().toISOString(),
   }
+}
+
+// Keep the inspector's buy-only report contract stable.
+export async function quoteBuy(launch: LaunchData, amount: string, endpoint = RPC[launch.network]): Promise<BuyQuote> {
+  const quote = await quoteSwap(launch, amount, 'buy', endpoint)
+  return { input: quote.input, quoteSymbol: quote.inputSymbol, estimatedTokens: quote.estimatedOutput,
+    minimumTokens: quote.minimumOutput, baseDecimals: quote.outputDecimals,
+    tradingFee: quote.tradingFee, protocolFee: quote.protocolFee, feeAsset: quote.feeAsset,
+    unfilledInput: quote.unfilledInput, slippageBps: quote.slippageBps, fetchedAt: quote.fetchedAt }
 }
 
 export function toPlain(value: unknown): unknown {
@@ -141,7 +162,7 @@ async function decimalsFor(connection: Connection, mint: PublicKey): Promise<num
     const decimals = (data.parsed as { info?: { decimals?: number } }).info?.decimals
     if (typeof decimals === 'number') return decimals
   }
-  throw new Error('Quote mint decimals could not be verified from chain.')
+  throw new Error('Token mint decimals could not be verified from chain.')
 }
 
 function symbolFor(mint: string): string {

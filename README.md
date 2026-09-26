@@ -20,7 +20,7 @@ The xStock catalog currently includes XRXx, FLNCx, QUBTx and AIx. Their mint add
 2. Choose a curve model and edit supply, opening/graduation market caps in quote units, fee schedule, creator share and permanent liquidity lock.
 3. Read the SDK-derived graduation quote threshold and simulate a hypothetical buy before a pool exists. Compare three curve shapes side by side under the same supply, market caps and fee schedule, including average execution cost relative to the opening price, leftover allocation and unfilled input. Export the exact SDK config JSON or copy a share link that recreates the quote asset and all edited terms.
 4. Provide token name, symbol and an HTTPS metadata JSON URL. The devnet form includes a clearly labeled CCDEMO example hosted in this repo; replace it with matching metadata for your own token. The SDK creates config + token mint + DBC virtual pool, using two wallet approvals when the curve exceeds a single transaction. An unfinished second step can be resumed in the same tab. The app checks for both new accounts and links to the explorer.
-5. The new pool is filled into the graduation panel automatically; you can also paste an existing DBC pool. Read reserve progress, get a live buy quote with a 1% minimum-output bound, and confirm the buy with your wallet. When the threshold is reached, submit migration and inspect DAMM v2 vault balances.
+5. The new pool is filled into the graduation panel automatically; you can also paste an existing DBC pool. Read reserve progress, connect your wallet to inspect base-token, quote-token and SOL balances, then get a live buy or sell quote with a 1% minimum-output bound. Confirm the trade with your wallet; balances refresh after confirmation. Token balances reflect the associated accounts used by the swap, and SOL quotes use the native SOL balance. When the threshold is reached, submit migration and inspect DAMM v2 vault balances.
 6. Created and inspected pools are remembered in this browser (up to 30 public-address bookmarks). Reopen one after a page reload or share a direct pool link with its network. Chain state is fetched again when opened.
 7. Use the [companion inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) to read real reserve progress and terms from an existing DBC pool. The inspector also supports a swap quote, embeddable report, and signed disclosure comparison.
 
@@ -42,7 +42,8 @@ Key files:
 
 - [`src/studio.ts`](src/studio.ts) — four DBC curve/fee designs, SDK validation and pre-launch quote simulation.
 - [`src/quotes.ts`](src/quotes.ts) — issuer-listed xStock mints, mint precision and DBC token badge verification.
-- [`src/trade.ts`](src/trade.ts) — live buy preview, quote expiry, and wallet-signed partial-fill swaps with minimum output enforcement.
+- [`src/trade.ts`](src/trade.ts) — live buy/sell previews, quote expiry, and wallet-signed partial-fill swaps with minimum output enforcement.
+- [`src/balances.ts`](src/balances.ts) — exact associated-account balances for SPL Token/Token-2022 and native SOL.
 - [`src/lifecycle.ts`](src/lifecycle.ts) — DBC reserve progress, DAMM v2 migration, destination verification and vault reads.
 - [`src/CurveChart.tsx`](src/CurveChart.tsx) — interactive curve visualization from 33 SDK-calculated points.
 - [`src/publish.ts`](src/publish.ts) — Phantom-signed config or combined config + pool creation.

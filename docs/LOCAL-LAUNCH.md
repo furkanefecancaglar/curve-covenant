@@ -65,7 +65,7 @@ Run the local validator, then start the app with `npm run dev -- --port 4175`. I
 CHROMIUM_PATH=/path/to/chromium node scripts/browser-local-flow.mjs
 ```
 
-This reproducible test creates a SOL pool through the real form, checks that the pool address transfers into the graduation panel, asks for a 3 SOL buy quote, signs the swap with its displayed minimum output, waits for the graduation threshold, signs the migration, and checks that the resulting vault balances are displayed without browser exceptions. All RPC requests are routed to localhost, and the signing interface uses an ephemeral local test key.
+This reproducible test creates a SOL pool through the real form, checks that the pool address transfers into the graduation panel, connects for wallet balances, buys with 0.1 SOL, sells half the received base tokens with exact decimal precision, verifies both balances refresh and the mobile layout fits, then buys with a 3 SOL budget to reach the graduation threshold, signs the migration, and checks that the resulting vault balances are displayed without browser exceptions. All HTTP RPC requests and WebSocket subscriptions are routed to localhost, and the signing interface uses an ephemeral local test key. The script funds the DBC migration authority from the local faucet for destination account rent; it can run directly on a fresh validator without first running the command-line lifecycle probe.
 
 Observed local DBC pool: `5Vk6KfLEH4WDmdCQBVQnkM3uJaaqtvgfVtkrrKzhrtCa`. Observed local DAMM v2 pool: `DGdSsFgVawb8c6SaDZi3RYkojxF5DyZ2sDqjKhUVYE5v`. All stages passed.
 
@@ -111,3 +111,18 @@ Observed full browser result, using the synthetic local balance:
 - Destination terms displayed: 1% initial base fee plus dynamic fee.
 
 The public-network labels in this isolated browser test are intercepted to localhost. This is local integration evidence, not mainnet usage or Phantom extension certification. Issuer changes to mint controls after the snapshot are not covered.
+
+## Buy/sell and wallet balance regression (2026-09-26)
+
+The browser lifecycle test now reads the trading wallet's associated token accounts, buys a small amount, sells half the received base tokens, and checks the exact remaining base balance and quote-balance changes. It also checks the 390 px layout, clears a reviewed quote when changing trade direction, buys to graduation and verifies the destination vaults. Both native SOL and Token-2022 XRXx use the same product code; the XRXx balance remains synthetic and local.
+
+A fresh-validator run exposed two dependencies in the older test harness: destination rent required funding the DBC migration authority, and confirmation subscriptions still pointed to public WebSocket endpoints. The browser test now funds that authority from the local faucet and redirects those subscriptions alongside HTTP RPC traffic.
+
+Observed passing pools in this regression:
+
+| Quote | DBC pool | DAMM v2 pool | Signing attempts |
+| --- | --- | --- | --- |
+| SOL | `YKbgBctzhcofKGWurjqSmyR8aKrSf9Zj7odJE7bDn9c` | `ABBXmerULWRZPYu3gYaMGwy4Tx9pbqv63HHTjRzw2f9X` | 5 |
+| XRXx long curve | `H5hFRKmhQjjSc3LpnQjjnL5j1RqkSoZkUxxA26NPRfMs` | `xJMJi59jaWnhpofgWGVSKHgZ5Zu3q8WC3R3RMrM5QMr` | 7, including the deliberately declined second approval |
+
+Both completed without browser exceptions. These addresses are local-validator evidence only. Unit checks additionally cover sell precision, exact minimum-output transaction construction, quote expiry after wallet connection, large integer balances, missing associated accounts and RPC failures. All 30 tests and the production build passed.
