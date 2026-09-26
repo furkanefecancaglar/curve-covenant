@@ -1,0 +1,3509 @@
+{
+  "format": "curve-covenant/scenario-chain-proof-v1",
+  "network": "local-validator",
+  "generatedAt": "2026-09-26T01:54:17.269Z",
+  "sdkVersion": "1.5.13",
+  "syntheticStockBalance": true,
+  "results": [
+    {
+      "quote": "SOL",
+      "decimals": 9,
+      "curve": "steady",
+      "feeSchedule": "fixed",
+      "pool": "4SbMsj5UtLVziTbaHsLRcHvcnvou8uk3LiBQgxDhtMvx",
+      "config": "329q4CKDaLV3wQejyGs2y6NfiYPDjwcoF3BSaeTm9HMa",
+      "launchSignatures": [
+        "2VjzMDWPnqG7qWewD1Nfsibx23Dw7HaxFahhB1DmEuSuRZkJ9HWA7EQkgCXTmhtkyxPaQwKewLh8PKjQH2vNG8A2"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "10000000",
+            "firstFactor": 0,
+            "secondFactor": "0",
+            "thirdFactor": "0",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "activationType": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "migrationQuoteThreshold": "2402506708",
+        "sqrtStartPrice": "18446744073709551",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "tokenUpdateAuthority": 1,
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "58333726687135153",
+            "liquidity": "20496178255995477981701555154820"
+          },
+          {
+            "sqrtPrice": "79226673521066979257578248091",
+            "liquidity": "3263084253509973059874922"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "signature": "5cqTv75xo7B7Fe5qhkGpKwyGi2fPDntPoT1fpGoxmF6RhXtWeCrXcgcEGhB7kKHJfdhSvtU4ZJtpBhVfNMgfTpmg",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0,
+            "index": 0,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "90900669698414",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "18446744073709551",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20090365333459212",
+              "baseReserveRaw": "909099330301586",
+              "quoteReserveRaw": "99000000",
+              "feeQuoteRaw": "1000000",
+              "completed": false
+            },
+            "spotPrice": 1.1861407421256058e-9,
+            "averageCost": 1.1001019060890898e-9,
+            "actorBaseRaw": "90900669698414"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20090365333459212",
+            "baseReserveRaw": "909099330301586",
+            "quoteReserveRaw": "99000000",
+            "feeQuoteRaw": "1000000",
+            "baseBalance": "90900669698414"
+          }
+        },
+        {
+          "signature": "WuQ72NMgRZX1riqcAdTV5YBftSmt2uUCKqURvd5ZgdewfKCeybLSTL52m6xaQUEvfVNf4tBuynAVQZDSp5J34VY",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "77152039404468",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "20090365333459212",
+              "baseReserveRaw": "909099330301586",
+              "quoteReserveRaw": "99000000",
+              "feeQuoteRaw": "1000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "21733986593208873",
+              "baseReserveRaw": "831947290897118",
+              "quoteReserveRaw": "198000000",
+              "feeQuoteRaw": "2000000",
+              "completed": false
+            },
+            "spotPrice": 1.388159420389635e-9,
+            "averageCost": 1.2961420173970003e-9,
+            "actorBaseRaw": "168052709102882"
+          },
+          "actual": {
+            "sqrtPriceRaw": "21733986593208873",
+            "baseReserveRaw": "831947290897118",
+            "quoteReserveRaw": "198000000",
+            "feeQuoteRaw": "2000000",
+            "baseBalance": "168052709102882"
+          }
+        },
+        {
+          "signature": "5QGDuiSPvNWnTjjsP2jwAs92W2LMap8ks6gpqKbBvqNCEDKiWU8Lou5pE3jQ8b8i7auN75y7fUVPb3oZ3KjTJVqv",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "84026354551441",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "84026354551441",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "84026354551441",
+            "unfilledInputRaw": "0",
+            "outputRaw": "106028336",
+            "tradingFeeRaw": "856796",
+            "protocolFeeRaw": "214198",
+            "before": {
+              "sqrtPriceRaw": "21733986593208873",
+              "baseReserveRaw": "831947290897118",
+              "quoteReserveRaw": "198000000",
+              "feeQuoteRaw": "2000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19955898348879211",
+              "baseReserveRaw": "915973645448559",
+              "quoteReserveRaw": "90900670",
+              "feeQuoteRaw": "3070994",
+              "completed": false
+            },
+            "spotPrice": 1.170315942357739e-9,
+            "averageCost": 1.2618461977318006e-9,
+            "actorBaseRaw": "84026354551441"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19955898348879211",
+            "baseReserveRaw": "915973645448559",
+            "quoteReserveRaw": "90900670",
+            "feeQuoteRaw": "3070994",
+            "baseBalance": "84026354551441"
+          }
+        },
+        {
+          "signature": "4MBgsnNUJKhzsUHbPR4H77ka2C7iXpm2acLtwECV5Z2gCFrEvoUVqosCyaxbCaT8uoszjbUgf6q59GkPLGK4KGsQ",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2,
+            "index": 3,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "78155449341699",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "19955898348879211",
+              "baseReserveRaw": "915973645448559",
+              "quoteReserveRaw": "90900670",
+              "feeQuoteRaw": "3070994",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "21599519608628872",
+              "baseReserveRaw": "837818196106860",
+              "quoteReserveRaw": "189900670",
+              "feeQuoteRaw": "4070994",
+              "completed": false
+            },
+            "spotPrice": 1.3710356241642675e-9,
+            "averageCost": 1.2795013123499e-9,
+            "actorBaseRaw": "162181803893140"
+          },
+          "actual": {
+            "sqrtPriceRaw": "21599519608628872",
+            "baseReserveRaw": "837818196106860",
+            "quoteReserveRaw": "189900670",
+            "feeQuoteRaw": "4070994",
+            "baseBalance": "162181803893140"
+          }
+        },
+        {
+          "signature": "ggWw3G7BGb2aGvcqeh1geUP9VH2NHsRKB9CZG8RNHBYfUdA241JtKR91ijrbgi2ck2VrgrPRENhQ5ME73fUrL4F",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "54060601297713",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "54060601297713",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "54060601297713",
+            "unfilledInputRaw": "0",
+            "outputRaw": "69422752",
+            "tradingFeeRaw": "560992",
+            "protocolFeeRaw": "140248",
+            "before": {
+              "sqrtPriceRaw": "21599519608628872",
+              "baseReserveRaw": "837818196106860",
+              "quoteReserveRaw": "189900670",
+              "feeQuoteRaw": "4070994",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20435304609254811",
+              "baseReserveRaw": "891878797404573",
+              "quoteReserveRaw": "119776678",
+              "feeQuoteRaw": "4772234",
+              "completed": false
+            },
+            "spotPrice": 1.2272210230924394e-9,
+            "averageCost": 1.2841653687440005e-9,
+            "actorBaseRaw": "108121202595427"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20435304609254811",
+            "baseReserveRaw": "891878797404573",
+            "quoteReserveRaw": "119776678",
+            "feeQuoteRaw": "4772234",
+            "baseBalance": "108121202595427"
+          }
+        },
+        {
+          "signature": "5HZxCZ3s4PaM2prnmprr49g4vt5p5YVbEij8CA2qfELkrHpAQN9k2nJCFQUFnZ4Qb4JXAVbjSwSDBYYpqzf7zCAp",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2,
+            "index": 5,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "74664744374905",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "20435304609254811",
+              "baseReserveRaw": "891878797404573",
+              "quoteReserveRaw": "119776678",
+              "feeQuoteRaw": "4772234",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "22078925869004472",
+              "baseReserveRaw": "817214053029668",
+              "quoteReserveRaw": "218776678",
+              "feeQuoteRaw": "5772234",
+              "completed": false
+            },
+            "spotPrice": 1.432571931187537e-9,
+            "averageCost": 1.3393201950559445e-9,
+            "actorBaseRaw": "182785946970332"
+          },
+          "actual": {
+            "sqrtPriceRaw": "22078925869004472",
+            "baseReserveRaw": "817214053029668",
+            "quoteReserveRaw": "218776678",
+            "feeQuoteRaw": "5772234",
+            "baseBalance": "182785946970332"
+          }
+        },
+        {
+          "signature": "3G1k1jWYA4qDEB13N4xNC8bL9eiRzShsDQm1imTpyu4GNqZw8Qm7B4jDRDS6mAwds1iYFcZywJ6BgUfB8bC6mymf",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "2205787911",
+            "unfilledInputRaw": "5001732213",
+            "outputRaw": "576953405395967",
+            "tradingFeeRaw": "17646304",
+            "protocolFeeRaw": "4411576",
+            "before": {
+              "sqrtPriceRaw": "22078925869004472",
+              "baseReserveRaw": "817214053029668",
+              "quoteReserveRaw": "218776678",
+              "feeQuoteRaw": "5772234",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "58333724901588058",
+              "baseReserveRaw": "240260647633701",
+              "quoteReserveRaw": "2402506709",
+              "feeQuoteRaw": "27830114",
+              "completed": true
+            },
+            "spotPrice": 9.99999938781656e-9,
+            "averageCost": 3.823164731103637e-9,
+            "actorBaseRaw": "759739352366299"
+          },
+          "actual": {
+            "sqrtPriceRaw": "58333724901588058",
+            "baseReserveRaw": "240260647633701",
+            "quoteReserveRaw": "2402506709",
+            "feeQuoteRaw": "27830114",
+            "baseBalance": "759739352366299"
+          }
+        }
+      ]
+    },
+    {
+      "quote": "SOL",
+      "decimals": 9,
+      "curve": "long",
+      "feeSchedule": "fixed",
+      "pool": "2gR5r8YRPpQrAEYCfFAyTuu8F582BFvnE663e82AhNfp",
+      "config": "6JHxor5SfwQ6TByR1oqaeLEpPY2sANxsGnQPUL56i5sS",
+      "launchSignatures": [
+        "2kmXcxwJxtEwUjGDfG5k6oTV2Uosig2itywqKZ9WzCptDVs4aSCY81v9V5rMjgGNF4peseTGbEJxnz9XN4fisd3j",
+        "5JtQdLei9xkjBkmFid5pfgWKFqy4dtBLwzP3UJsjEyZRYEbNuJ8WzpYujPiqQvHLcnAr7BCJtf3qLKBUUd16QT9j"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "10000000",
+            "firstFactor": 0,
+            "secondFactor": "0",
+            "thirdFactor": "0",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "activationType": 1,
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "migrationQuoteThreshold": "2402506708",
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "sqrtStartPrice": "18446744073709551",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "20099635904007512",
+            "liquidity": "28746478563247203904000000000000"
+          },
+          {
+            "sqrtPrice": "21900632537611087",
+            "liquidity": "28746478563247203904000000000000"
+          },
+          {
+            "sqrtPrice": "23863004675215941",
+            "liquidity": "28746478563247203904000000000000"
+          },
+          {
+            "sqrtPrice": "26001212118026454",
+            "liquidity": "25153168742841303416000000000000"
+          },
+          {
+            "sqrtPrice": "28331010315258546",
+            "liquidity": "25153168742841303416000000000000"
+          },
+          {
+            "sqrtPrice": "30869566458665875",
+            "liquidity": "21559858922435402928000000000000"
+          },
+          {
+            "sqrtPrice": "33635585979535615",
+            "liquidity": "21559858922435402928000000000000"
+          },
+          {
+            "sqrtPrice": "36649450380250911",
+            "liquidity": "17966549102029502440000000000000"
+          },
+          {
+            "sqrtPrice": "39933367416036262",
+            "liquidity": "17966549102029502440000000000000"
+          },
+          {
+            "sqrtPrice": "43511534733504757",
+            "liquidity": "14373239281623601952000000000000"
+          },
+          {
+            "sqrtPrice": "47410318171782994",
+            "liquidity": "14373239281623601952000000000000"
+          },
+          {
+            "sqrtPrice": "51658446040031152",
+            "liquidity": "10779929461217701464000000000000"
+          },
+          {
+            "sqrtPrice": "56287220802898283",
+            "liquidity": "10779929461217701464000000000000"
+          },
+          {
+            "sqrtPrice": "61330749733723788",
+            "liquidity": "7186619640811800975900000000000"
+          },
+          {
+            "sqrtPrice": "66826196235060503",
+            "liquidity": "7186619640811800975900000000000"
+          },
+          {
+            "sqrtPrice": "72814053678382635",
+            "liquidity": "7186619640811800975900000000000"
+          }
+        ],
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "tokenUpdateAuthority": 1
+      },
+      "checks": [
+        {
+          "signature": "4R6ymX5DL47siRFbf518pehQFHiJHqpV2XZWBrfJkkVLVNoHz7UEpomcA5eFoPhgi7p3XTsc2VAMqJzpaYPDm7jC",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0,
+            "index": 0,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "93086341675914",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "18446744073709551",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19618642546458260",
+              "baseReserveRaw": "906913658324086",
+              "quoteReserveRaw": "99000000",
+              "feeQuoteRaw": "1000000",
+              "completed": false
+            },
+            "spotPrice": 1.1310933882598983e-9,
+            "averageCost": 1.0742714580851866e-9,
+            "actorBaseRaw": "93086341675914"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19618642546458260",
+            "baseReserveRaw": "906913658324086",
+            "quoteReserveRaw": "99000000",
+            "feeQuoteRaw": "1000000",
+            "baseBalance": "93086341675914"
+          }
+        },
+        {
+          "signature": "28np2nM6Nxv8ZkN9jM39FneX54WaJxyp4rWBwtMjSCURYS4zex3MZAHJKsfgodpmD8ftEEnU6QemQNcedEbWdXJE",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "82592363484203",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "19618642546458260",
+              "baseReserveRaw": "906913658324086",
+              "quoteReserveRaw": "99000000",
+              "feeQuoteRaw": "1000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20790541018655948",
+              "baseReserveRaw": "824321294839883",
+              "quoteReserveRaw": "198000000",
+              "feeQuoteRaw": "2000000",
+              "completed": false
+            },
+            "spotPrice": 1.270258578954942e-9,
+            "averageCost": 1.2107656904518354e-9,
+            "actorBaseRaw": "175678705160117"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20790541018655948",
+            "baseReserveRaw": "824321294839883",
+            "quoteReserveRaw": "198000000",
+            "feeQuoteRaw": "2000000",
+            "baseBalance": "175678705160117"
+          }
+        },
+        {
+          "signature": "2bTUvmMGbFDxcfzVYHDbqC9qoo2t4bHP2FrtQDJhmLHk2aLDeFB3JcjSmMqqnhjpBZ9xhuaewcfPyvJnE29UcKof",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "87839352580058",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "87839352580058",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "87839352580058",
+            "unfilledInputRaw": "0",
+            "outputRaw": "103864520",
+            "tradingFeeRaw": "839310",
+            "protocolFeeRaw": "209827",
+            "before": {
+              "sqrtPriceRaw": "20790541018655948",
+              "baseReserveRaw": "824321294839883",
+              "quoteReserveRaw": "198000000",
+              "feeQuoteRaw": "2000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19548640453706081",
+              "baseReserveRaw": "912160647419941",
+              "quoteReserveRaw": "93086343",
+              "feeQuoteRaw": "3049137",
+              "completed": false
+            },
+            "spotPrice": 1.1230359863961534e-9,
+            "averageCost": 1.1824372214644506e-9,
+            "actorBaseRaw": "87839352580059"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19548640453706081",
+            "baseReserveRaw": "912160647419941",
+            "quoteReserveRaw": "93086343",
+            "feeQuoteRaw": "3049137",
+            "baseBalance": "87839352580059"
+          }
+        },
+        {
+          "signature": "4QAuXyFrrDrM7swDUh3MJcRbTNy8ceBD4LoUjFeq6MAQCYXfuZLdcf4KtVjkjb9JhVQrGv75tYkVCyEaL6oJsqDt",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1,
+            "index": 3,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "83168148027003",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "19548640453706081",
+              "baseReserveRaw": "912160647419941",
+              "quoteReserveRaw": "93086343",
+              "feeQuoteRaw": "3049137",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20720538918146284",
+              "baseReserveRaw": "828992499392938",
+              "quoteReserveRaw": "192086343",
+              "feeQuoteRaw": "4049137",
+              "completed": false
+            },
+            "spotPrice": 1.2617190157201657e-9,
+            "averageCost": 1.2023833928288513e-9,
+            "actorBaseRaw": "171007500607062"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20720538918146284",
+            "baseReserveRaw": "828992499392938",
+            "quoteReserveRaw": "192086343",
+            "feeQuoteRaw": "4049137",
+            "baseBalance": "171007500607062"
+          }
+        },
+        {
+          "signature": "2JbyjTsEq8rGFRd8VEQa1u9DTPXVxHsYpf7zJTiswWhdgrpFpbPKJPGEcXdX2C9sH7kTvDFdoANWG1RogVPg8i7R",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "57002500202354",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "57002500202354",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "57002500202354",
+            "unfilledInputRaw": "0",
+            "outputRaw": "68391871",
+            "tradingFeeRaw": "552662",
+            "protocolFeeRaw": "138165",
+            "before": {
+              "sqrtPriceRaw": "20720538918146284",
+              "baseReserveRaw": "828992499392938",
+              "quoteReserveRaw": "192086343",
+              "feeQuoteRaw": "4049137",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19902782254262787",
+              "baseReserveRaw": "885994999595292",
+              "quoteReserveRaw": "123003645",
+              "feeQuoteRaw": "4739964",
+              "completed": false
+            },
+            "spotPrice": 1.1640942345761713e-9,
+            "averageCost": 1.1998047586897894e-9,
+            "actorBaseRaw": "114005000404708"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19902782254262787",
+            "baseReserveRaw": "885994999595292",
+            "quoteReserveRaw": "123003645",
+            "feeQuoteRaw": "4739964",
+            "baseBalance": "114005000404708"
+          }
+        },
+        {
+          "signature": "2xG2Q5Pr8AQ2R3jrRDCvtGW1gCDYhckajR4raRWnDepPyeAtKtE8JJcghwUr25rHt43DxHZzezErLads31KBWhcF",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2,
+            "index": 5,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "80315587551596",
+            "tradingFeeRaw": "800000",
+            "protocolFeeRaw": "200000",
+            "before": {
+              "sqrtPriceRaw": "19902782254262787",
+              "baseReserveRaw": "885994999595292",
+              "quoteReserveRaw": "123003645",
+              "feeQuoteRaw": "4739964",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "21074680717931789",
+              "baseReserveRaw": "805679412043696",
+              "quoteReserveRaw": "222003645",
+              "feeQuoteRaw": "5739964",
+              "completed": false
+            },
+            "spotPrice": 1.3052165217422458e-9,
+            "averageCost": 1.2450883203183744e-9,
+            "actorBaseRaw": "194320587956304"
+          },
+          "actual": {
+            "sqrtPriceRaw": "21074680717931789",
+            "baseReserveRaw": "805679412043696",
+            "quoteReserveRaw": "222003645",
+            "feeQuoteRaw": "5739964",
+            "baseBalance": "194320587956304"
+          }
+        },
+        {
+          "signature": "35tSNHMEreTAZYkMMFRhA2DKB7KRDgRpZMBc2GT1TKLTL5b4vuKbKdSTFJya6y4HMh9HNYcaY1E2ttLqKXzUn8n2",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "2202528351",
+            "unfilledInputRaw": "5004991773",
+            "outputRaw": "651473224283612",
+            "tradingFeeRaw": "17620228",
+            "protocolFeeRaw": "4405056",
+            "before": {
+              "sqrtPriceRaw": "21074680717931789",
+              "baseReserveRaw": "805679412043696",
+              "quoteReserveRaw": "222003645",
+              "feeQuoteRaw": "5739964",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "72814053243770152",
+              "baseReserveRaw": "154206187760084",
+              "quoteReserveRaw": "2402506712",
+              "feeQuoteRaw": "27765248",
+              "completed": true
+            },
+            "spotPrice": 1.558084363218985e-8,
+            "averageCost": 3.3808424796306787e-9,
+            "actorBaseRaw": "845793812239916"
+          },
+          "actual": {
+            "sqrtPriceRaw": "72814053243770152",
+            "baseReserveRaw": "154206187760084",
+            "quoteReserveRaw": "2402506712",
+            "feeQuoteRaw": "27765248",
+            "baseBalance": "845793812239916"
+          }
+        }
+      ]
+    },
+    {
+      "quote": "SOL",
+      "decimals": 9,
+      "curve": "steady",
+      "feeSchedule": "decaying",
+      "pool": "FT8KTgPWHQwzbHZucxWhpwzNn4eGm7VgjYxhgdyC47Zs",
+      "config": "Bj44W4csEpQem73H8snYPqJ5sBaLmxV5KPLjKNp6Ub9g",
+      "launchSignatures": [
+        "ZjKVK39DTGqLJmrnPtytoB5ZRXENHLgGeQ7fKwqSTs8i8PcQSmP4bHtEf94KLhnViuBQQuJuAecHFF7GPa5KVQz"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "30000000",
+            "firstFactor": 12,
+            "secondFactor": "3",
+            "thirdFactor": "2083333",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "activationType": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "migrationQuoteThreshold": "2402506708",
+        "sqrtStartPrice": "18446744073709551",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "tokenUpdateAuthority": 1,
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "58333726687135153",
+            "liquidity": "20496178255995477981701555154820"
+          },
+          {
+            "sqrtPrice": "79226673521066979257578248091",
+            "liquidity": "3263084253509973059874922"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "signature": "4xKoT9iBxvyq5qXzXbJKK3dxsGdzfwHVByuUqo8jUUs1hexd1xgbqvv9wgZutuFo8uiaR6Q33JdtUdi5whEmK82d",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0,
+            "index": 0,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "89211737758968",
+            "tradingFeeRaw": "2400000",
+            "protocolFeeRaw": "600000",
+            "before": {
+              "sqrtPriceRaw": "18446744073709551",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20057160863565279",
+              "baseReserveRaw": "910788262241032",
+              "quoteReserveRaw": "97000000",
+              "feeQuoteRaw": "3000000",
+              "completed": false
+            },
+            "spotPrice": 1.1822231799639593e-9,
+            "averageCost": 1.1209287310396274e-9,
+            "actorBaseRaw": "89211737758968"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20057160863565279",
+            "baseReserveRaw": "910788262241032",
+            "quoteReserveRaw": "97000000",
+            "feeQuoteRaw": "3000000",
+            "baseBalance": "89211737758968"
+          }
+        },
+        {
+          "signature": "2Mzab4DfNFBYtsd4xQzva79reWUipfAA7ZQth79Z3jvMuSsNq2vvzaBQrpZRvz9yWtcdeuVHDLLqo3is4DK5zR4F",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "75950626375198",
+            "tradingFeeRaw": "2400000",
+            "protocolFeeRaw": "600000",
+            "before": {
+              "sqrtPriceRaw": "20057160863565279",
+              "baseReserveRaw": "910788262241032",
+              "quoteReserveRaw": "97000000",
+              "feeQuoteRaw": "3000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "21667577653421007",
+              "baseReserveRaw": "834837635865834",
+              "quoteReserveRaw": "194000000",
+              "feeQuoteRaw": "6000000",
+              "completed": false
+            },
+            "spotPrice": 1.3796892434220951e-9,
+            "averageCost": 1.316644835896382e-9,
+            "actorBaseRaw": "165162364134166"
+          },
+          "actual": {
+            "sqrtPriceRaw": "21667577653421007",
+            "baseReserveRaw": "834837635865834",
+            "quoteReserveRaw": "194000000",
+            "feeQuoteRaw": "6000000",
+            "baseBalance": "165162364134166"
+          }
+        },
+        {
+          "signature": "M4WenEd925sCSnuYtWWEnCcSzVfuXEVmPhALM5XjngM7wiKaT5dZUwBnxADgGazBb7HM5p5xzEmkcb8FSmUsS26",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "82581182067083",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "82581182067083",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "82581182067083",
+            "unfilledInputRaw": "0",
+            "outputRaw": "101644614",
+            "tradingFeeRaw": "2514919",
+            "protocolFeeRaw": "628729",
+            "before": {
+              "sqrtPriceRaw": "21667577653421007",
+              "baseReserveRaw": "834837635865834",
+              "quoteReserveRaw": "194000000",
+              "feeQuoteRaw": "6000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19927858304011090",
+              "baseReserveRaw": "917418817932917",
+              "quoteReserveRaw": "89211738",
+              "feeQuoteRaw": "9143648",
+              "completed": false
+            },
+            "spotPrice": 1.1670294296413275e-9,
+            "averageCost": 1.2308447452039526e-9,
+            "actorBaseRaw": "82581182067083"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19927858304011090",
+            "baseReserveRaw": "917418817932917",
+            "quoteReserveRaw": "89211738",
+            "feeQuoteRaw": "9143648",
+            "baseBalance": "82581182067083"
+          }
+        },
+        {
+          "signature": "uzDfXHy5uj6E46GPJmwo6PV9r2oGqVSzMuU2P5Bt1AhtrjXn2KJLfewQxRWBVoWyK6EhvYbk7bxDeJR1k33QeAJ",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2,
+            "index": 3,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "76902353870227",
+            "tradingFeeRaw": "2400000",
+            "protocolFeeRaw": "600000",
+            "before": {
+              "sqrtPriceRaw": "19927858304011090",
+              "baseReserveRaw": "917418817932917",
+              "quoteReserveRaw": "89211738",
+              "feeQuoteRaw": "9143648",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "21538275093866818",
+              "baseReserveRaw": "840516464062690",
+              "quoteReserveRaw": "186211738",
+              "feeQuoteRaw": "12143648",
+              "completed": false
+            },
+            "spotPrice": 1.3632716212029466e-9,
+            "averageCost": 1.300350313967637e-9,
+            "actorBaseRaw": "159483535937310"
+          },
+          "actual": {
+            "sqrtPriceRaw": "21538275093866818",
+            "baseReserveRaw": "840516464062690",
+            "quoteReserveRaw": "186211738",
+            "feeQuoteRaw": "12143648",
+            "baseBalance": "159483535937310"
+          }
+        },
+        {
+          "signature": "5aJtEWkYwNW7VH6haR9m6VhqtJuSiRcxWLTCWtgft1guKDMR5RGMPAb4GeFEWQkckihXpxMNAgUeyKfHdT665Hhb",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "53161178645770",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "53161178645770",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "53161178645770",
+            "unfilledInputRaw": "0",
+            "outputRaw": "66579528",
+            "tradingFeeRaw": "1647329",
+            "protocolFeeRaw": "411832",
+            "before": {
+              "sqrtPriceRaw": "21538275093866818",
+              "baseReserveRaw": "840516464062690",
+              "quoteReserveRaw": "186211738",
+              "feeQuoteRaw": "12143648",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20398719450159634",
+              "baseReserveRaw": "893677642708460",
+              "quoteReserveRaw": "117573049",
+              "feeQuoteRaw": "14202809",
+              "completed": false
+            },
+            "spotPrice": 1.2228307889459339e-9,
+            "averageCost": 1.2524088008590023e-9,
+            "actorBaseRaw": "106322357291540"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20398719450159634",
+            "baseReserveRaw": "893677642708460",
+            "quoteReserveRaw": "117573049",
+            "feeQuoteRaw": "14202809",
+            "baseBalance": "106322357291540"
+          }
+        },
+        {
+          "signature": "37FR5eN9mXiK4ijr7fFWPpM5PSNtmkViEBTe2vh7HtL8xvhYfMg373eUSkPpY1gqaqwPP4jC8axSZ5gDXykUMaWd",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 3,
+            "index": 5,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "73666288860171",
+            "tradingFeeRaw": "2233334",
+            "protocolFeeRaw": "558333",
+            "before": {
+              "sqrtPriceRaw": "20398719450159634",
+              "baseReserveRaw": "893677642708460",
+              "quoteReserveRaw": "117573049",
+              "feeQuoteRaw": "14202809",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "22012595033428569",
+              "baseReserveRaw": "820011353848289",
+              "quoteReserveRaw": "214781382",
+              "feeQuoteRaw": "16994476",
+              "completed": false
+            },
+            "spotPrice": 1.4239772236517502e-9,
+            "averageCost": 1.3574730252777373e-9,
+            "actorBaseRaw": "179988646151711"
+          },
+          "actual": {
+            "sqrtPriceRaw": "22012595033428569",
+            "baseReserveRaw": "820011353848289",
+            "quoteReserveRaw": "214781382",
+            "feeQuoteRaw": "16994476",
+            "baseBalance": "179988646151711"
+          }
+        },
+        {
+          "signature": "3jhLxrJ1KC3rFmsepr8KAA7WYyAenuw4cnXvpGGp4FzL5ce2kAEdqcAgC7BvTSt3o1tNC4neL5wyd9SWdV7VicPw",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "2250553274",
+            "unfilledInputRaw": "4956966850",
+            "outputRaw": "579750706214587",
+            "tradingFeeRaw": "50262358",
+            "protocolFeeRaw": "12565589",
+            "before": {
+              "sqrtPriceRaw": "22012595033428569",
+              "baseReserveRaw": "820011353848289",
+              "quoteReserveRaw": "214781382",
+              "feeQuoteRaw": "16994476",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "58333724901588058",
+              "baseReserveRaw": "240260647633702",
+              "quoteReserveRaw": "2402506709",
+              "feeQuoteRaw": "79822423",
+              "completed": true
+            },
+            "spotPrice": 9.99999938781656e-9,
+            "averageCost": 3.881932785722192e-9,
+            "actorBaseRaw": "759739352366298"
+          },
+          "actual": {
+            "sqrtPriceRaw": "58333724901588058",
+            "baseReserveRaw": "240260647633702",
+            "quoteReserveRaw": "2402506709",
+            "feeQuoteRaw": "79822423",
+            "baseBalance": "759739352366298"
+          }
+        }
+      ]
+    },
+    {
+      "quote": "SOL",
+      "decimals": 9,
+      "curve": "long",
+      "feeSchedule": "decaying",
+      "pool": "BjF9HW9xWP7oKmoC5EdEtaFtKerYwnozFyszgpEdLyER",
+      "config": "GUiHVedNXXqkN5zwLbKHE7qzqZDy9peKHmp2VMHe5BZM",
+      "launchSignatures": [
+        "JLsxtSdT97SPJcvxWK4Jffu8jtF65k1uzhuGKadfgSiyWeEM1dxSco73ZALNgi9W2yuHDceKzkrHcXjDL8pXTaa",
+        "5LkAQqTTK4u4JWw37eVyzxaEMZ8rrHZnawRnBc2rgbXChX8hYe5xKYQQm6U5RtrbqtnC5W82KvmQs2BTwUBKW2Z4"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "30000000",
+            "firstFactor": 12,
+            "secondFactor": "3",
+            "thirdFactor": "2083333",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "activationType": 1,
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "migrationQuoteThreshold": "2402506708",
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "sqrtStartPrice": "18446744073709551",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "20099635904007512",
+            "liquidity": "28746478563247203904000000000000"
+          },
+          {
+            "sqrtPrice": "21900632537611087",
+            "liquidity": "28746478563247203904000000000000"
+          },
+          {
+            "sqrtPrice": "23863004675215941",
+            "liquidity": "28746478563247203904000000000000"
+          },
+          {
+            "sqrtPrice": "26001212118026454",
+            "liquidity": "25153168742841303416000000000000"
+          },
+          {
+            "sqrtPrice": "28331010315258546",
+            "liquidity": "25153168742841303416000000000000"
+          },
+          {
+            "sqrtPrice": "30869566458665875",
+            "liquidity": "21559858922435402928000000000000"
+          },
+          {
+            "sqrtPrice": "33635585979535615",
+            "liquidity": "21559858922435402928000000000000"
+          },
+          {
+            "sqrtPrice": "36649450380250911",
+            "liquidity": "17966549102029502440000000000000"
+          },
+          {
+            "sqrtPrice": "39933367416036262",
+            "liquidity": "17966549102029502440000000000000"
+          },
+          {
+            "sqrtPrice": "43511534733504757",
+            "liquidity": "14373239281623601952000000000000"
+          },
+          {
+            "sqrtPrice": "47410318171782994",
+            "liquidity": "14373239281623601952000000000000"
+          },
+          {
+            "sqrtPrice": "51658446040031152",
+            "liquidity": "10779929461217701464000000000000"
+          },
+          {
+            "sqrtPrice": "56287220802898283",
+            "liquidity": "10779929461217701464000000000000"
+          },
+          {
+            "sqrtPrice": "61330749733723788",
+            "liquidity": "7186619640811800975900000000000"
+          },
+          {
+            "sqrtPrice": "66826196235060503",
+            "liquidity": "7186619640811800975900000000000"
+          },
+          {
+            "sqrtPrice": "72814053678382635",
+            "liquidity": "7186619640811800975900000000000"
+          }
+        ],
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "tokenUpdateAuthority": 1
+      },
+      "checks": [
+        {
+          "signature": "3utwgW7JhLkwCKssV3LQf9esCo9rAesbiF7Ltxq7XYCfaV9WmQif9bNjGBsyxGvQ9rDGicEvr61ADPaCZXeEFGFb",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 0,
+            "index": 0,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "91316004735931",
+            "tradingFeeRaw": "2400000",
+            "protocolFeeRaw": "600000",
+            "before": {
+              "sqrtPriceRaw": "18446744073709551",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19594967829837074",
+              "baseReserveRaw": "908683995264069",
+              "quoteReserveRaw": "97000000",
+              "feeQuoteRaw": "3000000",
+              "completed": false
+            },
+            "spotPrice": 1.1283651507618675e-9,
+            "averageCost": 1.0950982830357233e-9,
+            "actorBaseRaw": "91316004735931"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19594967829837074",
+            "baseReserveRaw": "908683995264069",
+            "quoteReserveRaw": "97000000",
+            "feeQuoteRaw": "3000000",
+            "baseBalance": "91316004735931"
+          }
+        },
+        {
+          "signature": "5LDBo9akkF4Fz29EssXgoJd4fm5JRxGDux2KwjndB1b5tAiWJtSh8iEMdW1gBZPNFgW38HoEi2R8Tyk65PP6Qfeb",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "81206547288196",
+            "tradingFeeRaw": "2400000",
+            "protocolFeeRaw": "600000",
+            "before": {
+              "sqrtPriceRaw": "19594967829837074",
+              "baseReserveRaw": "908683995264069",
+              "quoteReserveRaw": "97000000",
+              "feeQuoteRaw": "3000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20743191585413576",
+              "baseReserveRaw": "827477447975873",
+              "quoteReserveRaw": "194000000",
+              "feeQuoteRaw": "6000000",
+              "completed": false
+            },
+            "spotPrice": 1.2644792648017059e-9,
+            "averageCost": 1.231427801567618e-9,
+            "actorBaseRaw": "172522552024127"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20743191585413576",
+            "baseReserveRaw": "827477447975873",
+            "quoteReserveRaw": "194000000",
+            "feeQuoteRaw": "6000000",
+            "baseBalance": "172522552024127"
+          }
+        },
+        {
+          "signature": "2PpTmvsCe9RJpz7Bp8H6XD1nwRTMaURcmBGAHJheSEKG4JReyHvo5RUdXPrxVQhHNfjnDMyTZ4JNFRBQaUT1KQip",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "86261276012063",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "86261276012063",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "86261276012063",
+            "unfilledInputRaw": "0",
+            "outputRaw": "99603474",
+            "tradingFeeRaw": "2464416",
+            "protocolFeeRaw": "616104",
+            "before": {
+              "sqrtPriceRaw": "20743191585413576",
+              "baseReserveRaw": "827477447975873",
+              "quoteReserveRaw": "194000000",
+              "feeQuoteRaw": "6000000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19527684341016437",
+              "baseReserveRaw": "913738723987936",
+              "quoteReserveRaw": "91316006",
+              "feeQuoteRaw": "9080520",
+              "completed": false
+            },
+            "spotPrice": 1.120629491245361e-9,
+            "averageCost": 1.1546719293379245e-9,
+            "actorBaseRaw": "86261276012064"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19527684341016437",
+            "baseReserveRaw": "913738723987936",
+            "quoteReserveRaw": "91316006",
+            "feeQuoteRaw": "9080520",
+            "baseBalance": "86261276012064"
+          }
+        },
+        {
+          "signature": "4DmyjLoggewvwKxxnPsfYXNjHSE1m1mmi5qpUY9BUuxCVZJBjSsRRpj6yHhmCnVixrxpuir4e6LVV1D2zQEQr9sS",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 1,
+            "index": 3,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "81751520093756",
+            "tradingFeeRaw": "2400000",
+            "protocolFeeRaw": "600000",
+            "before": {
+              "sqrtPriceRaw": "19527684341016437",
+              "baseReserveRaw": "913738723987936",
+              "quoteReserveRaw": "91316006",
+              "feeQuoteRaw": "9080520",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "20675908088125598",
+              "baseReserveRaw": "831987203894180",
+              "quoteReserveRaw": "188316006",
+              "feeQuoteRaw": "12080520",
+              "completed": false
+            },
+            "spotPrice": 1.2562895313583548e-9,
+            "averageCost": 1.2232188451702904e-9,
+            "actorBaseRaw": "168012796105820"
+          },
+          "actual": {
+            "sqrtPriceRaw": "20675908088125598",
+            "baseReserveRaw": "831987203894180",
+            "quoteReserveRaw": "188316006",
+            "feeQuoteRaw": "12080520",
+            "baseBalance": "168012796105820"
+          }
+        },
+        {
+          "signature": "2g4Ct3BCQ7ADVMe3VYffzDwZ8AqVCpdfGkuHZLqW8ygFadT3EW9ghaeS26LFvNAZELenFaRV5Jmob3MVmqtsdGhu",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "56004265368606",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "56004265368606",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "56004265368606",
+            "unfilledInputRaw": "0",
+            "outputRaw": "65604234",
+            "tradingFeeRaw": "1623198",
+            "protocolFeeRaw": "405799",
+            "before": {
+              "sqrtPriceRaw": "20675908088125598",
+              "baseReserveRaw": "831987203894180",
+              "quoteReserveRaw": "188316006",
+              "feeQuoteRaw": "12080520",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "19875309275401484",
+              "baseReserveRaw": "887991469262786",
+              "quoteReserveRaw": "120682775",
+              "feeQuoteRaw": "14109517",
+              "completed": false
+            },
+            "spotPrice": 1.1608827173952314e-9,
+            "averageCost": 1.17141495506118e-9,
+            "actorBaseRaw": "112008530737214"
+          },
+          "actual": {
+            "sqrtPriceRaw": "19875309275401484",
+            "baseReserveRaw": "887991469262786",
+            "quoteReserveRaw": "120682775",
+            "feeQuoteRaw": "14109517",
+            "baseBalance": "112008530737214"
+          }
+        },
+        {
+          "signature": "2DmscrvDgc6ZpHZg4cpo8YdMVoGzgWrJn459sGfhbEBAKxyQ8sGYpscGgWQDmRt79pUqTXFy9opfCeNbC3AXBkDr",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "100000000",
+            "atSeconds": 2,
+            "index": 5,
+            "filledInputRaw": "100000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "78993541036933",
+            "tradingFeeRaw": "2400000",
+            "protocolFeeRaw": "600000",
+            "before": {
+              "sqrtPriceRaw": "19875309275401484",
+              "baseReserveRaw": "887991469262786",
+              "quoteReserveRaw": "120682775",
+              "feeQuoteRaw": "14109517",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "21023533031528297",
+              "baseReserveRaw": "808997928225853",
+              "quoteReserveRaw": "217682775",
+              "feeQuoteRaw": "17109517",
+              "completed": false
+            },
+            "spotPrice": 1.2988887585540204e-9,
+            "averageCost": 1.2659262857104424e-9,
+            "actorBaseRaw": "191002071774147"
+          },
+          "actual": {
+            "sqrtPriceRaw": "21023533031528297",
+            "baseReserveRaw": "808997928225853",
+            "quoteReserveRaw": "217682775",
+            "feeQuoteRaw": "17109517",
+            "baseBalance": "191002071774147"
+          }
+        },
+        {
+          "signature": "D1KpTX5XqK6EtipQKYF6uK3qZcdjjKsAUE2K6snhGYFeuycv1czgmeRLUJmEPjmYP2j2LbbLuMykQAakV9Nad9h",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "7207520124",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "2247568561",
+            "unfilledInputRaw": "4959951563",
+            "outputRaw": "654791740465769",
+            "tradingFeeRaw": "50195700",
+            "protocolFeeRaw": "12548924",
+            "before": {
+              "sqrtPriceRaw": "21023533031528297",
+              "baseReserveRaw": "808997928225853",
+              "quoteReserveRaw": "217682775",
+              "feeQuoteRaw": "17109517",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "72814053243770152",
+              "baseReserveRaw": "154206187760084",
+              "quoteReserveRaw": "2402506712",
+              "feeQuoteRaw": "79854141",
+              "completed": true
+            },
+            "spotPrice": 1.558084363218985e-8,
+            "averageCost": 3.4324937565664016e-9,
+            "actorBaseRaw": "845793812239916"
+          },
+          "actual": {
+            "sqrtPriceRaw": "72814053243770152",
+            "baseReserveRaw": "154206187760084",
+            "quoteReserveRaw": "2402506712",
+            "feeQuoteRaw": "79854141",
+            "baseBalance": "845793812239916"
+          }
+        }
+      ]
+    },
+    {
+      "quote": "XRXx",
+      "decimals": 8,
+      "curve": "steady",
+      "feeSchedule": "fixed",
+      "pool": "5qrgLZ2p3nSG4G4puvTRZHTMyTEJj2DTqi563GL2GPXs",
+      "config": "2zV4vv5BB5ktfo5v7Z1qiNUPgiKQXwf53SxhGp12kw2A",
+      "launchSignatures": [
+        "jJeGcVGvXFrsufP6gXP3HzTe54pcr6v7qhuGY6GNx1X9zAG475j4zfVAHdVgnwEM7RcbweCqfhQoorBiFG51aSN"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "10000000",
+            "firstFactor": 0,
+            "secondFactor": "0",
+            "thirdFactor": "0",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "activationType": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "migrationQuoteThreshold": "240250670",
+        "sqrtStartPrice": "5833372668713515",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "tokenUpdateAuthority": 1,
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "18446744073709550",
+            "liquidity": "6481461255192584679600674566480"
+          },
+          {
+            "sqrtPrice": "79226673521066979257578248091",
+            "liquidity": "3263113420894869224327114"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "signature": "2geWrKWi9HBL49ei6Cam9NUjKUH37EjqRXsjpWbYDsJQmYFKDBkxEC6yiVnah2Nnw2sxTcd7CSqpmPsR2q369Ydx",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1,
+            "index": 0,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "90900670379289",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "5833372668713515",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6353131300274939",
+              "baseReserveRaw": "909099329620711",
+              "quoteReserveRaw": "9900000",
+              "feeQuoteRaw": "100000",
+              "completed": false
+            },
+            "spotPrice": 1.1861407243564562e-9,
+            "averageCost": 1.1001018978489757e-9,
+            "actorBaseRaw": "90900670379289"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6353131300274939",
+            "baseReserveRaw": "909099329620711",
+            "quoteReserveRaw": "9900000",
+            "feeQuoteRaw": "100000",
+            "baseBalance": "90900670379289"
+          }
+        },
+        {
+          "signature": "5y9KEhNErZse2FaWLFJDzNk7B4Bog7VNbdXjogUWs71i3ZLXz31gTofbrBQzPAqHRuySmAHJi37TXwL5etLHRhM6",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "77152041050743",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "6353131300274939",
+              "baseReserveRaw": "909099329620711",
+              "quoteReserveRaw": "9900000",
+              "feeQuoteRaw": "100000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6872889931836363",
+              "baseReserveRaw": "831947288569968",
+              "quoteReserveRaw": "19800000",
+              "feeQuoteRaw": "200000",
+              "completed": false
+            },
+            "spotPrice": 1.3881593819438974e-9,
+            "averageCost": 1.296141989739842e-9,
+            "actorBaseRaw": "168052711430032"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6872889931836363",
+            "baseReserveRaw": "831947288569968",
+            "quoteReserveRaw": "19800000",
+            "feeQuoteRaw": "200000",
+            "baseBalance": "168052711430032"
+          }
+        },
+        {
+          "signature": "2bMrqeFpSqJJdvmBNuLPeKFvkr8T1cyBCymmHmRBUKEESmmpenqbPQXg41CL1X5Hr3g22VpVZ2DuKTKdCEWRvtUU",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "84026355715016",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "84026355715016",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "84026355715016",
+            "unfilledInputRaw": "0",
+            "outputRaw": "10602832",
+            "tradingFeeRaw": "85680",
+            "protocolFeeRaw": "21420",
+            "before": {
+              "sqrtPriceRaw": "6872889931836363",
+              "baseReserveRaw": "831947288569968",
+              "quoteReserveRaw": "19800000",
+              "feeQuoteRaw": "200000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6310609113605998",
+              "baseReserveRaw": "915973644284984",
+              "quoteReserveRaw": "9090068",
+              "feeQuoteRaw": "307100",
+              "completed": false
+            },
+            "spotPrice": 1.170315927477364e-9,
+            "averageCost": 1.2618459898416386e-9,
+            "actorBaseRaw": "84026355715016"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6310609113605998",
+            "baseReserveRaw": "915973644284984",
+            "quoteReserveRaw": "9090068",
+            "feeQuoteRaw": "307100",
+            "baseBalance": "84026355715016"
+          }
+        },
+        {
+          "signature": "5R99c8T5XketUzBcAzh3jnQQKq43oTgLAnaTkuMLg44BMWva8kC6w2yoPyk88o6Txz1YcQhR7squNXtFH9ismpHk",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2,
+            "index": 3,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "78155450842130",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "6310609113605998",
+              "baseReserveRaw": "915973644284984",
+              "quoteReserveRaw": "9090068",
+              "feeQuoteRaw": "307100",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6830367745167422",
+              "baseReserveRaw": "837818193442854",
+              "quoteReserveRaw": "18990068",
+              "feeQuoteRaw": "407100",
+              "completed": false
+            },
+            "spotPrice": 1.3710355889543672e-9,
+            "averageCost": 1.2795012877859904e-9,
+            "actorBaseRaw": "162181806557146"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6830367745167422",
+            "baseReserveRaw": "837818193442854",
+            "quoteReserveRaw": "18990068",
+            "feeQuoteRaw": "407100",
+            "baseBalance": "162181806557146"
+          }
+        },
+        {
+          "signature": "2Lm9tAHp5DqLVa5enNZnPjJhPHEnyhd7EnrpEYbDtXDA7sq4oEfRa2CPdhhiDNQQ6tGqFzRNQayLgZeBryimsCWu",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "54060602185715",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "54060602185715",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "54060602185715",
+            "unfilledInputRaw": "0",
+            "outputRaw": "6942275",
+            "tradingFeeRaw": "56100",
+            "protocolFeeRaw": "14024",
+            "before": {
+              "sqrtPriceRaw": "6830367745167422",
+              "baseReserveRaw": "837818193442854",
+              "quoteReserveRaw": "18990068",
+              "feeQuoteRaw": "407100",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6462210672120744",
+              "baseReserveRaw": "891878795628569",
+              "quoteReserveRaw": "11977669",
+              "feeQuoteRaw": "477224",
+              "completed": false
+            },
+            "spotPrice": 1.2272210032138938e-9,
+            "averageCost": 1.2841653106547212e-9,
+            "actorBaseRaw": "108121204371431"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6462210672120744",
+            "baseReserveRaw": "891878795628569",
+            "quoteReserveRaw": "11977669",
+            "feeQuoteRaw": "477224",
+            "baseBalance": "108121204371431"
+          }
+        },
+        {
+          "signature": "2b7REtVhof5ubGVTPZXFv358AKQpwjEdAYGNFh8Js7TFMfTANcc7aeyEyCG9YiZqxkwkD8EHpRxU4Ukqv67ziai",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 3,
+            "index": 5,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "74664746048201",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "6462210672120744",
+              "baseReserveRaw": "891878795628569",
+              "quoteReserveRaw": "11977669",
+              "feeQuoteRaw": "477224",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6981969303682168",
+              "baseReserveRaw": "817214049580368",
+              "quoteReserveRaw": "21877669",
+              "feeQuoteRaw": "577224",
+              "completed": false
+            },
+            "spotPrice": 1.4325718901821965e-9,
+            "averageCost": 1.3393201650407201e-9,
+            "actorBaseRaw": "182785950419632"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6981969303682168",
+            "baseReserveRaw": "817214049580368",
+            "quoteReserveRaw": "21877669",
+            "feeQuoteRaw": "577224",
+            "baseBalance": "182785950419632"
+          }
+        },
+        {
+          "signature": "3DPP53A1KVwntd8ssQjA6MHQAgzx4YKUAUQKnaBVxJ4iQc5s1QWndPvF6jwuZ3pWYRgQu5NwTUVydx6sc6fj9eLZ",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "220578791",
+            "unfilledInputRaw": "500173219",
+            "outputRaw": "576953448708939",
+            "tradingFeeRaw": "1764631",
+            "protocolFeeRaw": "441157",
+            "before": {
+              "sqrtPriceRaw": "6981969303682168",
+              "baseReserveRaw": "817214049580368",
+              "quoteReserveRaw": "21877669",
+              "feeQuoteRaw": "577224",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "18446742312240322",
+              "baseReserveRaw": "240260600871429",
+              "quoteReserveRaw": "240250672",
+              "feeQuoteRaw": "2783012",
+              "completed": true
+            },
+            "spotPrice": 9.999998090211326e-9,
+            "averageCost": 3.8231644423582855e-9,
+            "actorBaseRaw": "759739399128571"
+          },
+          "actual": {
+            "sqrtPriceRaw": "18446742312240322",
+            "baseReserveRaw": "240260600871429",
+            "quoteReserveRaw": "240250672",
+            "feeQuoteRaw": "2783012",
+            "baseBalance": "759739399128571"
+          }
+        }
+      ]
+    },
+    {
+      "quote": "XRXx",
+      "decimals": 8,
+      "curve": "long",
+      "feeSchedule": "fixed",
+      "pool": "6eFrVYRvXQenKsvnP5A9aGprd1ijbHm44Wf2DBJqhf7w",
+      "config": "293PmX16F9guyRW6m8TAheDSf3rQ3yA1DVPLYpQRG1Np",
+      "launchSignatures": [
+        "2sXxyaKPhnZTquhXC2avPNy61CszSYqjNz2UqnsfyaVkmhpeKsVQf93A4kD1QenrUFkzAmSfFuyzNcQx33Y1cKcu",
+        "2u1ow8Z7Yea2HNeHe6RETr1QJAhVKshaGmqyUpdJHATDQbMF5YVXQcCLgBJggJoASZFaTHDgaXAoowM9MiVPct6g"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "10000000",
+            "firstFactor": 0,
+            "secondFactor": "0",
+            "thirdFactor": "0",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "activationType": 1,
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "migrationQuoteThreshold": "240250670",
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "sqrtStartPrice": "5833372668713515",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "6356062959676121",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "6925588101724425",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "7546144658892894",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "8222305221813438",
+            "liquidity": "7954130359793262942900000000000"
+          },
+          {
+            "sqrtPrice": "8959052100994198",
+            "liquidity": "7954130359793262942900000000000"
+          },
+          {
+            "sqrtPrice": "9761814039132217",
+            "liquidity": "6817826022679939665300000000000"
+          },
+          {
+            "sqrtPrice": "10636506212975819",
+            "liquidity": "6817826022679939665300000000000"
+          },
+          {
+            "sqrtPrice": "11589573819491693",
+            "liquidity": "5681521685566616387800000000000"
+          },
+          {
+            "sqrtPrice": "12628039567502730",
+            "liquidity": "5681521685566616387800000000000"
+          },
+          {
+            "sqrtPrice": "13759555424740253",
+            "liquidity": "4545217348453293110200000000000"
+          },
+          {
+            "sqrtPrice": "14992459001610425",
+            "liquidity": "4545217348453293110200000000000"
+          },
+          {
+            "sqrtPrice": "16335834987140411",
+            "liquidity": "3408913011339969832700000000000"
+          },
+          {
+            "sqrtPrice": "17799582089797002",
+            "liquidity": "3408913011339969832700000000000"
+          },
+          {
+            "sqrtPrice": "19394485976433241",
+            "liquidity": "2272608674226646555100000000000"
+          },
+          {
+            "sqrtPrice": "21132298746815997",
+            "liquidity": "2272608674226646555100000000000"
+          },
+          {
+            "sqrtPrice": "23025825529345061",
+            "liquidity": "2272608674226646555100000000000"
+          }
+        ],
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "tokenUpdateAuthority": 1
+      },
+      "checks": [
+        {
+          "signature": "25xunQmK3gsPCQvMJ9dvty2MMpGfTqza3fEmhZuvUrTG4az3c3da8U5zNzzbRnTfVLL9RAdQsb4pPAWtBrR9Af7t",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 0
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 0,
+            "index": 0,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "93086341675914",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "5833372668713515",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6203959504749383",
+              "baseReserveRaw": "906913658324086",
+              "quoteReserveRaw": "9900000",
+              "feeQuoteRaw": "100000",
+              "completed": false
+            },
+            "spotPrice": 1.1310933882598979e-9,
+            "averageCost": 1.0742714580851866e-9,
+            "actorBaseRaw": "93086341675914"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6203959504749383",
+            "baseReserveRaw": "906913658324086",
+            "quoteReserveRaw": "9900000",
+            "feeQuoteRaw": "100000",
+            "baseBalance": "93086341675914"
+          }
+        },
+        {
+          "signature": "3KNpn3w5Enb1suMhdFbPNjM8JkVhjMsxXxTc8m5Y4deNNQcZPiJMnbB6TZmf47VZ4LLuc8AhsfSsV1G4qUdJ9AKU",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "82592359547997",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "6203959504749383",
+              "baseReserveRaw": "906913658324086",
+              "quoteReserveRaw": "9900000",
+              "feeQuoteRaw": "100000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6574546321894496",
+              "baseReserveRaw": "824321298776089",
+              "quoteReserveRaw": "19800000",
+              "feeQuoteRaw": "200000",
+              "completed": false
+            },
+            "spotPrice": 1.270258571722563e-9,
+            "averageCost": 1.21076574815479e-9,
+            "actorBaseRaw": "175678701223911"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6574546321894496",
+            "baseReserveRaw": "824321298776089",
+            "quoteReserveRaw": "19800000",
+            "feeQuoteRaw": "200000",
+            "baseBalance": "175678701223911"
+          }
+        },
+        {
+          "signature": "5akcfv3V5wEbkFwqk2cF9wBS4ZXwjjYtQv781e9RbagYvsrXVxS4wTtbz6Rnj1C4y7ujbSGB9dCNkHoFgFB64We",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "87839350611955",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "87839350611955",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "87839350611955",
+            "unfilledInputRaw": "0",
+            "outputRaw": "10386450",
+            "tradingFeeRaw": "83932",
+            "protocolFeeRaw": "20982",
+            "before": {
+              "sqrtPriceRaw": "6574546321894496",
+              "baseReserveRaw": "824321298776089",
+              "quoteReserveRaw": "19800000",
+              "feeQuoteRaw": "200000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6181822891068225",
+              "baseReserveRaw": "912160649388044",
+              "quoteReserveRaw": "9308636",
+              "feeQuoteRaw": "304914",
+              "completed": false
+            },
+            "spotPrice": 1.1230359833900533e-9,
+            "averageCost": 1.1824370202694095e-9,
+            "actorBaseRaw": "87839350611956"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6181822891068225",
+            "baseReserveRaw": "912160649388044",
+            "quoteReserveRaw": "9308636",
+            "feeQuoteRaw": "304914",
+            "baseBalance": "87839350611956"
+          }
+        },
+        {
+          "signature": "2tvC3r2WVFnvd6jAHX6F3uEmuBwnAjDfKwMpjiosv4KT1tNnrFhNrmSZg74qa3oE4uN1RNkQemSH5eQ1DwgsseTb",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2,
+            "index": 3,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "83168145239689",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "6181822891068225",
+              "baseReserveRaw": "912160649388044",
+              "quoteReserveRaw": "9308636",
+              "feeQuoteRaw": "304914",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6552409710290537",
+              "baseReserveRaw": "828992504148355",
+              "quoteReserveRaw": "19208636",
+              "feeQuoteRaw": "404914",
+              "completed": false
+            },
+            "spotPrice": 1.2617190070705328e-9,
+            "averageCost": 1.202383433125771e-9,
+            "actorBaseRaw": "171007495851645"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6552409710290537",
+            "baseReserveRaw": "828992504148355",
+            "quoteReserveRaw": "19208636",
+            "feeQuoteRaw": "404914",
+            "baseBalance": "171007495851645"
+          }
+        },
+        {
+          "signature": "MLpAvqs3ufAk7doQP4Dyf9fXBH7NkSBeCH5Mp41ho8S8cn7m7LQvBX7qD6rx9khSFooLpq4qnTFJekqc2oa1YKE",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "57002498617215",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "57002498617215",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "57002498617215",
+            "unfilledInputRaw": "0",
+            "outputRaw": "6839185",
+            "tradingFeeRaw": "55267",
+            "protocolFeeRaw": "13816",
+            "before": {
+              "sqrtPriceRaw": "6552409710290537",
+              "baseReserveRaw": "828992504148355",
+              "quoteReserveRaw": "19208636",
+              "feeQuoteRaw": "404914",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6293812355970423",
+              "baseReserveRaw": "885995002765570",
+              "quoteReserveRaw": "12300368",
+              "feeQuoteRaw": "473997",
+              "completed": false
+            },
+            "spotPrice": 1.1640942294658916e-9,
+            "averageCost": 1.1998044236493411e-9,
+            "actorBaseRaw": "114004997234430"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6293812355970423",
+            "baseReserveRaw": "885995002765570",
+            "quoteReserveRaw": "12300368",
+            "feeQuoteRaw": "473997",
+            "baseBalance": "114004997234430"
+          }
+        },
+        {
+          "signature": "23Png8sBj81yhab5ohmNsiRmdRvGbKnvXMbuCaH6sjCeNStRfpsL89iHyioMDur3yfLxVdtpPS2DRdJFc7PLyFsF",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2,
+            "index": 5,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "80315586124936",
+            "tradingFeeRaw": "80000",
+            "protocolFeeRaw": "20000",
+            "before": {
+              "sqrtPriceRaw": "6293812355970423",
+              "baseReserveRaw": "885995002765570",
+              "quoteReserveRaw": "12300368",
+              "feeQuoteRaw": "473997",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6664399180489890",
+              "baseReserveRaw": "805679416640634",
+              "quoteReserveRaw": "22200368",
+              "feeQuoteRaw": "573997",
+              "completed": false
+            },
+            "spotPrice": 1.3052165129447792e-9,
+            "averageCost": 1.245088342435099e-9,
+            "actorBaseRaw": "194320583359366"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6664399180489890",
+            "baseReserveRaw": "805679416640634",
+            "quoteReserveRaw": "22200368",
+            "feeQuoteRaw": "573997",
+            "baseBalance": "194320583359366"
+          }
+        },
+        {
+          "signature": "4fqEgGaCxbr2JafBDt2cShWE1wmLcJA8ExBP8jUHDHBedF4VKgfejMAPA4g3MFbdwEMas7xKGvJAgJmE6gBtrJUr",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "220252835",
+            "unfilledInputRaw": "500499175",
+            "outputRaw": "651473224580400",
+            "tradingFeeRaw": "1762024",
+            "protocolFeeRaw": "440505",
+            "before": {
+              "sqrtPriceRaw": "6664399180489890",
+              "baseReserveRaw": "805679416640634",
+              "quoteReserveRaw": "22200368",
+              "feeQuoteRaw": "573997",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "23025824388703746",
+              "baseReserveRaw": "154206192060234",
+              "quoteReserveRaw": "240250674",
+              "feeQuoteRaw": "2776526",
+              "completed": true
+            },
+            "spotPrice": 1.5580842274516352e-8,
+            "averageCost": 3.380842476555505e-9,
+            "actorBaseRaw": "845793807939766"
+          },
+          "actual": {
+            "sqrtPriceRaw": "23025824388703746",
+            "baseReserveRaw": "154206192060234",
+            "quoteReserveRaw": "240250674",
+            "feeQuoteRaw": "2776526",
+            "baseBalance": "845793807939766"
+          }
+        }
+      ]
+    },
+    {
+      "quote": "XRXx",
+      "decimals": 8,
+      "curve": "steady",
+      "feeSchedule": "decaying",
+      "pool": "HTf28zSLqe6c2YSqQ8FwhUuE6rAFZRgUDa2zrzMogsWu",
+      "config": "FfsGH7scEkhSaZEC8d16Q9PEUmYsTFKtMwNUPpeFfyUk",
+      "launchSignatures": [
+        "23ka1WcjtcQwzjA9N2dJAozbywuW9bGq9RoPfgCXGG2xgocvCmwCMD7Cd8S9bo7efEEhEePwEUzVBJQ4DYeGqAii"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "30000000",
+            "firstFactor": 12,
+            "secondFactor": "3",
+            "thirdFactor": "2083333",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "activationType": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "migrationQuoteThreshold": "240250670",
+        "sqrtStartPrice": "5833372668713515",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "tokenUpdateAuthority": 1,
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "18446744073709550",
+            "liquidity": "6481461255192584679600674566480"
+          },
+          {
+            "sqrtPrice": "79226673521066979257578248091",
+            "liquidity": "3263113420894869224327114"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "signature": "23gz9i2bAffHuSgGP7a7gNbfALsP6pxZ167JYv7658vfiJa43QqUXXCzbCTfJ25MYfTtD8Sbzv9mDNYfygchXeuu",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1,
+            "index": 0,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "89211738414777",
+            "tradingFeeRaw": "240000",
+            "protocolFeeRaw": "60000",
+            "before": {
+              "sqrtPriceRaw": "5833372668713515",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6342631125899961",
+              "baseReserveRaw": "910788261585223",
+              "quoteReserveRaw": "9700000",
+              "feeQuoteRaw": "300000",
+              "completed": false
+            },
+            "spotPrice": 1.1822231625825574e-9,
+            "averageCost": 1.1209287227995105e-9,
+            "actorBaseRaw": "89211738414777"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6342631125899961",
+            "baseReserveRaw": "910788261585223",
+            "quoteReserveRaw": "9700000",
+            "feeQuoteRaw": "300000",
+            "baseBalance": "89211738414777"
+          }
+        },
+        {
+          "signature": "2FBUTvEFm5onVPLfcC1QMaGhbfm2C7E3br51nQ7dcGevVqgEujJDDA843pu9633ztx4ZMYAbbxY6oc7j9mctVYFL",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "75950627967178",
+            "tradingFeeRaw": "240000",
+            "protocolFeeRaw": "60000",
+            "before": {
+              "sqrtPriceRaw": "6342631125899961",
+              "baseReserveRaw": "910788261585223",
+              "quoteReserveRaw": "9700000",
+              "feeQuoteRaw": "300000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6851889583086407",
+              "baseReserveRaw": "834837633618045",
+              "quoteReserveRaw": "19400000",
+              "feeQuoteRaw": "600000",
+              "completed": false
+            },
+            "spotPrice": 1.3796892058681386e-9,
+            "averageCost": 1.3166448082985557e-9,
+            "actorBaseRaw": "165162366381955"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6851889583086407",
+            "baseReserveRaw": "834837633618045",
+            "quoteReserveRaw": "19400000",
+            "feeQuoteRaw": "600000",
+            "baseBalance": "165162366381955"
+          }
+        },
+        {
+          "signature": "3SVZKxfiMJzva8bcHEqVAqWdZx4XpJuQ632NYdS2D7RTkViPXPoT4WYPvYAJKycr45oSWUWd76mtd756maYEWpZu",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "82581183190977",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "82581183190977",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "82581183190977",
+            "unfilledInputRaw": "0",
+            "outputRaw": "10164461",
+            "tradingFeeRaw": "251492",
+            "protocolFeeRaw": "62873",
+            "before": {
+              "sqrtPriceRaw": "6851889583086407",
+              "baseReserveRaw": "834837633618045",
+              "quoteReserveRaw": "19400000",
+              "feeQuoteRaw": "600000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6301742073538574",
+              "baseReserveRaw": "917418816809022",
+              "quoteReserveRaw": "8921174",
+              "feeQuoteRaw": "914365",
+              "completed": false
+            },
+            "spotPrice": 1.1670294150338081e-9,
+            "averageCost": 1.2308446800155061e-9,
+            "actorBaseRaw": "82581183190978"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6301742073538574",
+            "baseReserveRaw": "917418816809022",
+            "quoteReserveRaw": "8921174",
+            "feeQuoteRaw": "914365",
+            "baseBalance": "82581183190978"
+          }
+        },
+        {
+          "signature": "9RNiDxg1yHpYDsg2YVFewq8hAKcTL4xw1uQbbxbgYDQzM6B3u6emihGLguQwqGpJvPnDUhZUdvhJND1NJ4XjKZj",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2,
+            "index": 3,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "76902355323262",
+            "tradingFeeRaw": "240000",
+            "protocolFeeRaw": "60000",
+            "before": {
+              "sqrtPriceRaw": "6301742073538574",
+              "baseReserveRaw": "917418816809022",
+              "quoteReserveRaw": "8921174",
+              "feeQuoteRaw": "914365",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6811000530725020",
+              "baseReserveRaw": "840516461485760",
+              "quoteReserveRaw": "18621174",
+              "feeQuoteRaw": "1214365",
+              "completed": false
+            },
+            "spotPrice": 1.3632715867500339e-9,
+            "averageCost": 1.3003502893981097e-9,
+            "actorBaseRaw": "159483538514240"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6811000530725020",
+            "baseReserveRaw": "840516461485760",
+            "quoteReserveRaw": "18621174",
+            "feeQuoteRaw": "1214365",
+            "baseBalance": "159483538514240"
+          }
+        },
+        {
+          "signature": "4RbLZQViAaS4rozPinvBZiQdPDxayMYfALdUmGR71JeJQ3jYfoRuJKF4NMYx3P77RRDhMDhLu46Mne4Qa18LBbWB",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "53161179504746",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "53161179504746",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "53161179504746",
+            "unfilledInputRaw": "0",
+            "outputRaw": "6657951",
+            "tradingFeeRaw": "164734",
+            "protocolFeeRaw": "41183",
+            "before": {
+              "sqrtPriceRaw": "6811000530725020",
+              "baseReserveRaw": "840516461485760",
+              "quoteReserveRaw": "18621174",
+              "feeQuoteRaw": "1214365",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6450641429862587",
+              "baseReserveRaw": "893677640990506",
+              "quoteReserveRaw": "11757306",
+              "feeQuoteRaw": "1420282",
+              "completed": false
+            },
+            "spotPrice": 1.2228307694335371e-9,
+            "averageCost": 1.252408442029697e-9,
+            "actorBaseRaw": "106322359009494"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6450641429862587",
+            "baseReserveRaw": "893677640990506",
+            "quoteReserveRaw": "11757306",
+            "feeQuoteRaw": "1420282",
+            "baseBalance": "106322359009494"
+          }
+        },
+        {
+          "signature": "424n8JAKzMnoSPQndM19btpVfzrTP5EH4QBi5rnFSeHfoQog1MMLyVxb1Nag7S7PL7de9Pq6ja5YT2wMEVdpW6be",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 3,
+            "index": 5,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "73666288380265",
+            "tradingFeeRaw": "223334",
+            "protocolFeeRaw": "55833",
+            "before": {
+              "sqrtPriceRaw": "6450641429862587",
+              "baseReserveRaw": "893677640990506",
+              "quoteReserveRaw": "11757306",
+              "feeQuoteRaw": "1420282",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6960993637712802",
+              "baseReserveRaw": "820011352610241",
+              "quoteReserveRaw": "21478139",
+              "feeQuoteRaw": "1699449",
+              "completed": false
+            },
+            "spotPrice": 1.4239771770347504e-9,
+            "averageCost": 1.3574730341211237e-9,
+            "actorBaseRaw": "179988647389759"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6960993637712802",
+            "baseReserveRaw": "820011352610241",
+            "quoteReserveRaw": "21478139",
+            "feeQuoteRaw": "1699449",
+            "baseBalance": "179988647389759"
+          }
+        },
+        {
+          "signature": "4d2EegBNffipePMeBLaBZ5gKJyXPNz82va2T2VdadQ8DD8owes6B4zzepyCWJoiLGDF5dc8d17WyofcVmwzNiPKA",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "225055328",
+            "unfilledInputRaw": "495696682",
+            "outputRaw": "579750751738813",
+            "tradingFeeRaw": "5026236",
+            "protocolFeeRaw": "1256559",
+            "before": {
+              "sqrtPriceRaw": "6960993637712802",
+              "baseReserveRaw": "820011352610241",
+              "quoteReserveRaw": "21478139",
+              "feeQuoteRaw": "1699449",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "18446742312240322",
+              "baseReserveRaw": "240260600871428",
+              "quoteReserveRaw": "240250672",
+              "feeQuoteRaw": "7982244",
+              "completed": true
+            },
+            "spotPrice": 9.999998090211326e-9,
+            "averageCost": 3.881932491247394e-9,
+            "actorBaseRaw": "759739399128572"
+          },
+          "actual": {
+            "sqrtPriceRaw": "18446742312240322",
+            "baseReserveRaw": "240260600871428",
+            "quoteReserveRaw": "240250672",
+            "feeQuoteRaw": "7982244",
+            "baseBalance": "759739399128572"
+          }
+        }
+      ]
+    },
+    {
+      "quote": "XRXx",
+      "decimals": 8,
+      "curve": "long",
+      "feeSchedule": "decaying",
+      "pool": "HHfEA7c2jreTACK2P3FthLDMjiYBkQZrrEdcsTv4sAsR",
+      "config": "2HCknJogsRgkhUr18aDZ1ANQ3hHMooKK6ECugXbxYYEv",
+      "launchSignatures": [
+        "3ZvH4jMoMUrfkv7WuSs4JGrgdsanWspWabwmMM8MbS6ZmifSoRRvJs19rHfCQuP5dgtGwCTVERVp9sFjpwgaDjHv",
+        "Q2dAaH4Brcie9gKtSzaHpxcHvr3Js83tqV5U1btyU2ppGecVmQcftPTip3VD6HAURCJyvFoZPxvHFPb3cjzhUnw"
+      ],
+      "sdkConfig": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "30000000",
+            "firstFactor": 12,
+            "secondFactor": "3",
+            "thirdFactor": "2083333",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "activationType": 1,
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "migrationQuoteThreshold": "240250670",
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "sqrtStartPrice": "5833372668713515",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "6356062959676121",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "6925588101724425",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "7546144658892894",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "8222305221813438",
+            "liquidity": "7954130359793262942900000000000"
+          },
+          {
+            "sqrtPrice": "8959052100994198",
+            "liquidity": "7954130359793262942900000000000"
+          },
+          {
+            "sqrtPrice": "9761814039132217",
+            "liquidity": "6817826022679939665300000000000"
+          },
+          {
+            "sqrtPrice": "10636506212975819",
+            "liquidity": "6817826022679939665300000000000"
+          },
+          {
+            "sqrtPrice": "11589573819491693",
+            "liquidity": "5681521685566616387800000000000"
+          },
+          {
+            "sqrtPrice": "12628039567502730",
+            "liquidity": "5681521685566616387800000000000"
+          },
+          {
+            "sqrtPrice": "13759555424740253",
+            "liquidity": "4545217348453293110200000000000"
+          },
+          {
+            "sqrtPrice": "14992459001610425",
+            "liquidity": "4545217348453293110200000000000"
+          },
+          {
+            "sqrtPrice": "16335834987140411",
+            "liquidity": "3408913011339969832700000000000"
+          },
+          {
+            "sqrtPrice": "17799582089797002",
+            "liquidity": "3408913011339969832700000000000"
+          },
+          {
+            "sqrtPrice": "19394485976433241",
+            "liquidity": "2272608674226646555100000000000"
+          },
+          {
+            "sqrtPrice": "21132298746815997",
+            "liquidity": "2272608674226646555100000000000"
+          },
+          {
+            "sqrtPrice": "23025825529345061",
+            "liquidity": "2272608674226646555100000000000"
+          }
+        ],
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "tokenUpdateAuthority": 1
+      },
+      "checks": [
+        {
+          "signature": "2S56zHqfDBLMURaEbg1KbkjSzDp51MGjXPWUFx4KvgGrJpiJGoVfuJ6E9SFKcv9AYWrXJ1PPWraAgsvV3VBqJADc",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 0
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 0,
+            "index": 0,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "91316004735931",
+            "tradingFeeRaw": "240000",
+            "protocolFeeRaw": "60000",
+            "before": {
+              "sqrtPriceRaw": "5833372668713515",
+              "baseReserveRaw": "1000000000000000",
+              "quoteReserveRaw": "0",
+              "feeQuoteRaw": "0",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6196472902001184",
+              "baseReserveRaw": "908683995264069",
+              "quoteReserveRaw": "9700000",
+              "feeQuoteRaw": "300000",
+              "completed": false
+            },
+            "spotPrice": 1.1283651507618673e-9,
+            "averageCost": 1.0950982830357233e-9,
+            "actorBaseRaw": "91316004735931"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6196472902001184",
+            "baseReserveRaw": "908683995264069",
+            "quoteReserveRaw": "9700000",
+            "feeQuoteRaw": "300000",
+            "baseBalance": "91316004735931"
+          }
+        },
+        {
+          "signature": "4sNJVyziriBZh6CpPJySoHgaigDaAVxanGqpZm7n1NNydoaGHrkjBvxxkx1PKx6GbE4rRoNbmzso7PcNDjCgBk8A",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 1,
+            "index": 1,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "81206543333999",
+            "tradingFeeRaw": "240000",
+            "protocolFeeRaw": "60000",
+            "before": {
+              "sqrtPriceRaw": "6196472902001184",
+              "baseReserveRaw": "908683995264069",
+              "quoteReserveRaw": "9700000",
+              "feeQuoteRaw": "300000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6559573116398097",
+              "baseReserveRaw": "827477451930070",
+              "quoteReserveRaw": "19400000",
+              "feeQuoteRaw": "600000",
+              "completed": false
+            },
+            "spotPrice": 1.264479257585798e-9,
+            "averageCost": 1.231427861529635e-9,
+            "actorBaseRaw": "172522548069930"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6559573116398097",
+            "baseReserveRaw": "827477451930070",
+            "quoteReserveRaw": "19400000",
+            "feeQuoteRaw": "600000",
+            "baseBalance": "172522548069930"
+          }
+        },
+        {
+          "signature": "3JNAo16zJc5ZgsFVLFuSXW6Ejk6DZQaRzT3hK5Y4S4X6z1xRZMGfgYo8KoTgZTNLHVfHzn4pnAPG92Rq85GSjZ7f",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "86261274034965",
+            "atSeconds": 1
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "86261274034965",
+            "atSeconds": 1,
+            "index": 2,
+            "filledInputRaw": "86261274034965",
+            "unfilledInputRaw": "0",
+            "outputRaw": "9960346",
+            "tradingFeeRaw": "246442",
+            "protocolFeeRaw": "61610",
+            "before": {
+              "sqrtPriceRaw": "6559573116398097",
+              "baseReserveRaw": "827477451930070",
+              "quoteReserveRaw": "19400000",
+              "feeQuoteRaw": "600000",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6175195986347974",
+              "baseReserveRaw": "913738725965035",
+              "quoteReserveRaw": "9131602",
+              "feeQuoteRaw": "908052",
+              "completed": false
+            },
+            "spotPrice": 1.1206294882352218e-9,
+            "averageCost": 1.15467179350524e-9,
+            "actorBaseRaw": "86261274034965"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6175195986347974",
+            "baseReserveRaw": "913738725965035",
+            "quoteReserveRaw": "9131602",
+            "feeQuoteRaw": "908052",
+            "baseBalance": "86261274034965"
+          }
+        },
+        {
+          "signature": "3YTxKSyCJk9cUJhDxXHDYNwzGhA9E1QmMKAP1HYP7zt75zc8q5RBuuu5tdPXHo6wzPhfuxrTKqN1NmAFvUow73R2",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2,
+            "index": 3,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "81751514906901",
+            "tradingFeeRaw": "240000",
+            "protocolFeeRaw": "60000",
+            "before": {
+              "sqrtPriceRaw": "6175195986347974",
+              "baseReserveRaw": "913738725965035",
+              "quoteReserveRaw": "9131602",
+              "feeQuoteRaw": "908052",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6538296191387715",
+              "baseReserveRaw": "831987211058134",
+              "quoteReserveRaw": "18831602",
+              "feeQuoteRaw": "1208052",
+              "completed": false
+            },
+            "spotPrice": 1.2562895184118522e-9,
+            "averageCost": 1.2232189227793572e-9,
+            "actorBaseRaw": "168012788941866"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6538296191387715",
+            "baseReserveRaw": "831987211058134",
+            "quoteReserveRaw": "18831602",
+            "feeQuoteRaw": "1208052",
+            "baseBalance": "168012788941866"
+          }
+        },
+        {
+          "signature": "36f85EtzrTy1CJsKBWppcvAwtTWByc3DoQoDLqfgpmAr6aqkVH3wRQN65quU5baSxFgt9htLWEhDbTTYGSkfrWi4",
+          "event": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "56004262980622",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "sell",
+            "amountRaw": "56004262980622",
+            "atSeconds": 2,
+            "index": 4,
+            "filledInputRaw": "56004262980622",
+            "unfilledInputRaw": "0",
+            "outputRaw": "6560421",
+            "tradingFeeRaw": "162320",
+            "protocolFeeRaw": "40580",
+            "before": {
+              "sqrtPriceRaw": "6538296191387715",
+              "baseReserveRaw": "831987211058134",
+              "quoteReserveRaw": "18831602",
+              "feeQuoteRaw": "1208052",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6285124630299809",
+              "baseReserveRaw": "887991474038756",
+              "quoteReserveRaw": "12068281",
+              "feeQuoteRaw": "1410952",
+              "completed": false
+            },
+            "spotPrice": 1.1608827097285188e-9,
+            "averageCost": 1.1714145764707174e-9,
+            "actorBaseRaw": "112008525961244"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6285124630299809",
+            "baseReserveRaw": "887991474038756",
+            "quoteReserveRaw": "12068281",
+            "feeQuoteRaw": "1410952",
+            "baseBalance": "112008525961244"
+          }
+        },
+        {
+          "signature": "2PvRVMHqdd3BymN9Hay3EgFGMWzjSGyndPAB3YaVPzUPe8xua2zqq2ABsgGS5vaBztYHMUQZFPK9nuXnKnDnzRvm",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "10000000",
+            "atSeconds": 2,
+            "index": 5,
+            "filledInputRaw": "10000000",
+            "unfilledInputRaw": "0",
+            "outputRaw": "78993541193570",
+            "tradingFeeRaw": "240000",
+            "protocolFeeRaw": "60000",
+            "before": {
+              "sqrtPriceRaw": "6285124630299809",
+              "baseReserveRaw": "887991474038756",
+              "quoteReserveRaw": "12068281",
+              "feeQuoteRaw": "1410952",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "6648224861881584",
+              "baseReserveRaw": "808997932845186",
+              "quoteReserveRaw": "21768281",
+              "feeQuoteRaw": "1710952",
+              "completed": false
+            },
+            "spotPrice": 1.298888749777905e-9,
+            "averageCost": 1.2659262832002259e-9,
+            "actorBaseRaw": "191002067154814"
+          },
+          "actual": {
+            "sqrtPriceRaw": "6648224861881584",
+            "baseReserveRaw": "808997932845186",
+            "quoteReserveRaw": "21768281",
+            "feeQuoteRaw": "1710952",
+            "baseBalance": "191002067154814"
+          }
+        },
+        {
+          "signature": "3pufXvneK4HWH4UcN8ZgyqNteqX6HmzBWXT2mt5pnLsxQAC8rBAyHMkrtpsU2pkWUPPw2fugwnm9CkPrtDiFQWe1",
+          "event": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3
+          },
+          "predicted": {
+            "actor": "trader",
+            "side": "buy",
+            "amountRaw": "720752010",
+            "atSeconds": 3,
+            "index": 6,
+            "filledInputRaw": "224756856",
+            "unfilledInputRaw": "495995154",
+            "outputRaw": "654791740784952",
+            "tradingFeeRaw": "5019571",
+            "protocolFeeRaw": "1254892",
+            "before": {
+              "sqrtPriceRaw": "6648224861881584",
+              "baseReserveRaw": "808997932845186",
+              "quoteReserveRaw": "21768281",
+              "feeQuoteRaw": "1710952",
+              "completed": false
+            },
+            "after": {
+              "sqrtPriceRaw": "23025824388703746",
+              "baseReserveRaw": "154206192060234",
+              "quoteReserveRaw": "240250674",
+              "feeQuoteRaw": "7985415",
+              "completed": true
+            },
+            "spotPrice": 1.5580842274516352e-8,
+            "averageCost": 3.4324937533660047e-9,
+            "actorBaseRaw": "845793807939766"
+          },
+          "actual": {
+            "sqrtPriceRaw": "23025824388703746",
+            "baseReserveRaw": "154206192060234",
+            "quoteReserveRaw": "240250674",
+            "feeQuoteRaw": "7985415",
+            "baseBalance": "845793807939766"
+          }
+        }
+      ]
+    }
+  ]
+}

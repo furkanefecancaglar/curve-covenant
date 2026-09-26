@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="710" viewBox="0 0 900 710" role="img" aria-label="Curve Covenant scenario report">
+  <rect width="900" height="710" fill="#101c14"/><g font-family="Arial, sans-serif" fill="#e4efd9">
+  <text x="40" y="36" font-size="23" font-weight="700">Curve Covenant · whale</text>
+  <text x="40" y="62" font-size="13">Hypothetical trades · Budget 2.88300804 XRXx · SDK 1.5.13</text>
+  <g transform="translate(0,65)" font-size="12">
+    <line x1="70" x2="830" y1="260" y2="260" stroke="#344737"/><text x="60" y="264" text-anchor="end">0×</text><line x1="70" x2="830" y1="150" y2="150" stroke="#344737"/><text x="60" y="154" text-anchor="end">8.414×</text><line x1="70" x2="830" y1="40" y2="40" stroke="#344737"/><text x="60" y="44" text-anchor="end">16.827×</text>
+    <path d="M70.00,246.93 L70.00,206.26 L95.33,203.50 L120.67,200.67 L146.00,197.77 L171.33,194.81 L196.67,191.77 L222.00,188.67 L247.33,185.50 L272.67,182.26 L298.00,178.95 L323.33,175.57 L348.67,172.12 L374.00,168.60 L399.33,165.02 L424.67,161.36 L450.00,157.64 L475.33,153.84 L500.67,149.98 L526.00,146.05 L551.33,142.05 L576.67,137.98 L602.00,133.84 L627.33,129.63 L652.67,129.26" fill="none" stroke="#90cfff" stroke-width="3"/><path d="M70.00,246.93 L70.00,215.66 L95.33,212.79 L120.67,209.83 L146.00,206.79 L171.33,203.65 L196.67,200.42 L222.00,196.70 L247.33,192.41 L272.67,187.99 L298.00,183.42 L323.33,178.72 L348.67,173.87 L374.00,167.27 L399.33,160.34 L424.67,153.16 L450.00,145.74 L475.33,137.96 L500.67,125.97 L526.00,113.42 L551.33,100.31 L576.67,86.64 L602.00,72.41 L627.33,57.62 L652.67,56.30" fill="none" stroke="#b6ed90" stroke-width="3"/>
+    <text x="70" y="286">0 min</text><text x="830" y="286" text-anchor="end">30 min</text>
+    <text x="450" y="310" text-anchor="middle">Elapsed scenario time → · Spot price / opening price</text>
+  </g>
+  <g fill="#a4b79d" font-size="12"><text x="40" y="400">CURVE</text><text x="290" y="400">EARLY BUY OUTPUT</text><text x="450" y="400">PROGRESS</text><text x="590" y="400">FEES · XRXx</text></g>
+  <g fill="#e4efd9"><text x="40" y="430" fill="#90cfff" font-weight="700">One segment</text>
+      <text x="290" y="430">88.699%</text>
+      <text x="450" y="430">100%</text>
+      <text x="590" y="430">0.02426794</text>
+      <text x="40" y="455" font-size="12">Quote left to graduate: 0 · Final event: 24 · Graduated: yes</text></g><g fill="#e4efd9"><text x="40" y="504" fill="#b6ed90" font-weight="700">Long · 16 segments</text>
+      <text x="290" y="504">91.232%</text>
+      <text x="450" y="504">100%</text>
+      <text x="590" y="504">0.02426794</text>
+      <text x="40" y="529" font-size="12">Quote left to graduate: 0 · Final event: 24 · Graduated: yes</text></g>
+  <g fill="#a4b79d" font-size="12"><text x="40" y="596">Same supply, start price, quote threshold, fee schedule and nominal leftover target.</text>
+  <text x="40" y="618">Endpoint prices differ. Lower price impact does not imply less early capture.</text>
+  <text x="40" y="640">No external quote liquidity, USD-price model or observed demand. Full raw-unit ledger: JSON report.</text>
+  <text x="40" y="678">2026-09-26T02:04:00.378Z · curve-covenant/scenario-v1</text></g></g></svg>

@@ -1,12 +1,22 @@
 # Curve Covenant Pair Launch
 
-**A Meteora DBC launch workbench for tokens quoted in tokenized stocks.**
+**Measure curve trade-offs for xStock-paired DBC launches, then launch the configuration you chose.**
 
 [Live product](https://furkanefecancaglar.github.io/curve-covenant/) · [Live DBC inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) · [Competition track](https://superteam.fun/earn/listing/meteora-dbc)
 
 Meteora DBC supports stock tokens as quote assets. Pair Launch lets a builder select an issuer-listed xStock, choose a launch curve, simulate a hypothetical early buy with the official DBC quote math, and build wallet-confirmed transactions that create the DBC config, SPL token mint and virtual pool. A SOL/devnet option lets builders rehearse the same flow without mainnet funds. The graduation panel reads live DBC reserve progress, builds the DAMM v2 migration transaction, and verifies the destination pool and its vault balances. Complete SOL and XRXx long-curve launch → buy → DAMM v2 graduation have been confirmed on a local validator; no public network graduation is claimed.
 
 This is an independent early-stage product, not a Meteora or xStocks product. A new token quoted in an xStock is **not** ownership in the underlying company. Mainnet launches use real SOL for rent and fees; the user must review and confirm each wallet transaction.
+
+## Scenario-driven selection
+
+The Scenario Lab compares one-segment and 16-segment curves under sequential retail buys, an early whale, buy/sell pressure and graduation progress. Both use the same supply, exact opening price, quote reserve threshold and fee schedule. Ending prices differ. Every trade advances reserves and actor inventory; results include price paths, cohort costs, early buy-output share, fees and graduation progress.
+
+Export the complete raw-unit ledger and SDK configurations as JSON, or a standalone SVG summary. Select a compared configuration for launch and share a link that restores it exactly. The engine matched **56 actual swaps on eight local pools** across SOL/XRXx, both curves and fixed/decaying fees. See the [method and raw proof](docs/SCENARIO-METHOD.md).
+
+The long curve is not declared universally better: in the checked-in whale example it lowers the first price jump from 311.08% to 239.16%, but increases the early cohort's share of buy output from 88.70% to 91.23%. These are hypothetical schedule results, not observed demand or a fairness guarantee. The scenarios do not model external quote liquidity or stock-price changes.
+
+[Whale report](docs/evidence/scenarios/whale.json) · [Visual summary](docs/evidence/scenarios/whale.svg) · [Roadmap and acceptance gates](docs/ROADMAP.md)
 
 ## Why this specific launch flow
 
@@ -34,6 +44,8 @@ npm run dev
 npm test
 npm run build
 npm run smoke
+# With the local validator running:
+npm run verify:scenarios
 ```
 
 Node.js 22+ is required. The app is a static Vite/React site. Meteora SDK calculations and Solana RPC reads happen in the browser. Mainnet reads default to PublicNode because Solana's public mainnet RPC can reject browser origins; the inspector allows a custom RPC.

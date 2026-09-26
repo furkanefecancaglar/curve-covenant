@@ -5,6 +5,8 @@ Colosseum FAQ: https://colosseum.com/hackathon
 
 ## Product thesis
 
+Current focus: scenario-driven curve selection for xStock-paired DBC launches. Stateful retail, whale, sell-pressure and graduation simulations now hold the key starting conditions equal, expose endpoint trade-offs, and export reproducible JSON/SVG reports. The exact compared config can be launched and restored from a versioned share link. The engine matched 56 swaps across eight local SOL/XRXx pools; see [method and evidence](SCENARIO-METHOD.md).
+
 Curve Covenant Pair Launch is a stock-quoted DBC launch workbench. A new community or project token can discover its price against an issuer-listed xStock. Launch builders can choose a 16-segment long curve designed for a thinner quote asset, inspect the SDK-derived graduation threshold and simulate early trades. The SDK constructs a combined config + token mint + virtual pool transaction, with DAMM v2 as the configured destination. A graduation panel reads reserve progress, submits the DAMM v2 migration transaction, and verifies destination vault balances. A companion live inspector monitors actual pools.
 
 The new token is not a tokenized share. This is an experiment in stock-denominated price discovery, not a claim that the product has created a new regulated asset or improved returns.
@@ -14,7 +16,7 @@ The new token is not a tokenized share. This is an experiment in stock-denominat
 | Criterion | Current evidence | Gap |
 | --- | --- | --- |
 | Deep Meteora integration | DBC curve builders, validator, pre-launch quote, size-aware config/pool transactions, token badge preflight, on-chain inspector | Local SOL and XRXx long-curve DBC → DAMM v2 lifecycles confirmed; public wallet proof remains |
-| Technical execution | TypeScript source, 30 passing tests, successful build, desktop/mobile browser checks, confirmed local SOL/XRXx lifecycles, full browser long-curve launch → wallet balances → buy → sell → balance refresh → buy → graduation and interrupted-step recovery with a local signer | Mainnet launch path untested with a wallet; no performance/operational history |
+| Technical execution | TypeScript source, 45 passing tests, successful build, desktop/mobile browser checks, confirmed local SOL/XRXx lifecycles, full browser long-curve launch → wallet balances → buy → sell → balance refresh → buy → graduation and interrupted-step recovery with a local signer | Mainnet launch path untested with a wallet; no performance/operational history |
 | Originality and taste | xStock quote catalog plus a 16-segment front-loaded liquidity design | Similar stock-quoted launches exist; differentiation and actual user value need validation |
 | Impact potential | Tool can be reused across issuer-listed stock quote mints | No demonstrated distribution, builders or launches |
 | Traction/volume | None claimed | Mainnet usage is preferred by sponsor and not yet evidenced |
@@ -34,8 +36,10 @@ The new token is not a tokenized share. This is an experiment in stock-denominat
 1. Obtain public devnet SOL and confirm the Phantom browser flow. Local config + pool creation and SOL graduation are complete; see [reproduction](LOCAL-LAUNCH.md).
 2. Exercise stock-quoted mainnet launch only with a funded wallet and explicit transaction review. This costs real SOL; no mainnet transaction has been sent.
 3. The full stock-token local flow now passes with the cloned issuer mint and a synthetic balance. Validate public issuer-funded trading, add pool discovery, and test post-migration trading. Graduated mainnet pools link directly to their Meteora market.
-4. Validate the 16-segment model with prospective launch builders and compare it with existing stock-quoted launchpads. Record real feedback.
+4. Validate the 16-segment model with prospective launch builders and compare it with existing stock-quoted launchpads. Record real feedback. The scenario engine and comparative reports are now implemented; user demand remains unverified.
 5. Create a new pitch, product demo and distribution plan based on completed evidence.
 6. Complete Colosseum and Superteam submissions through the actual human accounts, including project X URL. Neither submission has been made.
 
 Colosseum's current hackathon ends 2026-10-12. The Superteam side-track deadline shown earlier was 2026-10-13 06:59 UTC; recheck on the listing immediately before submission.
+
+Stocklana closed 2026-09-25 16:00 ET. Its rules permit edits only until closure. Do not claim eligibility for a late submission without an explicit organizer exception.

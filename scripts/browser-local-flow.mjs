@@ -1,7 +1,7 @@
 import { chromium } from 'playwright-core'
 import { Connection, Keypair, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import assert from 'node:assert/strict'
-import { deriveDbcPoolAuthority } from '@meteora-ag/dynamic-bonding-curve-sdk'
+import { deriveDbcPoolAuthority, DynamicBondingCurveClient } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -70,6 +70,12 @@ try {
   if (longCurve) await page.getByRole('button', { name: /Long discovery curve/ }).click()
   await page.getByLabel('Opening market cap', { exact: false }).fill('1')
   await page.getByLabel('Graduation market cap', { exact: false }).fill('10')
+  let comparedConfig = null
+  if (process.env.SCENARIO_CURVE === 'long') {
+    const [download] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export Scenario Report · JSON' }).click()])
+    comparedConfig = JSON.parse(await readFile(await download.path(), 'utf8')).curves.find(curve => curve.id === 'long').config
+    await page.getByRole('button', { name: 'Use long curve for launch' }).click()
+  }
   await page.getByRole('button', { name: /Launch token/ }).click()
   if (process.env.CANCEL_SECOND === '1') {
     await page.getByRole('button', { name: 'Resume token creation' }).click({ timeout: 25000 })
@@ -77,6 +83,17 @@ try {
   await page.locator('.launch-success').waitFor({ timeout: 25000 })
   const pool = await page.getByLabel('Graduation pool address').inputValue()
   assert(pool.length > 30, 'Created pool must be transferred into the graduation form')
+  if (comparedConfig) {
+    const client = DynamicBondingCurveClient.create(local, 'confirmed')
+    const created = await client.state.getPool(pool)
+    const config = await client.state.getPoolConfig(created.poolState.config)
+    assert.equal(config.sqrtStartPrice.toString(), comparedConfig.sqrtStartPrice)
+    assert.equal(config.migrationQuoteThreshold.toString(), comparedConfig.migrationQuoteThreshold)
+    for (let i = 0; i < comparedConfig.curve.length; i++) {
+      assert.equal(config.curve[i].sqrtPrice.toString(), comparedConfig.curve[i].sqrtPrice)
+      assert.equal(config.curve[i].liquidity.toString(), comparedConfig.curve[i].liquidity)
+    }
+  }
   await page.getByRole('button', { name: 'Read pool' }).click()
   await page.getByRole('button', { name: 'Connect wallet for balances' }).click()
   await page.waitForFunction(() => document.querySelector('[data-testid="wallet-base-balance"]')?.textContent === '0')
@@ -122,7 +139,7 @@ try {
   await page.getByRole('button', { name: 'Graduate with wallet' }).click()
   await page.locator('.lifecycle-balances').waitFor({ timeout: 25000 })
   assert.deepEqual(errors, [])
-  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, signCount, pool,
+  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
     result: await page.locator('.lifecycle-result').innerText(), pageErrors: errors }))
 } catch (error) {
   console.error({ signCount, errors: await page.locator('.publish-error').allTextContents(), progress: await page.locator('[role=status]').allTextContents() })

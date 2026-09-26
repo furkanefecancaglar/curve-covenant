@@ -1,3 +1,6 @@
+import ScenarioLab from './ScenarioLab'
+import { buildControlledCurves } from './scenarios'
+import type { ControlledCurve } from './scenarios'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowRight, CheckCircle2, Code2, Copy, Download, ExternalLink, Info, Layers3, Rocket, SlidersHorizontal } from 'lucide-react'
 import { buildStudioConfig, PRESETS, simulateOpeningBuy, studioSummary } from './studio'
@@ -40,12 +43,18 @@ function saveJson(name: string, value: unknown) {
 export default function Studio() {
   const [shared] = useState(() => {
     const encoded = new URLSearchParams(window.location.search).get('design')
-    if (!encoded) return { design: null, error: '' }
-    try { return { design: decodeDesign(encoded), error: '' } }
-    catch (error) { return { design: null, error: error instanceof Error ? error.message : 'Invalid shared design.' } }
+    if (!encoded) return { design: null, selection: null, error: '' }
+    try {
+      const design = decodeDesign(encoded)
+      const selection = design.controlled ? { curve: buildControlledCurves(design.controlled.reference, QUOTES[design.quoteId].decimals).find(c => c.id === design.controlled!.model)!, reference: design.controlled.reference, quoteId: design.quoteId } : null
+      return { design, selection, error: '' }
+    }
+    catch (error) { return { design: null, selection: null, error: error instanceof Error ? error.message : 'Invalid shared design.' } }
   })
-  const [input, setInput] = useState<StudioInputs>(shared.design?.inputs ?? { ...PRESETS.steady.values })
+  const [input, setInput] = useState<StudioInputs>(shared.selection?.curve.inputs ?? shared.design?.inputs ?? { ...PRESETS.steady.values })
   const [quoteId, setQuoteId] = useState<QuoteId>(shared.design?.quoteId ?? 'SOL')
+  const [appliedScenario, setAppliedScenario] = useState<{ curve: ControlledCurve; reference: StudioInputs; quoteId: QuoteId } | null>(shared.selection)
+  const activeScenario = appliedScenario && appliedScenario.curve.inputs === input && appliedScenario.quoteId === quoteId ? appliedScenario : null
   const [shareMessage, setShareMessage] = useState('')
   const [launchLocked, setLaunchLocked] = useState(false)
   const [linkedPool] = useState(() => {
@@ -80,12 +89,12 @@ export default function Studio() {
   const quoteAsset = QUOTES[quoteId]
   const result = useMemo(() => {
     try {
-      const config = buildStudioConfig(input, quoteAsset.decimals)
+      const config = activeScenario?.curve.config ?? buildStudioConfig(input, quoteAsset.decimals)
       return { config, summary: studioSummary(config, quoteAsset.decimals), error: '' }
     } catch (error) {
       return { config: null, summary: null, error: error instanceof Error ? error.message : 'Invalid configuration.' }
     }
-  }, [input, quoteAsset.decimals])
+  }, [input, quoteAsset.decimals, activeScenario])
   const scenario = useMemo(() => {
     if (!result.config) return { quote: null, error: '' }
     try {
@@ -103,12 +112,13 @@ export default function Studio() {
     saveJson(`dbc-${quoteId.toLowerCase()}-${input.preset}-config.json`, {
       format: 'curve-covenant/config-v1', quoteAsset, preset: input.preset,
       inputs: input, sdkConfig: toPlain(result.config),
+      controlled: activeScenario ? { model: activeScenario.curve.id, reference: activeScenario.reference } : undefined,
     })
   }
   async function shareDesign() {
     const url = new URL(window.location.href)
     url.search = ''; url.hash = 'workbench'
-    url.searchParams.set('design', encodeDesign(quoteId, input))
+    url.searchParams.set('design', encodeDesign(quoteId, input, activeScenario ? { model: activeScenario.curve.id, reference: activeScenario.reference } : undefined))
     try { await navigator.clipboard.writeText(url.toString()); setShareMessage('Design link copied. It includes this quote asset and all launch terms.') }
     catch { setShareMessage('Clipboard unavailable. Use Download SDK config JSON to save this design.') }
   }
@@ -116,14 +126,14 @@ export default function Studio() {
   return <div className="studio-shell">
     <header className="studio-header">
       <a className="studio-brand" href={import.meta.env.BASE_URL}><span className="studio-mark"><Layers3 size={22}/></span><span>curve<span>covenant</span></span><small>PAIR LAUNCH</small></a>
-      <nav><a href="#workbench">Build</a><a href="#launch">Launch</a><a href="#saved-pools">Saved pools</a><a href={`${import.meta.env.BASE_URL}?view=inspector`}>Live inspector <ArrowRight size={14}/></a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer"><Code2 size={16}/> Source</a></nav>
+      <nav><a href="#scenarios">Scenarios</a><a href="#workbench">Build</a><a href="#launch">Launch</a><a href="#saved-pools">Saved pools</a><a href={`${import.meta.env.BASE_URL}?view=inspector`}>Live inspector <ArrowRight size={14}/></a><a href="https://github.com/furkanefecancaglar/curve-covenant" target="_blank" rel="noreferrer"><Code2 size={16}/> Source</a></nav>
     </header>
     <main>
       <section className="studio-hero"><div className="hero-noise"/>
         <div className="studio-hero-content"><div className="studio-eyebrow"><span/> STOCK-QUOTED LAUNCHES · METEORA DBC</div>
-          <h1>Launch a token<br/><em>priced in a stock.</em></h1>
-          <p>Build a DBC token launch quoted in a verified tokenized stock. Design the curve, simulate early trades, and create the token and pool with your wallet. Try the same flow with SOL on devnet first.</p>
-          <div className="studio-hero-actions"><a className="studio-main-btn" href="#workbench">Design a launch <ArrowRight size={18}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}?view=inspector`}>Inspect a live DBC pool <ExternalLink size={15}/></a></div>
+          <h1>Measure the curve.<br/><em>Then launch.</em></h1>
+          <p>Compare xStock-paired DBC curves under sequential buys, early whale pressure and selling. Inspect the trade-offs, export the evidence, then launch the configuration you chose. Rehearse with SOL on devnet.</p>
+          <div className="studio-hero-actions"><a className="studio-main-btn" href="#scenarios">Compare scenarios <ArrowRight size={18}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}?view=inspector`}>Inspect a live DBC pool <ExternalLink size={15}/></a></div>
           <div className="studio-hero-proof"><span><CheckCircle2 size={15}/> Issuer-listed quote mints</span><span><CheckCircle2 size={15}/> Meteora DBC + DAMM v2</span><span><CheckCircle2 size={15}/> SDK quote simulation</span></div>
         </div>
         <div className="studio-diagram" aria-hidden="true"><div className="diagram-node">01<span>Pick a stock quote</span></div><div className="diagram-line"/><div className="diagram-node">02<span>Launch on DBC</span></div><div className="diagram-line"/><div className="diagram-node">03<span>Graduate to DAMM v2</span></div></div>
@@ -158,6 +168,11 @@ export default function Studio() {
           </div>
         </div>
         <CurveComparison input={input} amount={buyAmount} elapsedHours={Number(elapsedHours)} symbol={quoteId} quoteDecimals={quoteAsset.decimals} locked={launchLocked} onChoose={preset => setInput(current => ({ ...current, preset }))}/>
+        <ScenarioLab input={activeScenario?.reference ?? input} quoteAsset={quoteAsset} locked={launchLocked} onChoose={curve => {
+          setAppliedScenario({ curve, reference: activeScenario?.reference ?? input, quoteId }); setInput(curve.inputs)
+          document.getElementById('launch')?.scrollIntoView({ behavior: 'smooth' })
+        }}/>
+        {activeScenario && <p className="shared-design-note" role="status">Scenario configuration selected: {activeScenario.curve.label}. The launch uses the exact compared configuration. Editing the launch terms starts a new design.</p>}
         <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={(address, label) => {
           const pool = { address, network: quoteAsset.network }
           observePool(pool, label); setCreatedPool(pool)

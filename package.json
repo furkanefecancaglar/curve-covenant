@@ -10,14 +10,15 @@
     "preview": "vite preview --host 0.0.0.0",
     "smoke": "tsx scripts/smoke.ts",
     "verify": "tsx scripts/verify-covenant.ts",
-    "test:local": "tsx scripts/local-launch-probe.ts"
+    "test:local": "tsx scripts/local-launch-probe.ts",
+    "verify:scenarios": "tsx scripts/verify-scenarios-local.ts"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@meteora-ag/dynamic-bonding-curve-sdk": "^1.5.13",
+    "@meteora-ag/dynamic-bonding-curve-sdk": "1.5.13",
     "@solana/web3.js": "^1.99.0",
     "lucide-react": "^1.48.0",
     "react": "^19.3.0",

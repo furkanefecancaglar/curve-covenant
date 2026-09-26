@@ -1,0 +1,21 @@
+{
+  "network": "local-validator",
+  "sdkVersion": "1.5.13",
+  "quoteAssets": [
+    "SOL",
+    "XRXx"
+  ],
+  "syntheticStockBalance": true,
+  "pools": 8,
+  "exactSwapMatches": 56,
+  "programs": {
+    "dbc": "4c26a8a5da99f8ce932fa0300c46675b527090021fbb74214c9486bedda9f23b",
+    "damm": "4d5b920baebc090f89b2e8796a3452ed067c9667a143058c96a312f2c1e6848b"
+  },
+  "sha256": {
+    "src/scenario-engine.ts": "ac8140bd797dabcba99e3b914ff163d8339ffd227c9199dcc193bc865065c33a",
+    "src/scenarios.ts": "dde1589e3df2b493080647ef5028e7e6a6ad6cb09bd505aa3c3e00deeaf4552e",
+    "scripts/verify-scenarios-local.ts": "778c6e022680c7641549b7eb2327df94651d6d4d914bf1c999269bbd9eb88db1",
+    "docs/evidence/scenario-chain-proof-2026-09-26.json": "1ecc01fe971a7df255e5fb3be2092fe2548fe07edea751a8083171b06f5e4865"
+  }
+}

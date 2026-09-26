@@ -1,0 +1,2886 @@
+{
+  "format": "curve-covenant/scenario-v1",
+  "generatedAt": "2026-09-26T02:04:00.383Z",
+  "engine": "stateful-dbc-quote-fees-v1",
+  "sdkVersion": "1.5.13",
+  "scenario": "sell-pressure",
+  "quoteAsset": {
+    "id": "XRXx",
+    "name": "Xerox xStock",
+    "mint": "XsensupeZBdHxZtdnLptf1UfWpVyancWcit7qWFYZrJ",
+    "decimals": 8,
+    "network": "mainnet-beta",
+    "category": "Tokenized equity quote"
+  },
+  "budget": "2.88300804",
+  "budgetRaw": "288300804",
+  "controls": {
+    "sameSupply": true,
+    "sameOpeningPrice": true,
+    "sameQuoteThreshold": true,
+    "sameFeeSchedule": true,
+    "sameLeftoverTarget": true,
+    "leftoverTargetPct": 0.001,
+    "endpointPriceEqualized": false,
+    "thresholdRaw": "240250670"
+  },
+  "assumptions": [
+    "Hypothetical scheduled trades; not observed demand.",
+    "Quote-token fees, timestamp activation, no dynamic fees or vesting.",
+    "Quote USD price and external quote-token liquidity are not modeled.",
+    "All raw accounting uses integers; display ratios use floating point.",
+    "After graduation, later DBC events are not executed. Lower price impact does not imply less early token capture."
+  ],
+  "curves": [
+    {
+      "id": "steady",
+      "label": "One segment",
+      "color": "#90cfff",
+      "initial": {
+        "sqrtPriceRaw": "5833372668713515",
+        "baseReserveRaw": "1000000000000000",
+        "quoteReserveRaw": "0",
+        "feeQuoteRaw": "0",
+        "completed": false
+      },
+      "final": {
+        "sqrtPriceRaw": "17945167124847029",
+        "baseReserveRaw": "250081285957346",
+        "quoteReserveRaw": "230697016",
+        "feeQuoteRaw": "3430241",
+        "completed": false
+      },
+      "trades": [
+        {
+          "actor": "early-opening",
+          "side": "buy",
+          "amountRaw": "86490241",
+          "atSeconds": 0,
+          "index": 0,
+          "filledInputRaw": "86490241",
+          "unfilledInputRaw": "0",
+          "outputRaw": "483585306330660",
+          "tradingFeeRaw": "691923",
+          "protocolFeeRaw": "172980",
+          "before": {
+            "sqrtPriceRaw": "5833372668713515",
+            "baseReserveRaw": "1000000000000000",
+            "quoteReserveRaw": "0",
+            "feeQuoteRaw": "0",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "10328777568295781",
+            "baseReserveRaw": "516414693669340",
+            "quoteReserveRaw": "85625338",
+            "feeQuoteRaw": "864903",
+            "completed": false
+          },
+          "spotPrice": 3.1351505815791237e-9,
+          "averageCost": 1.7885208642146122e-9,
+          "actorBaseRaw": "483585306330660"
+        },
+        {
+          "actor": "early-opening",
+          "side": "sell",
+          "amountRaw": "241792653165330",
+          "atSeconds": 60,
+          "index": 1,
+          "filledInputRaw": "241792653165330",
+          "unfilledInputRaw": "0",
+          "outputRaw": "54173547",
+          "tradingFeeRaw": "437767",
+          "protocolFeeRaw": "109441",
+          "before": {
+            "sqrtPriceRaw": "10328777568295781",
+            "baseReserveRaw": "516414693669340",
+            "quoteReserveRaw": "85625338",
+            "feeQuoteRaw": "864903",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "7455890198341213",
+            "baseReserveRaw": "758207346834670",
+            "quoteReserveRaw": "30904583",
+            "feeQuoteRaw": "1412111",
+            "completed": false
+          },
+          "spotPrice": 1.6336520505817593e-9,
+          "averageCost": 2.2404959907097706e-9,
+          "actorBaseRaw": "241792653165330"
+        },
+        {
+          "actor": "early-0",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 120,
+          "index": 2,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "38939931735938",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "7455890198341213",
+            "baseReserveRaw": "758207346834670",
+            "quoteReserveRaw": "30904583",
+            "feeQuoteRaw": "1412111",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "7805532774808277",
+            "baseReserveRaw": "719267415098732",
+            "quoteReserveRaw": "37564331",
+            "feeQuoteRaw": "1479382",
+            "completed": false
+          },
+          "spotPrice": 1.7904642679519707e-9,
+          "averageCost": 1.727537440388365e-9,
+          "actorBaseRaw": "38939931735938"
+        },
+        {
+          "actor": "early-1",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 180,
+          "index": 3,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "35600933499075",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "7805532774808277",
+            "baseReserveRaw": "719267415098732",
+            "quoteReserveRaw": "37564331",
+            "feeQuoteRaw": "1479382",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "8155175351275341",
+            "baseReserveRaw": "683666481599657",
+            "quoteReserveRaw": "44224079",
+            "feeQuoteRaw": "1546653",
+            "completed": false
+          },
+          "spotPrice": 1.9544616905024983e-9,
+          "averageCost": 1.8895625307619485e-9,
+          "actorBaseRaw": "35600933499075"
+        },
+        {
+          "actor": "early-2",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 240,
+          "index": 4,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "32673745117383",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "8155175351275341",
+            "baseReserveRaw": "683666481599657",
+            "quoteReserveRaw": "44224079",
+            "feeQuoteRaw": "1546653",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "8504817927742405",
+            "baseReserveRaw": "650992736482274",
+            "quoteReserveRaw": "50883827",
+            "feeQuoteRaw": "1613924",
+            "completed": false
+          },
+          "spotPrice": 2.125644318233342e-9,
+          "averageCost": 2.058845405028611e-9,
+          "actorBaseRaw": "32673745117383"
+        },
+        {
+          "actor": "early-3",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 300,
+          "index": 5,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "30093320839644",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "8504817927742405",
+            "baseReserveRaw": "650992736482274",
+            "quoteReserveRaw": "50883827",
+            "feeQuoteRaw": "1613924",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "8854460504209469",
+            "baseReserveRaw": "620899415642630",
+            "quoteReserveRaw": "57543575",
+            "feeQuoteRaw": "1681195",
+            "completed": false
+          },
+          "spotPrice": 2.3040121511445016e-9,
+          "averageCost": 2.2353860631884916e-9,
+          "actorBaseRaw": "30093320839644"
+        },
+        {
+          "actor": "early-4",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 360,
+          "index": 6,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "27806969602463",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "8854460504209469",
+            "baseReserveRaw": "620899415642630",
+            "quoteReserveRaw": "57543575",
+            "feeQuoteRaw": "1681195",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "9204103080676533",
+            "baseReserveRaw": "593092446040167",
+            "quoteReserveRaw": "64203323",
+            "feeQuoteRaw": "1748466",
+            "completed": false
+          },
+          "spotPrice": 2.4895651892359775e-9,
+          "averageCost": 2.419184505241504e-9,
+          "actorBaseRaw": "27806969602463"
+        },
+        {
+          "actor": "early-5",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 420,
+          "index": 7,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "25771642131027",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "9204103080676533",
+            "baseReserveRaw": "593092446040167",
+            "quoteReserveRaw": "64203323",
+            "feeQuoteRaw": "1748466",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "9553745657143597",
+            "baseReserveRaw": "567320803909140",
+            "quoteReserveRaw": "70863071",
+            "feeQuoteRaw": "1815737",
+            "completed": false
+          },
+          "spotPrice": 2.682303432507769e-9,
+          "averageCost": 2.6102407311877135e-9,
+          "actorBaseRaw": "25771642131027"
+        },
+        {
+          "actor": "early-6",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 480,
+          "index": 8,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "23951888498852",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "9553745657143597",
+            "baseReserveRaw": "567320803909140",
+            "quoteReserveRaw": "70863071",
+            "feeQuoteRaw": "1815737",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "9903388233610661",
+            "baseReserveRaw": "543368915410288",
+            "quoteReserveRaw": "77522819",
+            "feeQuoteRaw": "1883008",
+            "completed": false
+          },
+          "spotPrice": 2.882226880959877e-9,
+          "averageCost": 2.808554741026964e-9,
+          "actorBaseRaw": "23951888498852"
+        },
+        {
+          "actor": "early-7",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 540,
+          "index": 9,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "22318303237846",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "9903388233610661",
+            "baseReserveRaw": "543368915410288",
+            "quoteReserveRaw": "77522819",
+            "feeQuoteRaw": "1883008",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "10253030810077725",
+            "baseReserveRaw": "521050612172442",
+            "quoteReserveRaw": "84182567",
+            "feeQuoteRaw": "1950279",
+            "completed": false
+          },
+          "spotPrice": 3.089335534592301e-9,
+          "averageCost": 3.014126534759478e-9,
+          "actorBaseRaw": "22318303237846"
+        },
+        {
+          "actor": "early-8",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 600,
+          "index": 10,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "20846329375790",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "10253030810077725",
+            "baseReserveRaw": "521050612172442",
+            "quoteReserveRaw": "84182567",
+            "feeQuoteRaw": "1950279",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "10602673386544789",
+            "baseReserveRaw": "500204282796652",
+            "quoteReserveRaw": "90842315",
+            "feeQuoteRaw": "2017550",
+            "completed": false
+          },
+          "spotPrice": 3.3036293934050407e-9,
+          "averageCost": 3.2269561123851666e-9,
+          "actorBaseRaw": "20846329375790"
+        },
+        {
+          "actor": "early-9",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 660,
+          "index": 11,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "19515329733806",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "10602673386544789",
+            "baseReserveRaw": "500204282796652",
+            "quoteReserveRaw": "90842315",
+            "feeQuoteRaw": "2017550",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "10952315963011853",
+            "baseReserveRaw": "480688953062846",
+            "quoteReserveRaw": "97502063",
+            "feeQuoteRaw": "2084821",
+            "completed": false
+          },
+          "spotPrice": 3.5251084573980966e-9,
+          "averageCost": 3.4470434739039662e-9,
+          "actorBaseRaw": "19515329733806"
+        },
+        {
+          "actor": "middle-10",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 720,
+          "index": 12,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "18307859339202",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "10952315963011853",
+            "baseReserveRaw": "480688953062846",
+            "quoteReserveRaw": "97502063",
+            "feeQuoteRaw": "2084821",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "11301958539478917",
+            "baseReserveRaw": "462381093723644",
+            "quoteReserveRaw": "104161811",
+            "feeQuoteRaw": "2152092",
+            "completed": false
+          },
+          "spotPrice": 3.753772726571469e-9,
+          "averageCost": 3.6743886193158917e-9,
+          "actorBaseRaw": "18307859339202"
+        },
+        {
+          "actor": "middle-11",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 780,
+          "index": 13,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "17209090672946",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "11301958539478917",
+            "baseReserveRaw": "462381093723644",
+            "quoteReserveRaw": "104161811",
+            "feeQuoteRaw": "2152092",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "11651601115945981",
+            "baseReserveRaw": "445172003050698",
+            "quoteReserveRaw": "110821559",
+            "feeQuoteRaw": "2219363",
+            "completed": false
+          },
+          "spotPrice": 3.989622200925157e-9,
+          "averageCost": 3.9089915486210935e-9,
+          "actorBaseRaw": "17209090672946"
+        },
+        {
+          "actor": "middle-12",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 840,
+          "index": 14,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "16206356130467",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "11651601115945981",
+            "baseReserveRaw": "445172003050698",
+            "quoteReserveRaw": "110821559",
+            "feeQuoteRaw": "2219363",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "12001243692413045",
+            "baseReserveRaw": "428965646920231",
+            "quoteReserveRaw": "117481307",
+            "feeQuoteRaw": "2286634",
+            "completed": false
+          },
+          "spotPrice": 4.232656880459161e-9,
+          "averageCost": 4.150852261819422e-9,
+          "actorBaseRaw": "16206356130467"
+        },
+        {
+          "actor": "middle-13",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 900,
+          "index": 15,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "15288781150140",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "12001243692413045",
+            "baseReserveRaw": "428965646920231",
+            "quoteReserveRaw": "117481307",
+            "feeQuoteRaw": "2286634",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "12350886268880109",
+            "baseReserveRaw": "413676865770091",
+            "quoteReserveRaw": "124141055",
+            "feeQuoteRaw": "2353905",
+            "completed": false
+          },
+          "spotPrice": 4.482876765173481e-9,
+          "averageCost": 4.399970758910627e-9,
+          "actorBaseRaw": "15288781150140"
+        },
+        {
+          "actor": "middle-14",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 960,
+          "index": 16,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "14446988040976",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "12350886268880109",
+            "baseReserveRaw": "413676865770091",
+            "quoteReserveRaw": "124141055",
+            "feeQuoteRaw": "2353905",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "12700528845347173",
+            "baseReserveRaw": "399229877729115",
+            "quoteReserveRaw": "130800803",
+            "feeQuoteRaw": "2421176",
+            "completed": false
+          },
+          "spotPrice": 4.740281855068118e-9,
+          "averageCost": 4.656347039895203e-9,
+          "actorBaseRaw": "14446988040976"
+        },
+        {
+          "actor": "middle-15",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1020,
+          "index": 17,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "13672855356038",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "12700528845347173",
+            "baseReserveRaw": "399229877729115",
+            "quoteReserveRaw": "130800803",
+            "feeQuoteRaw": "2421176",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "13050171421814237",
+            "baseReserveRaw": "385557022373077",
+            "quoteReserveRaw": "137460551",
+            "feeQuoteRaw": "2488447",
+            "completed": false
+          },
+          "spotPrice": 5.00487215014307e-9,
+          "averageCost": 4.919981104772907e-9,
+          "actorBaseRaw": "13672855356038"
+        },
+        {
+          "actor": "middle-16",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1080,
+          "index": 18,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "12959321216689",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "13050171421814237",
+            "baseReserveRaw": "385557022373077",
+            "quoteReserveRaw": "137460551",
+            "feeQuoteRaw": "2488447",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "13399813998281301",
+            "baseReserveRaw": "372597701156388",
+            "quoteReserveRaw": "144120299",
+            "feeQuoteRaw": "2555718",
+            "completed": false
+          },
+          "spotPrice": 5.276647650398338e-9,
+          "averageCost": 5.190872953544011e-9,
+          "actorBaseRaw": "12959321216689"
+        },
+        {
+          "actor": "middle-17",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1140,
+          "index": 19,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "12300221646486",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "13399813998281301",
+            "baseReserveRaw": "372597701156388",
+            "quoteReserveRaw": "144120299",
+            "feeQuoteRaw": "2555718",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "13749456574748365",
+            "baseReserveRaw": "360297479509902",
+            "quoteReserveRaw": "150780047",
+            "feeQuoteRaw": "2622989",
+            "completed": false
+          },
+          "spotPrice": 5.555608355833922e-9,
+          "averageCost": 5.469022586208285e-9,
+          "actorBaseRaw": "12300221646486"
+        },
+        {
+          "actor": "middle-18",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1200,
+          "index": 20,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "11690156969096",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "13749456574748365",
+            "baseReserveRaw": "360297479509902",
+            "quoteReserveRaw": "150780047",
+            "feeQuoteRaw": "2622989",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "14099099151215429",
+            "baseReserveRaw": "348607322540806",
+            "quoteReserveRaw": "157439795",
+            "feeQuoteRaw": "2690260",
+            "completed": false
+          },
+          "spotPrice": 5.841754266449823e-9,
+          "averageCost": 5.754430002765139e-9,
+          "actorBaseRaw": "11690156969096"
+        },
+        {
+          "actor": "middle-19",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1260,
+          "index": 21,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "11124380837303",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "14099099151215429",
+            "baseReserveRaw": "348607322540806",
+            "quoteReserveRaw": "157439795",
+            "feeQuoteRaw": "2690260",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "14448741727682493",
+            "baseReserveRaw": "337482941703503",
+            "quoteReserveRaw": "164099543",
+            "feeQuoteRaw": "2757531",
+            "completed": false
+          },
+          "spotPrice": 6.135085382246039e-9,
+          "averageCost": 6.047095203215733e-9,
+          "actorBaseRaw": "11124380837303"
+        },
+        {
+          "actor": "late-20",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1320,
+          "index": 22,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "10598707615468",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "14448741727682493",
+            "baseReserveRaw": "337482941703503",
+            "quoteReserveRaw": "164099543",
+            "feeQuoteRaw": "2757531",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "14798384304149557",
+            "baseReserveRaw": "326884234088035",
+            "quoteReserveRaw": "170759291",
+            "feeQuoteRaw": "2824802",
+            "completed": false
+          },
+          "spotPrice": 6.435601703222572e-9,
+          "averageCost": 6.347018187559427e-9,
+          "actorBaseRaw": "10598707615468"
+        },
+        {
+          "actor": "late-21",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1380,
+          "index": 23,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "10109434726385",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "14798384304149557",
+            "baseReserveRaw": "326884234088035",
+            "quoteReserveRaw": "170759291",
+            "feeQuoteRaw": "2824802",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "15148026880616621",
+            "baseReserveRaw": "316774799361650",
+            "quoteReserveRaw": "177419039",
+            "feeQuoteRaw": "2892073",
+            "completed": false
+          },
+          "spotPrice": 6.74330322937942e-9,
+          "averageCost": 6.65419895579611e-9,
+          "actorBaseRaw": "10109434726385"
+        },
+        {
+          "actor": "late-22",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1440,
+          "index": 24,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "9653277261658",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "15148026880616621",
+            "baseReserveRaw": "316774799361650",
+            "quoteReserveRaw": "177419039",
+            "feeQuoteRaw": "2892073",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "15497669457083685",
+            "baseReserveRaw": "307121522099992",
+            "quoteReserveRaw": "184078787",
+            "feeQuoteRaw": "2959344",
+            "completed": false
+          },
+          "spotPrice": 7.058189960716585e-9,
+          "averageCost": 6.96863750792609e-9,
+          "actorBaseRaw": "9653277261658"
+        },
+        {
+          "actor": "late-23",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1500,
+          "index": 25,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "9227311336049",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "15497669457083685",
+            "baseReserveRaw": "307121522099992",
+            "quoteReserveRaw": "184078787",
+            "feeQuoteRaw": "2959344",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "15847311981049877",
+            "baseReserveRaw": "297894210763943",
+            "quoteReserveRaw": "190738534",
+            "feeQuoteRaw": "3026615",
+            "completed": false
+          },
+          "spotPrice": 7.380261848333636e-9,
+          "averageCost": 7.290333830743388e-9,
+          "actorBaseRaw": "9227311336049"
+        },
+        {
+          "actor": "late-24",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1560,
+          "index": 26,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "8828932687278",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "15847311981049877",
+            "baseReserveRaw": "297894210763943",
+            "quoteReserveRaw": "190738534",
+            "feeQuoteRaw": "3026615",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "16196954505016069",
+            "baseReserveRaw": "289065278076665",
+            "quoteReserveRaw": "197398281",
+            "feeQuoteRaw": "3093886",
+            "completed": false
+          },
+          "spotPrice": 7.709518938973202e-9,
+          "averageCost": 7.619287900669192e-9,
+          "actorBaseRaw": "8828932687278"
+        },
+        {
+          "actor": "late-25",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1620,
+          "index": 27,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "8455808194876",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "16196954505016069",
+            "baseReserveRaw": "289065278076665",
+            "quoteReserveRaw": "197398281",
+            "feeQuoteRaw": "3093886",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "16546597028982261",
+            "baseReserveRaw": "280609469881789",
+            "quoteReserveRaw": "204058028",
+            "feeQuoteRaw": "3161157",
+            "completed": false
+          },
+          "spotPrice": 8.045961232635283e-9,
+          "averageCost": 7.955499752319828e-9,
+          "actorBaseRaw": "8455808194876"
+        },
+        {
+          "actor": "late-26",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1680,
+          "index": 28,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "8105847470164",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "16546597028982261",
+            "baseReserveRaw": "280609469881789",
+            "quoteReserveRaw": "204058028",
+            "feeQuoteRaw": "3161157",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "16896239552948453",
+            "baseReserveRaw": "272503622411625",
+            "quoteReserveRaw": "210717775",
+            "feeQuoteRaw": "3228428",
+            "completed": false
+          },
+          "spotPrice": 8.38958872931988e-9,
+          "averageCost": 8.29896938569447e-9,
+          "actorBaseRaw": "8105847470164"
+        },
+        {
+          "actor": "late-27",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1740,
+          "index": 29,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "7777172026865",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "16896239552948453",
+            "baseReserveRaw": "272503622411625",
+            "quoteReserveRaw": "210717775",
+            "feeQuoteRaw": "3228428",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "17245882076914645",
+            "baseReserveRaw": "264726450384760",
+            "quoteReserveRaw": "217377522",
+            "feeQuoteRaw": "3295699",
+            "completed": false
+          },
+          "spotPrice": 8.740401429026992e-9,
+          "averageCost": 8.649696800794157e-9,
+          "actorBaseRaw": "7777172026865"
+        },
+        {
+          "actor": "late-28",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1800,
+          "index": 30,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "7468090016698",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "17245882076914645",
+            "baseReserveRaw": "264726450384760",
+            "quoteReserveRaw": "217377522",
+            "feeQuoteRaw": "3295699",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "17595524600880837",
+            "baseReserveRaw": "257258360368062",
+            "quoteReserveRaw": "224037269",
+            "feeQuoteRaw": "3362970",
+            "completed": false
+          },
+          "spotPrice": 9.09839933175662e-9,
+          "averageCost": 9.007681997617827e-9,
+          "actorBaseRaw": "7468090016698"
+        },
+        {
+          "actor": "late-29",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1860,
+          "index": 31,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "7177074410716",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "17595524600880837",
+            "baseReserveRaw": "257258360368062",
+            "quoteReserveRaw": "224037269",
+            "feeQuoteRaw": "3362970",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "17945167124847029",
+            "baseReserveRaw": "250081285957346",
+            "quoteReserveRaw": "230697016",
+            "feeQuoteRaw": "3430241",
+            "completed": false
+          },
+          "spotPrice": 9.463582437508762e-9,
+          "averageCost": 9.372924976165738e-9,
+          "actorBaseRaw": "7177074410716"
+        }
+      ],
+      "scheduledBuys": [
+        {
+          "actor": "early-opening",
+          "side": "buy",
+          "amountRaw": "86490241",
+          "atSeconds": 0
+        },
+        {
+          "actor": "early-0",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 120
+        },
+        {
+          "actor": "early-1",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 180
+        },
+        {
+          "actor": "early-2",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 240
+        },
+        {
+          "actor": "early-3",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 300
+        },
+        {
+          "actor": "early-4",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 360
+        },
+        {
+          "actor": "early-5",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 420
+        },
+        {
+          "actor": "early-6",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 480
+        },
+        {
+          "actor": "early-7",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 540
+        },
+        {
+          "actor": "early-8",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 600
+        },
+        {
+          "actor": "early-9",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 660
+        },
+        {
+          "actor": "middle-10",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 720
+        },
+        {
+          "actor": "middle-11",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 780
+        },
+        {
+          "actor": "middle-12",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 840
+        },
+        {
+          "actor": "middle-13",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 900
+        },
+        {
+          "actor": "middle-14",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 960
+        },
+        {
+          "actor": "middle-15",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1020
+        },
+        {
+          "actor": "middle-16",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1080
+        },
+        {
+          "actor": "middle-17",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1140
+        },
+        {
+          "actor": "middle-18",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1200
+        },
+        {
+          "actor": "middle-19",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1260
+        },
+        {
+          "actor": "late-20",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1320
+        },
+        {
+          "actor": "late-21",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1380
+        },
+        {
+          "actor": "late-22",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1440
+        },
+        {
+          "actor": "late-23",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1500
+        },
+        {
+          "actor": "late-24",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1560
+        },
+        {
+          "actor": "late-25",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1620
+        },
+        {
+          "actor": "late-26",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1680
+        },
+        {
+          "actor": "late-27",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1740
+        },
+        {
+          "actor": "late-28",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1800
+        },
+        {
+          "actor": "late-29",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1860
+        }
+      ],
+      "config": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "10000000",
+            "firstFactor": 0,
+            "secondFactor": "0",
+            "thirdFactor": "0",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "activationType": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "migrationQuoteThreshold": "240250670",
+        "sqrtStartPrice": "5833372668713515",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "tokenUpdateAuthority": 1,
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "18446744073709550",
+            "liquidity": "6481461255192584679600674566480"
+          },
+          {
+            "sqrtPrice": "79226673521066979257578248091",
+            "liquidity": "3263113420894869224327114"
+          }
+        ]
+      },
+      "inputs": {
+        "preset": "steady",
+        "supply": 1000000000,
+        "initialMarketCap": 1,
+        "migrationMarketCap": 10,
+        "startingFeeBps": 100,
+        "endingFeeBps": 100,
+        "feeDurationHours": 0,
+        "creatorFeeSharePct": 0,
+        "partnerLockedPct": 100
+      },
+      "openingPrice": 9.999999999999996e-10,
+      "migrationPrice": 9.999998090211326e-9,
+      "metrics": {
+        "grossQuoteSpent": "2.88300804",
+        "quoteReturned": "0.54173547",
+        "netQuoteReserve": "2.30697016",
+        "totalQuoteFees": "0.03430241",
+        "remainingQuoteToGraduate": "0.09553654",
+        "baseReserve": "250081285.957346",
+        "totalBaseBought": "991711367.207984",
+        "unspentBuyBudget": "0",
+        "progressPct": 96.02346415932992,
+        "graduationEvent": null,
+        "firstBuyPriceChangePct": 213.51505815791248,
+        "cohorts": [
+          {
+            "name": "early",
+            "baseReceived": "761103700.102484",
+            "quoteSpent": "1.53760431",
+            "averageCost": 2.020229713497594e-9,
+            "shareOfBuyOutputPct": 76.74649351305294
+          },
+          {
+            "name": "middle",
+            "baseReceived": "143206011.359343",
+            "quoteSpent": "0.6727019",
+            "averageCost": 4.697441773669732e-9,
+            "shareOfBuyOutputPct": 14.44029140883181
+          },
+          {
+            "name": "late",
+            "baseReceived": "87401655.746157",
+            "quoteSpent": "0.67270183",
+            "averageCost": 7.696671467572034e-9,
+            "shareOfBuyOutputPct": 8.813215078115256
+          }
+        ],
+        "recovery": {
+          "additionalBuys": 9,
+          "grossQuote": "0.60543171"
+        },
+        "finalHoldings": [
+          {
+            "actor": "early-opening",
+            "baseRaw": "241792653165330"
+          },
+          {
+            "actor": "early-0",
+            "baseRaw": "38939931735938"
+          },
+          {
+            "actor": "early-1",
+            "baseRaw": "35600933499075"
+          },
+          {
+            "actor": "early-2",
+            "baseRaw": "32673745117383"
+          },
+          {
+            "actor": "early-3",
+            "baseRaw": "30093320839644"
+          },
+          {
+            "actor": "early-4",
+            "baseRaw": "27806969602463"
+          },
+          {
+            "actor": "early-5",
+            "baseRaw": "25771642131027"
+          },
+          {
+            "actor": "early-6",
+            "baseRaw": "23951888498852"
+          },
+          {
+            "actor": "early-7",
+            "baseRaw": "22318303237846"
+          },
+          {
+            "actor": "early-8",
+            "baseRaw": "20846329375790"
+          },
+          {
+            "actor": "early-9",
+            "baseRaw": "19515329733806"
+          },
+          {
+            "actor": "middle-10",
+            "baseRaw": "18307859339202"
+          },
+          {
+            "actor": "middle-11",
+            "baseRaw": "17209090672946"
+          },
+          {
+            "actor": "middle-12",
+            "baseRaw": "16206356130467"
+          },
+          {
+            "actor": "middle-13",
+            "baseRaw": "15288781150140"
+          },
+          {
+            "actor": "middle-14",
+            "baseRaw": "14446988040976"
+          },
+          {
+            "actor": "middle-15",
+            "baseRaw": "13672855356038"
+          },
+          {
+            "actor": "middle-16",
+            "baseRaw": "12959321216689"
+          },
+          {
+            "actor": "middle-17",
+            "baseRaw": "12300221646486"
+          },
+          {
+            "actor": "middle-18",
+            "baseRaw": "11690156969096"
+          },
+          {
+            "actor": "middle-19",
+            "baseRaw": "11124380837303"
+          },
+          {
+            "actor": "late-20",
+            "baseRaw": "10598707615468"
+          },
+          {
+            "actor": "late-21",
+            "baseRaw": "10109434726385"
+          },
+          {
+            "actor": "late-22",
+            "baseRaw": "9653277261658"
+          },
+          {
+            "actor": "late-23",
+            "baseRaw": "9227311336049"
+          },
+          {
+            "actor": "late-24",
+            "baseRaw": "8828932687278"
+          },
+          {
+            "actor": "late-25",
+            "baseRaw": "8455808194876"
+          },
+          {
+            "actor": "late-26",
+            "baseRaw": "8105847470164"
+          },
+          {
+            "actor": "late-27",
+            "baseRaw": "7777172026865"
+          },
+          {
+            "actor": "late-28",
+            "baseRaw": "7468090016698"
+          },
+          {
+            "actor": "late-29",
+            "baseRaw": "7177074410716"
+          }
+        ]
+      }
+    },
+    {
+      "id": "long",
+      "label": "Long · 16 segments",
+      "color": "#b6ed90",
+      "initial": {
+        "sqrtPriceRaw": "5833372668713515",
+        "baseReserveRaw": "1000000000000000",
+        "quoteReserveRaw": "0",
+        "feeQuoteRaw": "0",
+        "completed": false
+      },
+      "final": {
+        "sqrtPriceRaw": "21944541091723785",
+        "baseReserveRaw": "159069395784674",
+        "quoteReserveRaw": "233029219",
+        "feeQuoteRaw": "3406919",
+        "completed": false
+      },
+      "trades": [
+        {
+          "actor": "early-opening",
+          "side": "buy",
+          "amountRaw": "86490241",
+          "atSeconds": 0,
+          "index": 0,
+          "filledInputRaw": "86490241",
+          "unfilledInputRaw": "0",
+          "outputRaw": "547882252261141",
+          "tradingFeeRaw": "691923",
+          "protocolFeeRaw": "172980",
+          "before": {
+            "sqrtPriceRaw": "5833372668713515",
+            "baseReserveRaw": "1000000000000000",
+            "quoteReserveRaw": "0",
+            "feeQuoteRaw": "0",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "9300583282032249",
+            "baseReserveRaw": "452117747738859",
+            "quoteReserveRaw": "85625338",
+            "feeQuoteRaw": "864903",
+            "completed": false
+          },
+          "spotPrice": 2.5420314948648353e-9,
+          "averageCost": 1.5786282662570269e-9,
+          "actorBaseRaw": "547882252261141"
+        },
+        {
+          "actor": "early-opening",
+          "side": "sell",
+          "amountRaw": "273941126130570",
+          "atSeconds": 60,
+          "index": 1,
+          "filledInputRaw": "273941126130570",
+          "unfilledInputRaw": "0",
+          "outputRaw": "51864666",
+          "tradingFeeRaw": "419109",
+          "protocolFeeRaw": "104777",
+          "before": {
+            "sqrtPriceRaw": "9300583282032249",
+            "baseReserveRaw": "452117747738859",
+            "quoteReserveRaw": "85625338",
+            "feeQuoteRaw": "864903",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "7077525564308676",
+            "baseReserveRaw": "726058873869429",
+            "quoteReserveRaw": "33236786",
+            "feeQuoteRaw": "1388789",
+            "completed": false
+          },
+          "spotPrice": 1.4720530060577931e-9,
+          "averageCost": 1.89327782697657e-9,
+          "actorBaseRaw": "273941126130571"
+        },
+        {
+          "actor": "early-0",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 120,
+          "index": 2,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "43701895273371",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "7077525564308676",
+            "baseReserveRaw": "726058873869429",
+            "quoteReserveRaw": "33236786",
+            "feeQuoteRaw": "1388789",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "7326820002704252",
+            "baseReserveRaw": "682356978596058",
+            "quoteReserveRaw": "39896534",
+            "feeQuoteRaw": "1456060",
+            "completed": false
+          },
+          "spotPrice": 1.577580755587601e-9,
+          "averageCost": 1.5392968561020265e-9,
+          "actorBaseRaw": "43701895273371"
+        },
+        {
+          "actor": "early-1",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 180,
+          "index": 3,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "40823152408216",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "7326820002704252",
+            "baseReserveRaw": "682356978596058",
+            "quoteReserveRaw": "39896534",
+            "feeQuoteRaw": "1456060",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "7580395823685318",
+            "baseReserveRaw": "641533826187842",
+            "quoteReserveRaw": "46556282",
+            "feeQuoteRaw": "1523331",
+            "completed": false
+          },
+          "spotPrice": 1.6886681894127263e-9,
+          "averageCost": 1.6478440794410895e-9,
+          "actorBaseRaw": "40823152408216"
+        },
+        {
+          "actor": "early-2",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 240,
+          "index": 4,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "38009298815409",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "7580395823685318",
+            "baseReserveRaw": "641533826187842",
+            "quoteReserveRaw": "46556282",
+            "feeQuoteRaw": "1523331",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "7865303753280262",
+            "baseReserveRaw": "603524527372433",
+            "quoteReserveRaw": "53216030",
+            "feeQuoteRaw": "1590602",
+            "completed": false
+          },
+          "spotPrice": 1.8179902676455135e-9,
+          "averageCost": 1.769835069220709e-9,
+          "actorBaseRaw": "38009298815409"
+        },
+        {
+          "actor": "early-3",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 300,
+          "index": 5,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "35351907559276",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "7865303753280262",
+            "baseReserveRaw": "603524527372433",
+            "quoteReserveRaw": "53216030",
+            "feeQuoteRaw": "1590602",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "8150211682875206",
+            "baseReserveRaw": "568172619813157",
+            "quoteReserveRaw": "59875778",
+            "feeQuoteRaw": "1657873",
+            "completed": false
+          },
+          "spotPrice": 1.95208323830394e-9,
+          "averageCost": 1.9028729888820087e-9,
+          "actorBaseRaw": "35351907559276"
+        },
+        {
+          "actor": "early-4",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 360,
+          "index": 6,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "32963786804887",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "8150211682875206",
+            "baseReserveRaw": "568172619813157",
+            "quoteReserveRaw": "59875778",
+            "feeQuoteRaw": "1657873",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "8435119605436688",
+            "baseReserveRaw": "535208833008270",
+            "quoteReserveRaw": "66535526",
+            "feeQuoteRaw": "1725144",
+            "completed": false
+          },
+          "spotPrice": 2.0909470979010127e-9,
+          "averageCost": 2.040730041065153e-9,
+          "actorBaseRaw": "32963786804887"
+        },
+        {
+          "actor": "early-5",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 420,
+          "index": 7,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "30809747547480",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "8435119605436688",
+            "baseReserveRaw": "535208833008270",
+            "quoteReserveRaw": "66535526",
+            "feeQuoteRaw": "1725144",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "8720027535031632",
+            "baseReserveRaw": "504399085460790",
+            "quoteReserveRaw": "73195274",
+            "feeQuoteRaw": "1792415",
+            "completed": false
+          },
+          "spotPrice": 2.2345818532929387e-9,
+          "averageCost": 2.183406076155992e-9,
+          "actorBaseRaw": "30809747547480"
+        },
+        {
+          "actor": "early-6",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 480,
+          "index": 8,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "28856321716839",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "8720027535031632",
+            "baseReserveRaw": "504399085460790",
+            "quoteReserveRaw": "73195274",
+            "feeQuoteRaw": "1792415",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "9012582658232318",
+            "baseReserveRaw": "475542763743951",
+            "quoteReserveRaw": "79855022",
+            "feeQuoteRaw": "1859686",
+            "completed": false
+          },
+          "spotPrice": 2.3870365927700918e-9,
+          "averageCost": 2.3312115334763794e-9,
+          "actorBaseRaw": "28856321716839"
+        },
+        {
+          "actor": "early-7",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 540,
+          "index": 9,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "26907281673341",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "9012582658232318",
+            "baseReserveRaw": "475542763743951",
+            "quoteReserveRaw": "79855022",
+            "feeQuoteRaw": "1859686",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "9344975242759752",
+            "baseReserveRaw": "448635482070610",
+            "quoteReserveRaw": "86514770",
+            "feeQuoteRaw": "1926957",
+            "completed": false
+          },
+          "spotPrice": 2.566355790868314e-9,
+          "averageCost": 2.500073802202378e-9,
+          "actorBaseRaw": "26907281673341"
+        },
+        {
+          "actor": "early-8",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 600,
+          "index": 10,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "25058890445968",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "9344975242759752",
+            "baseReserveRaw": "448635482070610",
+            "quoteReserveRaw": "86514770",
+            "feeQuoteRaw": "1926957",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "9677367827287186",
+            "baseReserveRaw": "423576591624642",
+            "quoteReserveRaw": "93174518",
+            "feeQuoteRaw": "1994228",
+            "completed": false
+          },
+          "spotPrice": 2.752168703656989e-9,
+          "averageCost": 2.6844839816450788e-9,
+          "actorBaseRaw": "25058890445968"
+        },
+        {
+          "actor": "early-9",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 660,
+          "index": 11,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "23394635464366",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "9677367827287186",
+            "baseReserveRaw": "423576591624642",
+            "quoteReserveRaw": "93174518",
+            "feeQuoteRaw": "1994228",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "10009760389926267",
+            "baseReserveRaw": "400181956160276",
+            "quoteReserveRaw": "99834266",
+            "feeQuoteRaw": "2061499",
+            "completed": false
+          },
+          "spotPrice": 2.9444753182587426e-9,
+          "averageCost": 2.875453652717261e-9,
+          "actorBaseRaw": "23394635464366"
+        },
+        {
+          "actor": "middle-10",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 720,
+          "index": 12,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "21890848843732",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "10009760389926267",
+            "baseReserveRaw": "400181956160276",
+            "quoteReserveRaw": "99834266",
+            "feeQuoteRaw": "2061499",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "10342152974453701",
+            "baseReserveRaw": "378291107316544",
+            "quoteReserveRaw": "106494014",
+            "feeQuoteRaw": "2128770",
+            "completed": false
+          },
+          "spotPrice": 3.1432756600007064e-9,
+          "averageCost": 3.0729822530048417e-9,
+          "actorBaseRaw": "21890848843732"
+        },
+        {
+          "actor": "middle-11",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 780,
+          "index": 13,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "20525911296295",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "10342152974453701",
+            "baseReserveRaw": "378291107316544",
+            "quoteReserveRaw": "106494014",
+            "feeQuoteRaw": "2128770",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "10682153407466496",
+            "baseReserveRaw": "357765196020249",
+            "quoteReserveRaw": "113153762",
+            "feeQuoteRaw": "2196041",
+            "completed": false
+          },
+          "spotPrice": 3.3533445312833422e-9,
+          "averageCost": 3.2773302499919945e-9,
+          "actorBaseRaw": "20525911296295"
+        },
+        {
+          "actor": "middle-12",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 840,
+          "index": 14,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "19145138612024",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "10682153407466496",
+            "baseReserveRaw": "357765196020249",
+            "quoteReserveRaw": "113153762",
+            "feeQuoteRaw": "2196041",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "11081024508899417",
+            "baseReserveRaw": "338620057408225",
+            "quoteReserveRaw": "119813510",
+            "feeQuoteRaw": "2263312",
+            "completed": false
+          },
+          "spotPrice": 3.608447457265939e-9,
+          "averageCost": 3.5136956364343747e-9,
+          "actorBaseRaw": "19145138612024"
+        },
+        {
+          "actor": "middle-13",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 900,
+          "index": 15,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "17814735830592",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "11081024508899417",
+            "baseReserveRaw": "338620057408225",
+            "quoteReserveRaw": "119813510",
+            "feeQuoteRaw": "2263312",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "11479895610332338",
+            "baseReserveRaw": "320805321577633",
+            "quoteReserveRaw": "126473258",
+            "feeQuoteRaw": "2330583",
+            "completed": false
+          },
+          "spotPrice": 3.872901332402787e-9,
+          "averageCost": 3.776098093157329e-9,
+          "actorBaseRaw": "17814735830592"
+        },
+        {
+          "actor": "middle-14",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 960,
+          "index": 16,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "16618350126708",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "11479895610332338",
+            "baseReserveRaw": "320805321577633",
+            "quoteReserveRaw": "126473258",
+            "feeQuoteRaw": "2330583",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "11878766669806069",
+            "baseReserveRaw": "304186971450925",
+            "quoteReserveRaw": "133133006",
+            "feeQuoteRaw": "2397854",
+            "completed": false
+          },
+          "spotPrice": 4.146706127399192e-9,
+          "averageCost": 4.047946365739848e-9,
+          "actorBaseRaw": "16618350126708"
+        },
+        {
+          "actor": "middle-15",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1020,
+          "index": 17,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "15538570879345",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "11878766669806069",
+            "baseReserveRaw": "304186971450925",
+            "quoteReserveRaw": "133133006",
+            "feeQuoteRaw": "2397854",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "12277637771238990",
+            "baseReserveRaw": "288648400571580",
+            "quoteReserveRaw": "139792754",
+            "feeQuoteRaw": "2465125",
+            "completed": false
+          },
+          "spotPrice": 4.429861899860873e-9,
+          "averageCost": 4.329239189520346e-9,
+          "actorBaseRaw": "15538570879345"
+        },
+        {
+          "actor": "middle-16",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1080,
+          "index": 18,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "14559073422904",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "12277637771238990",
+            "baseReserveRaw": "288648400571580",
+            "quoteReserveRaw": "139792754",
+            "feeQuoteRaw": "2465125",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "12688626172965000",
+            "baseReserveRaw": "274089327148676",
+            "quoteReserveRaw": "146452502",
+            "feeQuoteRaw": "2532396",
+            "completed": false
+          },
+          "spotPrice": 4.731401030681663e-9,
+          "averageCost": 4.620499398963953e-9,
+          "actorBaseRaw": "14559073422904"
+        },
+        {
+          "actor": "middle-17",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1140,
+          "index": 19,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "13543457524765",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "12688626172965000",
+            "baseReserveRaw": "274089327148676",
+            "quoteReserveRaw": "146452502",
+            "feeQuoteRaw": "2532396",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "13187215049756152",
+            "baseReserveRaw": "260545869623911",
+            "quoteReserveRaw": "153112250",
+            "feeQuoteRaw": "2599667",
+            "completed": false
+          },
+          "spotPrice": 5.110539295411679e-9,
+          "averageCost": 4.966987925866976e-9,
+          "actorBaseRaw": "13543457524765"
+        },
+        {
+          "actor": "middle-18",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1200,
+          "index": 20,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "12556651442874",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "13187215049756152",
+            "baseReserveRaw": "260545869623911",
+            "quoteReserveRaw": "153112250",
+            "feeQuoteRaw": "2599667",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "13685803926547304",
+            "baseReserveRaw": "247989218181037",
+            "quoteReserveRaw": "159771998",
+            "feeQuoteRaw": "2666938",
+            "completed": false
+          },
+          "spotPrice": 5.504288418195215e-9,
+          "averageCost": 5.357335138754398e-9,
+          "actorBaseRaw": "12556651442874"
+        },
+        {
+          "actor": "middle-19",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1260,
+          "index": 21,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "11673903958549",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "13685803926547304",
+            "baseReserveRaw": "247989218181037",
+            "quoteReserveRaw": "159771998",
+            "feeQuoteRaw": "2666938",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "14184392729734508",
+            "baseReserveRaw": "236315314222488",
+            "quoteReserveRaw": "166431746",
+            "feeQuoteRaw": "2734209",
+            "completed": false
+          },
+          "spotPrice": 5.912648337669858e-9,
+          "averageCost": 5.762441616691294e-9,
+          "actorBaseRaw": "11673903958549"
+        },
+        {
+          "actor": "late-20",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1320,
+          "index": 22,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "10881085906186",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "14184392729734508",
+            "baseReserveRaw": "236315314222488",
+            "quoteReserveRaw": "166431746",
+            "feeQuoteRaw": "2734209",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "14682981606525660",
+            "baseReserveRaw": "225434228316302",
+            "quoteReserveRaw": "173091494",
+            "feeQuoteRaw": "2801480",
+            "completed": false
+          },
+          "spotPrice": 6.33561917440351e-9,
+          "averageCost": 6.182304834277272e-9,
+          "actorBaseRaw": "10881085906186"
+        },
+        {
+          "actor": "late-21",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1380,
+          "index": 23,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "10150762098552",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "14682981606525660",
+            "baseReserveRaw": "225434228316302",
+            "quoteReserveRaw": "173091494",
+            "feeQuoteRaw": "2801480",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "15244607582527039",
+            "baseReserveRaw": "215283466217750",
+            "quoteReserveRaw": "179751242",
+            "feeQuoteRaw": "2868751",
+            "completed": false
+          },
+          "spotPrice": 6.829565176947194e-9,
+          "averageCost": 6.6271073390239385e-9,
+          "actorBaseRaw": "10150762098552"
+        },
+        {
+          "actor": "late-22",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1440,
+          "index": 24,
+          "filledInputRaw": "6727019",
+          "unfilledInputRaw": "0",
+          "outputRaw": "9343882925293",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "15244607582527039",
+            "baseReserveRaw": "215283466217750",
+            "quoteReserveRaw": "179751242",
+            "feeQuoteRaw": "2868751",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "15909392751581908",
+            "baseReserveRaw": "205939583292457",
+            "quoteReserveRaw": "186410990",
+            "feeQuoteRaw": "2936022",
+            "completed": false
+          },
+          "spotPrice": 7.438198458954956e-9,
+          "averageCost": 7.199382798119827e-9,
+          "actorBaseRaw": "9343882925293"
+        },
+        {
+          "actor": "late-23",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1500,
+          "index": 25,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "8594320569569",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "15909392751581908",
+            "baseReserveRaw": "205939583292457",
+            "quoteReserveRaw": "186410990",
+            "feeQuoteRaw": "2936022",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "16574177773482496",
+            "baseReserveRaw": "197345262722888",
+            "quoteReserveRaw": "193070737",
+            "feeQuoteRaw": "3003293",
+            "completed": false
+          },
+          "spotPrice": 8.072806456375274e-9,
+          "averageCost": 7.827283082526856e-9,
+          "actorBaseRaw": "8594320569569"
+        },
+        {
+          "actor": "late-24",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1560,
+          "index": 26,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "7931476641434",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "16574177773482496",
+            "baseReserveRaw": "197345262722888",
+            "quoteReserveRaw": "193070737",
+            "feeQuoteRaw": "3003293",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "17238962842715995",
+            "baseReserveRaw": "189413786081454",
+            "quoteReserveRaw": "199730484",
+            "feeQuoteRaw": "3070564",
+            "completed": false
+          },
+          "spotPrice": 8.733389349016438e-9,
+          "averageCost": 8.481419417990953e-9,
+          "actorBaseRaw": "7931476641434"
+        },
+        {
+          "actor": "late-25",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1620,
+          "index": 27,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "7339236108717",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "17238962842715995",
+            "baseReserveRaw": "189413786081454",
+            "quoteReserveRaw": "199730484",
+            "feeQuoteRaw": "3070564",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "17955830783257131",
+            "baseReserveRaw": "182074549972737",
+            "quoteReserveRaw": "206390231",
+            "feeQuoteRaw": "3137835",
+            "completed": false
+          },
+          "spotPrice": 9.474832975752572e-9,
+          "averageCost": 9.165828569011626e-9,
+          "actorBaseRaw": "7339236108717"
+        },
+        {
+          "actor": "late-26",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1680,
+          "index": 28,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "6659069033061",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "17955830783257131",
+            "baseReserveRaw": "182074549972737",
+            "quoteReserveRaw": "206390231",
+            "feeQuoteRaw": "3137835",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "18953008387107380",
+            "baseReserveRaw": "175415480939676",
+            "quoteReserveRaw": "213049978",
+            "feeQuoteRaw": "3205106",
+            "completed": false
+          },
+          "spotPrice": 1.0556424952963356e-8,
+          "averageCost": 1.0102039739491582e-8,
+          "actorBaseRaw": "6659069033061"
+        },
+        {
+          "actor": "late-27",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1740,
+          "index": 29,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "5993383343520",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "18953008387107380",
+            "baseReserveRaw": "175415480939676",
+            "quoteReserveRaw": "213049978",
+            "feeQuoteRaw": "3205106",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "19950185953092867",
+            "baseReserveRaw": "169422097596156",
+            "quoteReserveRaw": "219709725",
+            "feeQuoteRaw": "3272377",
+            "completed": false
+          },
+          "spotPrice": 1.1696460300438017e-8,
+          "averageCost": 1.1224074307332937e-8,
+          "actorBaseRaw": "5993383343520"
+        },
+        {
+          "actor": "late-28",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1800,
+          "index": 30,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "5422765914261",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "19950185953092867",
+            "baseReserveRaw": "169422097596156",
+            "quoteReserveRaw": "219709725",
+            "feeQuoteRaw": "3272377",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "20947363556943116",
+            "baseReserveRaw": "163999331681895",
+            "quoteReserveRaw": "226369472",
+            "feeQuoteRaw": "3339648",
+            "completed": false
+          },
+          "spotPrice": 1.2894939104755256e-8,
+          "averageCost": 1.2405141778864227e-8,
+          "actorBaseRaw": "5422765914261"
+        },
+        {
+          "actor": "late-29",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1860,
+          "index": 31,
+          "filledInputRaw": "6727018",
+          "unfilledInputRaw": "0",
+          "outputRaw": "4929935897221",
+          "tradingFeeRaw": "53817",
+          "protocolFeeRaw": "13454",
+          "before": {
+            "sqrtPriceRaw": "20947363556943116",
+            "baseReserveRaw": "163999331681895",
+            "quoteReserveRaw": "226369472",
+            "feeQuoteRaw": "3339648",
+            "completed": false
+          },
+          "after": {
+            "sqrtPriceRaw": "21944541091723785",
+            "baseReserveRaw": "159069395784674",
+            "quoteReserveRaw": "233029219",
+            "feeQuoteRaw": "3406919",
+            "completed": false
+          },
+          "spotPrice": 1.4151861234650472e-8,
+          "averageCost": 1.3645244360666056e-8,
+          "actorBaseRaw": "4929935897221"
+        }
+      ],
+      "scheduledBuys": [
+        {
+          "actor": "early-opening",
+          "side": "buy",
+          "amountRaw": "86490241",
+          "atSeconds": 0
+        },
+        {
+          "actor": "early-0",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 120
+        },
+        {
+          "actor": "early-1",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 180
+        },
+        {
+          "actor": "early-2",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 240
+        },
+        {
+          "actor": "early-3",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 300
+        },
+        {
+          "actor": "early-4",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 360
+        },
+        {
+          "actor": "early-5",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 420
+        },
+        {
+          "actor": "early-6",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 480
+        },
+        {
+          "actor": "early-7",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 540
+        },
+        {
+          "actor": "early-8",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 600
+        },
+        {
+          "actor": "early-9",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 660
+        },
+        {
+          "actor": "middle-10",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 720
+        },
+        {
+          "actor": "middle-11",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 780
+        },
+        {
+          "actor": "middle-12",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 840
+        },
+        {
+          "actor": "middle-13",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 900
+        },
+        {
+          "actor": "middle-14",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 960
+        },
+        {
+          "actor": "middle-15",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1020
+        },
+        {
+          "actor": "middle-16",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1080
+        },
+        {
+          "actor": "middle-17",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1140
+        },
+        {
+          "actor": "middle-18",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1200
+        },
+        {
+          "actor": "middle-19",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1260
+        },
+        {
+          "actor": "late-20",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1320
+        },
+        {
+          "actor": "late-21",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1380
+        },
+        {
+          "actor": "late-22",
+          "side": "buy",
+          "amountRaw": "6727019",
+          "atSeconds": 1440
+        },
+        {
+          "actor": "late-23",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1500
+        },
+        {
+          "actor": "late-24",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1560
+        },
+        {
+          "actor": "late-25",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1620
+        },
+        {
+          "actor": "late-26",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1680
+        },
+        {
+          "actor": "late-27",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1740
+        },
+        {
+          "actor": "late-28",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1800
+        },
+        {
+          "actor": "late-29",
+          "side": "buy",
+          "amountRaw": "6727018",
+          "atSeconds": 1860
+        }
+      ],
+      "config": {
+        "poolFees": {
+          "baseFee": {
+            "cliffFeeNumerator": "10000000",
+            "firstFactor": 0,
+            "secondFactor": "0",
+            "thirdFactor": "0",
+            "baseFeeMode": 0
+          },
+          "dynamicFee": null
+        },
+        "activationType": 1,
+        "collectFeeMode": 0,
+        "migrationOption": 1,
+        "tokenType": 0,
+        "tokenDecimal": 6,
+        "migrationQuoteThreshold": "240250670",
+        "partnerLiquidityPercentage": 0,
+        "partnerPermanentLockedLiquidityPercentage": 100,
+        "creatorLiquidityPercentage": 0,
+        "creatorPermanentLockedLiquidityPercentage": 0,
+        "sqrtStartPrice": "5833372668713515",
+        "lockedVesting": {
+          "amountPerPeriod": "0",
+          "cliffDurationFromMigrationTime": "0",
+          "frequency": "0",
+          "numberOfPeriod": "0",
+          "cliffUnlockAmount": "0"
+        },
+        "migrationFeeOption": 2,
+        "tokenSupply": {
+          "preMigrationTokenSupply": "1000000000000000",
+          "postMigrationTokenSupply": "1000000000000000"
+        },
+        "creatorTradingFeePercentage": 0,
+        "migratedPoolFee": {
+          "collectFeeMode": 0,
+          "dynamicFee": 0,
+          "poolFeeBps": 0
+        },
+        "poolCreationFee": "0",
+        "partnerLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "creatorLiquidityVestingInfo": {
+          "vestingPercentage": 0,
+          "bpsPerPeriod": 0,
+          "numberOfPeriods": 0,
+          "cliffDurationFromMigrationTime": 0,
+          "frequency": 0
+        },
+        "migratedPoolBaseFeeMode": 0,
+        "migratedPoolMarketCapFeeSchedulerParams": {
+          "numberOfPeriod": 0,
+          "sqrtPriceStepBps": 0,
+          "schedulerExpirationDuration": 0,
+          "reductionFactor": "0"
+        },
+        "enableFirstSwapWithMinFee": false,
+        "compoundingFeeBps": 0,
+        "padding": [],
+        "curve": [
+          {
+            "sqrtPrice": "6356062959676121",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "6925588101724425",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "7546144658892894",
+            "liquidity": "9090434696906586220400000000000"
+          },
+          {
+            "sqrtPrice": "8222305221813438",
+            "liquidity": "7954130359793262942900000000000"
+          },
+          {
+            "sqrtPrice": "8959052100994198",
+            "liquidity": "7954130359793262942900000000000"
+          },
+          {
+            "sqrtPrice": "9761814039132217",
+            "liquidity": "6817826022679939665300000000000"
+          },
+          {
+            "sqrtPrice": "10636506212975819",
+            "liquidity": "6817826022679939665300000000000"
+          },
+          {
+            "sqrtPrice": "11589573819491693",
+            "liquidity": "5681521685566616387800000000000"
+          },
+          {
+            "sqrtPrice": "12628039567502730",
+            "liquidity": "5681521685566616387800000000000"
+          },
+          {
+            "sqrtPrice": "13759555424740253",
+            "liquidity": "4545217348453293110200000000000"
+          },
+          {
+            "sqrtPrice": "14992459001610425",
+            "liquidity": "4545217348453293110200000000000"
+          },
+          {
+            "sqrtPrice": "16335834987140411",
+            "liquidity": "3408913011339969832700000000000"
+          },
+          {
+            "sqrtPrice": "17799582089797002",
+            "liquidity": "3408913011339969832700000000000"
+          },
+          {
+            "sqrtPrice": "19394485976433241",
+            "liquidity": "2272608674226646555100000000000"
+          },
+          {
+            "sqrtPrice": "21132298746815997",
+            "liquidity": "2272608674226646555100000000000"
+          },
+          {
+            "sqrtPrice": "23025825529345061",
+            "liquidity": "2272608674226646555100000000000"
+          }
+        ],
+        "migrationFee": {
+          "feePercentage": 0,
+          "creatorFeePercentage": 0
+        },
+        "tokenUpdateAuthority": 1
+      },
+      "inputs": {
+        "preset": "long",
+        "supply": 1000000000,
+        "initialMarketCap": 1,
+        "migrationMarketCap": 15.580843818187715,
+        "startingFeeBps": 100,
+        "endingFeeBps": 100,
+        "feeDurationHours": 0,
+        "creatorFeeSharePct": 0,
+        "partnerLockedPct": 100
+      },
+      "openingPrice": 9.999999999999996e-10,
+      "migrationPrice": 1.5580842274516352e-8,
+      "metrics": {
+        "grossQuoteSpent": "2.88300804",
+        "quoteReturned": "0.51864666",
+        "netQuoteReserve": "2.33029219",
+        "totalQuoteFees": "0.03406919",
+        "remainingQuoteToGraduate": "0.07221451",
+        "baseReserve": "159069395.784674",
+        "totalBaseBought": "1114871730.345896",
+        "unspentBuyBudget": "0",
+        "progressPct": 96.99420151460973,
+        "graduationEvent": null,
+        "firstBuyPriceChangePct": 154.20314948648362,
+        "cohorts": [
+          {
+            "name": "early",
+            "baseReceived": "873759169.970294",
+            "quoteSpent": "1.53760431",
+            "averageCost": 1.7597575657515279e-9,
+            "shareOfBuyOutputPct": 78.37306715986104
+          },
+          {
+            "name": "middle",
+            "baseReceived": "163866641.937788",
+            "quoteSpent": "0.6727019",
+            "averageCost": 4.1051790165773415e-9,
+            "shareOfBuyOutputPct": 14.698250702522284
+          },
+          {
+            "name": "late",
+            "baseReceived": "77245918.437814",
+            "quoteSpent": "0.67270183",
+            "averageCost": 8.708574428324668e-9,
+            "shareOfBuyOutputPct": 6.928682137616672
+          }
+        ],
+        "recovery": {
+          "additionalBuys": 8,
+          "grossQuote": "0.53816152"
+        },
+        "finalHoldings": [
+          {
+            "actor": "early-opening",
+            "baseRaw": "273941126130571"
+          },
+          {
+            "actor": "early-0",
+            "baseRaw": "43701895273371"
+          },
+          {
+            "actor": "early-1",
+            "baseRaw": "40823152408216"
+          },
+          {
+            "actor": "early-2",
+            "baseRaw": "38009298815409"
+          },
+          {
+            "actor": "early-3",
+            "baseRaw": "35351907559276"
+          },
+          {
+            "actor": "early-4",
+            "baseRaw": "32963786804887"
+          },
+          {
+            "actor": "early-5",
+            "baseRaw": "30809747547480"
+          },
+          {
+            "actor": "early-6",
+            "baseRaw": "28856321716839"
+          },
+          {
+            "actor": "early-7",
+            "baseRaw": "26907281673341"
+          },
+          {
+            "actor": "early-8",
+            "baseRaw": "25058890445968"
+          },
+          {
+            "actor": "early-9",
+            "baseRaw": "23394635464366"
+          },
+          {
+            "actor": "middle-10",
+            "baseRaw": "21890848843732"
+          },
+          {
+            "actor": "middle-11",
+            "baseRaw": "20525911296295"
+          },
+          {
+            "actor": "middle-12",
+            "baseRaw": "19145138612024"
+          },
+          {
+            "actor": "middle-13",
+            "baseRaw": "17814735830592"
+          },
+          {
+            "actor": "middle-14",
+            "baseRaw": "16618350126708"
+          },
+          {
+            "actor": "middle-15",
+            "baseRaw": "15538570879345"
+          },
+          {
+            "actor": "middle-16",
+            "baseRaw": "14559073422904"
+          },
+          {
+            "actor": "middle-17",
+            "baseRaw": "13543457524765"
+          },
+          {
+            "actor": "middle-18",
+            "baseRaw": "12556651442874"
+          },
+          {
+            "actor": "middle-19",
+            "baseRaw": "11673903958549"
+          },
+          {
+            "actor": "late-20",
+            "baseRaw": "10881085906186"
+          },
+          {
+            "actor": "late-21",
+            "baseRaw": "10150762098552"
+          },
+          {
+            "actor": "late-22",
+            "baseRaw": "9343882925293"
+          },
+          {
+            "actor": "late-23",
+            "baseRaw": "8594320569569"
+          },
+          {
+            "actor": "late-24",
+            "baseRaw": "7931476641434"
+          },
+          {
+            "actor": "late-25",
+            "baseRaw": "7339236108717"
+          },
+          {
+            "actor": "late-26",
+            "baseRaw": "6659069033061"
+          },
+          {
+            "actor": "late-27",
+            "baseRaw": "5993383343520"
+          },
+          {
+            "actor": "late-28",
+            "baseRaw": "5422765914261"
+          },
+          {
+            "actor": "late-29",
+            "baseRaw": "4929935897221"
+          }
+        ]
+      }
+    }
+  ]
+}
