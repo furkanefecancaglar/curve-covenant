@@ -1,45 +1,77 @@
-# Meteora DBC track — honest readiness review
+# Submission package — current evidence, 2026-09-26
 
-Official listing: https://superteam.fun/earn/listing/meteora-dbc
-Colosseum FAQ: https://colosseum.com/hackathon
+## Title
 
-## Product thesis
+Curve Covenant — Scenario-driven curve selection for xStock-paired DBC launches
 
-Current focus: scenario-driven curve selection for xStock-paired DBC launches. Stateful retail, whale, sell-pressure and graduation simulations now hold the key starting conditions equal, expose endpoint trade-offs, and export reproducible JSON/SVG reports. The exact compared config can be launched and restored from a versioned share link. The engine matched 56 swaps across eight local SOL/XRXx pools; see [method and evidence](SCENARIO-METHOD.md).
+## One-liner
 
-Curve Covenant Pair Launch is a stock-quoted DBC launch workbench. A new community or project token can discover its price against an issuer-listed xStock. Launch builders can choose a 16-segment long curve designed for a thinner quote asset, inspect the SDK-derived graduation threshold and simulate early trades. The SDK constructs a combined config + token mint + virtual pool transaction, with DAMM v2 as the configured destination. A graduation panel reads reserve progress, submits the DAMM v2 migration transaction, and verifies destination vault balances. A companion live inspector monitors actual pools.
+Compare DBC curve trade-offs under sequential buy/sell scenarios, launch the configuration you chose, and verify it through graduation.
 
-The new token is not a tokenized share. This is an experiment in stock-denominated price discovery, not a claim that the product has created a new regulated asset or improved returns.
+## Problem
 
-## Sponsor criteria mapped to evidence
+A launch creator can choose a curve and fee schedule without understanding how the design changes early buyer allocation, execution costs or graduation progress. A smoother price path does not necessarily distribute fewer tokens to an early whale. For xStock-paired launches, making these trade-offs visible before deployment is particularly relevant when creators have limited quote-token liquidity.
 
-| Criterion | Current evidence | Gap |
+We have not yet established the size of this problem through user interviews. We do not claim that no competing tool offers simulation.
+
+## Product
+
+Curve Covenant combines controlled scenario comparison with a wallet-based Meteora launch flow:
+
+- Select a supported issuer-listed xStock or rehearse with devnet SOL.
+- Compare one-segment and 16-segment curves with equal supply, opening price, reserve threshold and fee schedule. Ending prices remain visible outcomes.
+- Run retail drip, early-whale, sell-pressure and graduation schedules. Every trade advances the prior pool state and actor inventory.
+- Inspect price paths, fees, early buy-output share, cohort costs and reserve progress. Export raw-unit JSON and an SVG summary.
+- Pass the exact compared configuration to the launch form, or restore it from a versioned share link.
+- Create a token and DBC pool, buy/sell with minimum-output protection, refresh wallet balances and graduate to DAMM v2.
+
+The launched token is an independent asset quoted in an xStock. It is not ownership in the underlying company.
+
+## Specific measured result
+
+In the exported fixed-fee XRXx whale scenario, the one-segment curve's first buy raises the price by 311.08%, compared with 239.16% for the long curve. However, the early cohort receives 88.70% versus 91.23% of gross buy output. The long curve lowers the initial price jump while increasing early output share by 2.53 percentage points. Ending price also differs: approximately 10× versus 15.58× the opening price.
+
+This is the point of the product: expose a choice's benefits and costs rather than declare a preset universally better. These are hypothetical schedule outputs, not observed market behavior or a fairness guarantee.
+
+## Evidence matrix
+
+| Claim | Evidence | Limit |
 | --- | --- | --- |
-| Deep Meteora integration | DBC curve builders, validator, pre-launch quote, size-aware config/pool transactions, token badge preflight, on-chain inspector | Local SOL and XRXx long-curve DBC → DAMM v2 lifecycles confirmed; public wallet proof remains |
-| Technical execution | TypeScript source, 45 passing tests, successful build, desktop/mobile browser checks, confirmed local SOL/XRXx lifecycles, full browser long-curve launch → wallet balances → buy → sell → balance refresh → buy → graduation and interrupted-step recovery with a local signer | Mainnet launch path untested with a wallet; no performance/operational history |
-| Originality and taste | xStock quote catalog plus a 16-segment front-loaded liquidity design | Similar stock-quoted launches exist; differentiation and actual user value need validation |
-| Impact potential | Tool can be reused across issuer-listed stock quote mints | No demonstrated distribution, builders or launches |
-| Traction/volume | None claimed | Mainnet usage is preferred by sponsor and not yet evidenced |
+| Stateful scenario accounting matches DBC execution | 56 confirmed swaps across eight local pools; raw price, reserves, fees, wallet inventory and quote transfers matched exactly | Local deployed program copies; XRXx funding is synthetic |
+| Controlled comparisons can be deployed | SDK-valid equalized configs; browser-selected long curve matches actual created on-chain parameters | Local validator, not mainnet |
+| Config remains exact across sharing | Version 2 share-link reconstruction and exported config equality verified in browser | Pinned SDK/normalization version |
+| End-to-end launch works | Local browser scenario → create → buy → sell → balances → graduate; declined second approval recovered | Phantom-compatible local signer, not a real extension certification |
+| Tested product | 45 unit tests, TypeScript/build, offline scenario browser checks and local lifecycle test | Not a security audit or exhaustive parameter proof |
+| Real mainnet usage | Not yet available | Do not add a public-network claim until actual receipts exist |
+| Demand or revenue | None claimed | Real builder trials remain outstanding |
 
-## Colosseum materials
+## Meteora fit
 
-- Product: https://furkanefecancaglar.github.io/curve-covenant/
-- GitHub: https://github.com/furkanefecancaglar/curve-covenant
-- Project name: Curve Covenant Pair Launch
-- Description: “Design and launch Meteora DBC tokens quoted in verified tokenized stocks, with SDK-based long-curve simulation and DAMM v2 graduation rules.”
-- Previous presentation/demo videos and deck were removed. They described the old inspector and were not suitable for judging.
-- A new 2–3 minute pitch must show the market problem, specific stock-quoted flow, defensible differentiation, SDK-backed proof and realistic route to users. A separate demo (≤3 min) must use the actual current product.
-- Do not invent founders, user traction, volume, an on-chain launch, or a Colosseum project URL.
+The product addresses stock-paired launch configuration and developer tooling. DBC is central to both the calculations and transactions; DAMM v2 is the verified graduation destination. Controlled scenario selection is the primary differentiation to validate. There is no current DLMM, preset marketplace or automatic compounding feature.
 
-## Priority work before submission
+## Life after the hackathon
 
-1. Obtain public devnet SOL and confirm the Phantom browser flow. Local config + pool creation and SOL graduation are complete; see [reproduction](LOCAL-LAUNCH.md).
-2. Exercise stock-quoted mainnet launch only with a funded wallet and explicit transaction review. This costs real SOL; no mainnet transaction has been sent.
-3. The full stock-token local flow now passes with the cloned issuer mint and a synthetic balance. Validate public issuer-funded trading, add pool discovery, and test post-migration trading. Graduated mainnet pools link directly to their Meteora market.
-4. Validate the 16-segment model with prospective launch builders and compare it with existing stock-quoted launchpads. Record real feedback. The scenario engine and comparative reports are now implemented; user demand remains unverified.
-5. Create a new pitch, product demo and distribution plan based on completed evidence.
-6. Complete Colosseum and Superteam submissions through the actual human accounts, including project X URL. Neither submission has been made.
+Initial customer hypothesis: launchpad teams and launch creators who need to review configuration choices before deployment. The first distribution experiment is hands-on trials with 3–5 builders, asking whether the report changes a real configuration decision. Reusable configuration links and reports provide a workflow they can return to.
 
-Colosseum's current hackathon ends 2026-10-12. The Superteam side-track deadline shown earlier was 2026-10-13 06:59 UTC; recheck on the listing immediately before submission.
+Potential next steps depend on those trials: reusable validated presets, an embeddable comparison module, and additional quote-asset stress assumptions. Paid configuration tooling is a business hypothesis, not current revenue. DLMM and compounding are later research options, not near-term delivery promises.
 
-Stocklana closed 2026-09-25 16:00 ET. Its rules permit edits only until closure. Do not claim eligibility for a late submission without an explicit organizer exception.
+## Links ready today
+
+- Live: https://furkanefecancaglar.github.io/curve-covenant/
+- Source: https://github.com/furkanefecancaglar/curve-covenant
+- Method and local proof: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/SCENARIO-METHOD.md
+- Whale JSON: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/evidence/scenarios/whale.json
+- Visual report: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/evidence/scenarios/whale.svg
+- Roadmap: https://github.com/furkanefecancaglar/curve-covenant/blob/main/docs/ROADMAP.md
+
+## Outstanding submission fields
+
+Founder/team biography and contact/X details must come from the actual participants. Pitch and demo video URLs, public mainnet transaction URLs, user-validation evidence and portal receipt URLs are not yet available. The previous inspector-only videos were removed and must not be reused as a demo of this version.
+
+## Deadlines and submission status
+
+Crypto World's Fair closes 2026-10-12: https://colosseum.com/worldsfair. Meteora sidetrack: https://superteam.fun/earn/listing/meteora-dbc ($20k total, $10k first); recheck its exact cutoff before submission. Colosseum requests a 2–3 minute presentation and a product demo no longer than 3 minutes: https://colosseum.com/hackathon.
+
+Stocklana closed 2026-09-25 16:00 ET, with edits allowed only until closure: https://hackathons.solana.com/hackathons/stocklana. No late-entry exception is known.
+
+No Colosseum or Superteam submission, award or organizer approval is claimed.

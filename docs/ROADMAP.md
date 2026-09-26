@@ -27,7 +27,7 @@ Repeat through submission and after the hackathon while meaningful work remains.
 | 3 | Evidence-to-launch connection | Exact compared config → launch and versioned share link; browser XRXx flow; created on-chain parameters checked; hashed proof manifest | Complete locally; public Phantom evidence is gate 4 |
 | 4 | Public mainnet Phantom evidence | Actual confirmed create, buy and sell signatures for funded wallet; SOL and xStock scope clearly separated; migration if feasible | Pending: real wallet access, chosen spending budget and signatures |
 | 5 | Demand and differentiation | 3–5 real builder trials; dated feedback and observed decisions; competitor claims checked against current products | Pending: real participants; outreach requires user's explicit instruction |
-| 6 | Submission package | Accurate README, claim/evidence table, 2–3 minute pitch, ≤3 minute demo, sample reports, public transaction manifest, distribution plan | Pending |
+| 6 | Submission package | Current README, form-ready claim/evidence text, sample reports, pitch/demo scripts and builder-trial protocol | Text prepared; actual recordings, public transaction manifest and founder details pending |
 | 7 | Submit and verify receipt | Colosseum + Meteora sidetrack receipts from actual accounts, deadline verified, all links usable | Pending: account access and submission details |
 | 8 | After submission | Fix observed issues, extend validated use cases, follow up with actual users, evidence-based product and revenue experiments | Continuous backlog |
 
@@ -54,3 +54,9 @@ Repeat through submission and after the hackathon while meaningful work remains.
 ## Next action
 
 Prepare the public-wallet evidence collector and budgeted launch review while waiting for the user-provided public wallet address. Prepare honest submission/demo material using the completed local evidence. No mainnet proof or user trials are claimed. See [SCENARIO-METHOD.md](SCENARIO-METHOD.md) for the completed engine and browser acceptance evidence.
+
+## Execution checkpoint — 2026-09-26
+
+Scenario implementation and local evidence shipped in `48e2380`. Unit checks: 45 passed. Offline scenario browser: all four schedules, exact config launch export/share restore, JSON/SVG exports and 390 px layout passed with zero public RPC requests. Full scenario-selected XRXx local browser lifecycle passed.
+
+Next independent work: produce the clearly labeled local demo recording and continue preparing the public-wallet transaction review once the wallet address arrives. Current documents: [submission](SUBMISSION.md), [demo script](DEMO-SCRIPT.md), [mainnet worksheet](MAINNET-EVIDENCE.md), [builder trial protocol](BUILDER-TRIALS.md). No outreach or external submission has been sent.
