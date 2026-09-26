@@ -125,6 +125,7 @@ export function simulateOpeningBuy(config: ConfigParameters, amountQuote: string
     tradingFeeQuote: formatUnits(quote.tradingFee.toString(), quoteDecimals),
     totalFeeQuote: formatUnits(quote.tradingFee.add(quote.protocolFee).add(quote.referralFee).toString(), quoteDecimals),
     unfilledQuote: formatUnits(quote.amountLeft.toString(), quoteDecimals),
+    filledQuote: formatUnits(quote.includedFeeInputAmount.toString(), quoteDecimals),
   }
 }
 

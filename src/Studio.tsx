@@ -13,6 +13,7 @@ import type { Network } from './dbc'
 import PoolLibrary from './PoolLibrary'
 import { POOL_LIBRARY_KEY, poolLocation, poolShareUrl, readPoolLibrary, rememberPool } from './pool-library'
 import type { SavedPool } from './pool-library'
+import CurveComparison from './CurveComparison'
 import './studio.css'
 
 const comma = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(n)
@@ -156,6 +157,7 @@ export default function Studio() {
             </> : <div className="config-error">{result.error}</div>}
           </div>
         </div>
+        <CurveComparison input={input} amount={buyAmount} elapsedHours={Number(elapsedHours)} symbol={quoteId} quoteDecimals={quoteAsset.decimals} locked={launchLocked} onChoose={preset => setInput(current => ({ ...current, preset }))}/>
         <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={(address, label) => {
           const pool = { address, network: quoteAsset.network }
           observePool(pool, label); setCreatedPool(pool)
