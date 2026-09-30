@@ -19,8 +19,8 @@ export function walletError(issue: unknown): string {
   if ((issue as { code?: number })?.code === 4001 || /user rejected|user denied|user cancelled/i.test(message)) {
     return 'You declined the wallet request. You can retry when ready.'
   }
-  if (/401|403|access forbidden|personal token|indexed requests/i.test(message)) return 'This RPC blocked the request. Open RPC connection, check your own endpoint, then retry this step.'
-  if (/429|too many requests/i.test(message)) return 'The Solana RPC is busy. Wait a moment, then retry this step.'
+  if (/\b(?:401|403)\b|access forbidden|personal token|indexed requests/i.test(message)) return 'This RPC blocked the request. Open RPC connection, check your own endpoint, then retry this step.'
+  if (/\b429\b|too many requests/i.test(message)) return 'The Solana RPC is busy. Wait a moment, then retry this step.'
   if (/failed to fetch|network request failed/i.test(message)) return 'Could not reach Solana. Check your connection and retry this step.'
   return message
 }

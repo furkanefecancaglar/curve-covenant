@@ -31,7 +31,7 @@ it('rejects a public network mismatch', async () => {
 
 it('exports verified pool state with an explicit warning when history access is denied', async () => {
   setup('EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG')
-  vi.mocked(Connection.prototype.getSignaturesForAddress).mockRejectedValue(new Error('403 personal token required'))
+  vi.mocked(Connection.prototype.getSignaturesForAddress).mockRejectedValue(new Error('403 personal token required; request ID abc429def'))
   const report = await readPoolEvidence(pool, 'devnet')
   expect(report.history.signaturesAvailable).toBe(false)
   expect(report.receipts).toEqual([])

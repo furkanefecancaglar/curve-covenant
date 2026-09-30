@@ -14,8 +14,8 @@ export function evidenceNetwork(genesis: string) {
 }
 function unavailable(issue: unknown): string {
   const message = issue instanceof Error ? issue.message : ''
-  if (/429|too many requests/i.test(message)) return 'RPC rate limit: retry the export later.'
-  if (/403|401|access|personal token/i.test(message)) return 'This RPC does not provide access to the requested transaction history.'
+  if (/\b429\b|too many requests/i.test(message)) return 'RPC rate limit: retry the export later.'
+  if (/\b(?:403|401)\b|access|personal token/i.test(message)) return 'This RPC does not provide access to the requested transaction history.'
   if (/different network/i.test(message)) return 'The history RPC network did not match; its results were not used.'
   return 'Transaction history could not be read from RPC. Retry the export later.'
 }

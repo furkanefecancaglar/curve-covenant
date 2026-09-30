@@ -36,7 +36,7 @@ export async function configureNetworkRpc(network: Network, input: string) {
 export function rpcSettingsError(issue: unknown): string {
   const message = issue instanceof Error ? issue.message : ''
   if (/^(Enter a complete|Use an HTTPS|This RPC is not|The RPC could not|This endpoint did not)/.test(message)) return message
-  if (/403|401|access|forbidden/i.test(message)) return 'The RPC denied access. Check the access key and allowed website origins in your provider dashboard.'
-  if (/429|too many requests/i.test(message)) return 'The RPC is rate limited. Wait before checking it again.'
+  if (/\b(?:403|401)\b|access|forbidden/i.test(message)) return 'The RPC denied access. Check the access key and allowed website origins in your provider dashboard.'
+  if (/\b429\b|too many requests/i.test(message)) return 'The RPC is rate limited. Wait before checking it again.'
   return 'The RPC check failed. Check the endpoint and its browser access settings, then retry.'
 }
