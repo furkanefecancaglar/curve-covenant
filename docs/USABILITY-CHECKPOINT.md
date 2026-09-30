@@ -37,8 +37,8 @@ An independently generated devnet test signer could not obtain faucet funding: t
 
 ## Next work
 
-1. Verify the deployed version and its mobile entry points.
-2. Continue transaction usability: migration cost review and better recovery for pending/failed transactions.
+1. First deployment verified on the public site: scenario/export/share checks and unsigned devnet onboarding passed. Verify the graduation follow-up deployment next.
+2. Migration cost review and submitted-signature recovery are implemented in the second iteration. Continue improving pending transaction recovery and first-time usage.
 3. Obtain a real public-wallet execution when possible; record actual receipts and extension interaction separately from automated/local evidence.
 4. Real builder trials and mainnet xStock transactions remain external evidence gates. No outreach is authorized.
 
@@ -54,3 +54,10 @@ PREFLIGHT_WALLET=<funded-public-devnet-address> CHROMIUM_PATH=/path/to/chrome no
 The onboarding script needs the Vite dev server on 4175 and deliberately blocks `sendTransaction`. Existing local-validator lifecycle instructions remain in `LOCAL-LAUNCH.md`.
 
 Mobile browse URL format follows the [official Phantom documentation](https://docs.phantom.com/phantom-deeplinks/other-methods/browse).
+
+
+## Second iteration — graduation and deployed checks
+
+Graduation now has its own unsigned cost review and separate signing action. Wallet changes or increased debit require another review. If confirmation or the following pool refresh fails after submission, the receipt remains visible and the UI directs the user to read the pool before retrying. There are now 61 passing unit tests; both SOL and synthetic-XRXx local browser lifecycles passed with migration cost review.
+
+The first deployed revision passed the browser onboarding suite against real devnet RPC (unsigned simulation only), all four scenarios, exact config export/share restoration and mobile width checks. The browser test injects a non-signing provider; this remains distinct from a real Phantom-extension run.

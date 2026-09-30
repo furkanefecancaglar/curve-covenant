@@ -192,6 +192,8 @@ try {
     await page.getByRole('button', { name: 'Get buy quote' }).click()
     await page.getByRole('button', { name: 'Buy with wallet' }).click()
     await page.getByText('Ready to graduate', { exact: true }).waitFor({ timeout: 25000 })
+    await page.getByRole('button', { name: 'Check graduation cost' }).click()
+    await page.getByRole('region', { name: 'Graduation cost review' }).waitFor({ timeout: 25000 })
     await page.getByRole('button', { name: 'Graduate with wallet' }).click()
     await page.locator('.lifecycle-balances').waitFor({ timeout: 25000 })
     await focus('.lifecycle-result')

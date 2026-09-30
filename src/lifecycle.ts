@@ -4,6 +4,8 @@ import { DAMM_V2_MIGRATION_FEE_ADDRESS, DAMM_V2_PROGRAM_ID, deriveDammV2PoolAddr
 import { formatUnits, RPC } from './dbc'
 import type { Network } from './dbc'
 import { connectWallet, sendWalletTransaction } from './wallet'
+import { reviewTransaction } from './transaction-review'
+import type { TransactionReview } from './transaction-review'
 
 export async function readLifecycle(address: string, network: Network, endpoint = RPC[network]) {
   const connection = new Connection(endpoint, 'confirmed')
@@ -45,16 +47,51 @@ export async function readLifecycle(address: string, network: Network, endpoint 
     threshold: formatUnits(threshold.toString(), quoteSupply.value.decimals), fetchedAt: new Date().toISOString() }
 }
 
-export async function graduatePool(address: string, network: Network) {
+export type PreparedGraduation = {
+  address: string; network: Network; payer: PublicKey
+  migration: Awaited<ReturnType<DynamicBondingCurveClient['migration']['migrateToDammV2']>>
+  review: TransactionReview
+}
+
+export class MigrationSubmittedError extends Error {
+  signature: string
+  constructor(signature: string, issue: unknown) {
+    super(`Migration was submitted. Read the pool to check its status before retrying. ${issue instanceof Error ? issue.message : String(issue)}`)
+    this.signature = signature
+  }
+}
+
+export async function prepareGraduation(address: string, network: Network): Promise<PreparedGraduation> {
   const status = await readLifecycle(address, network)
   if (status.migrated) throw new Error('This pool has already graduated.')
   if (!status.ready) throw new Error('The DBC quote reserve has not reached its graduation threshold.')
   const connection = new Connection(RPC[network], 'confirmed')
-  const { wallet, publicKey: payer } = await connectWallet()
+  const { publicKey: payer } = await connectWallet()
   const client = DynamicBondingCurveClient.create(connection, 'confirmed')
-  const result = await client.migration.migrateToDammV2({ pool: new PublicKey(address),
+  const migration = await client.migration.migrateToDammV2({ pool: new PublicKey(address),
     dammConfig: new PublicKey(status.dammConfig), payer })
-  const signature = await sendWalletTransaction(connection, wallet, payer, result.transaction,
-    [result.firstPositionNftKeypair, result.secondPositionNftKeypair])
-  return { signature, status: await readLifecycle(address, network) }
+  return { address, network, payer, migration, review: await reviewTransaction(connection, payer, migration.transaction) }
+}
+
+export async function graduatePrepared(prepared: PreparedGraduation) {
+  const { address, network, migration } = prepared
+  const { wallet, publicKey: payer } = await connectWallet()
+  if (!payer.equals(prepared.payer)) throw new Error('Your Phantom account changed. Check the graduation cost again with the account you want to use.')
+  const connection = new Connection(RPC[network], 'confirmed')
+  const fresh = await reviewTransaction(connection, payer, migration.transaction)
+  if (fresh.estimatedDebitLamports > prepared.review.estimatedDebitLamports) throw new Error('The estimated graduation cost increased. Check the cost again before signing.')
+  let submitted = ''
+  try {
+    const signature = await sendWalletTransaction(connection, wallet, payer, migration.transaction,
+      [migration.firstPositionNftKeypair, migration.secondPositionNftKeypair], value => { submitted = value })
+    submitted = signature
+    return { signature, status: await readLifecycle(address, network) }
+  } catch (issue) {
+    if (submitted) throw new MigrationSubmittedError(submitted, issue)
+    throw issue
+  }
+}
+
+export async function graduatePool(address: string, network: Network) {
+  return graduatePrepared(await prepareGraduation(address, network))
 }

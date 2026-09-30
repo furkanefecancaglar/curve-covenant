@@ -23,8 +23,9 @@ try {
   await page.getByRole('button', { name: 'Check launch with Phantom' }).click()
   await page.getByRole('alert').filter({ hasText: 'Phantom is not available' }).waitFor()
   assert(await page.getByRole('link', { name: 'Open this design in Phantom' }).isVisible())
-  await page.evaluate(async address => {
-    const { PublicKey } = await import('/node_modules/.vite/deps/@solana_web3__js.js')
+  await page.addScriptTag({ path: new URL('../node_modules/@solana/web3.js/lib/index.iife.min.js', import.meta.url).pathname })
+  await page.evaluate(address => {
+    const { PublicKey } = window.solanaWeb3
     window.signAttempts = 0
     window.rejectConnection = true
     window.phantom = { solana: { isPhantom: true, connect: async () => {

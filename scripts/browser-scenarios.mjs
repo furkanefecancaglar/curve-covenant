@@ -18,7 +18,7 @@ async function download(button) {
   return readFile(await file.path(), 'utf8')
 }
 try {
-  await page.goto('http://127.0.0.1:4175', { waitUntil: 'networkidle' })
+  await page.goto(process.env.APP_URL ?? 'http://127.0.0.1:4175', { waitUntil: 'networkidle' })
   await page.getByRole('button', { name: /Xerox xStock/ }).click()
   await page.getByLabel('Opening market cap', { exact: false }).fill('1')
   await page.getByLabel('Graduation market cap', { exact: false }).fill('10')
