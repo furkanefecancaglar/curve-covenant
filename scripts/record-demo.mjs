@@ -28,9 +28,11 @@ const context = await browser.newContext({ viewport: { width: 1920, height: 1080
 const page = await context.newPage()
 const origin = performance.now()
 const errors = [], timeline = [], downloads = [], signedTransactions = [], receipts = []
-let pool, selectedConfig, bought, initialQuote
+let pool, selectedConfig, bought, initialQuote, savedLaunch
+let signAttempts = 0, sendCount = 0
 page.on('pageerror', issue => errors.push(issue.message))
 await page.route(/https:\/\/(solana-rpc\.publicnode\.com|api\.devnet\.solana\.com)\/?$/, async route => {
+  if (JSON.parse(route.request().postData()).method === 'sendTransaction') sendCount++
   const response = await fetch(connection.rpcEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: route.request().postData() })
   await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text() })
 })
@@ -41,6 +43,8 @@ await page.addInitScript(localPort => {
   }
 }, port)
 await page.exposeFunction('localDemoSign', async bytes => {
+  signAttempts++
+  if (signAttempts === 2) throw new Error('User rejected token creation (local test)')
   const transaction = Transaction.from(Buffer.from(bytes))
   assert(transaction.feePayer.equals(payer.publicKey))
   transaction.partialSign(payer)
@@ -88,15 +92,19 @@ async function download(name) {
   downloads.push({ name: file.suggestedFilename(), sha256: createHash('sha256').update(text).digest('hex') })
   return text
 }
-try {
-  await page.goto('http://127.0.0.1:4175', { waitUntil: 'networkidle' })
-  await page.evaluate(async address => {
-    const { PublicKey } = await import('/node_modules/.vite/deps/@solana_web3__js.js')
+async function installWallet() {
+  await page.addScriptTag({ path: new URL('../node_modules/@solana/web3.js/lib/index.iife.min.js', import.meta.url).pathname })
+  await page.evaluate(address => {
+    const { PublicKey } = window.solanaWeb3
     window.phantom = { solana: { isPhantom: true, connect: async () => ({ publicKey: new PublicKey(address) }), signTransaction: async tx => {
       const signature = await window.localDemoSign(Array.from(tx.serialize({ requireAllSignatures: false, verifySignatures: false })))
       tx.addSignature(tx.feePayer, new Uint8Array(signature)); return tx
     } } }
   }, payer.publicKey.toBase58())
+}
+try {
+  await page.goto('http://127.0.0.1:4175', { waitUntil: 'networkidle' })
+  await installWallet()
   await page.getByRole('button', { name: /Xerox xStock/ }).click()
   await page.getByLabel('Opening market cap', { exact: false }).fill('1')
   await page.getByLabel('Graduation market cap', { exact: false }).fill('10')
@@ -134,12 +142,37 @@ try {
     await focus('#launch')
     await page.getByRole('button', { name: 'Check launch with Phantom' }).click()
     await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 25000 })
+    assert.equal(signAttempts, 0, 'Launch cost check must not sign')
+    await focus('[aria-label="Launch cost review"]')
+    await new Promise(resolve => setTimeout(resolve, 2200))
     if (await page.getByRole('checkbox').count()) await page.getByRole('checkbox').check()
     await page.getByRole('button', { name: /Launch token/ }).click()
-    await page.locator('.launch-success').waitFor({ timeout: 25000 })
+    await page.getByRole('button', { name: 'Resume token creation' }).waitFor({ timeout: 25000 })
+    savedLaunch = await page.evaluate(() => JSON.parse(localStorage.getItem(Object.keys(localStorage).find(key => key.startsWith('curve-covenant:launch:v1:')))))
+    assert(savedLaunch?.configAddress)
+    assert.equal(sendCount, 1)
+    await focus('#launch')
+  })
+  await scene('recovery', async () => {
+    await page.reload({ waitUntil: 'networkidle' })
+    await installWallet()
+    await overlay(scenes.find(s => s.id === 'recovery').title)
+    await focus('#unfinished-launches')
+    await page.getByRole('button', { name: 'Check saved launch', exact: true }).click()
+    await page.getByRole('button', { name: 'Check remaining launch cost' }).click({ timeout: 15000 })
+    await page.getByRole('region', { name: 'Recovered launch cost review' }).waitFor({ timeout: 15000 })
+    assert.equal(signAttempts, 2, 'Recovery review must not sign')
+    await focus('#unfinished-launches')
+    await new Promise(resolve => setTimeout(resolve, 5500))
+    await page.getByRole('region', { name: 'Unfinished launches' }).getByRole('checkbox').check()
+    await page.getByRole('button', { name: 'Finish saved launch with wallet' }).click()
+    await page.waitForFunction(() => document.querySelector('[aria-label="Graduation pool address"]')?.value.length > 30)
+    assert.equal(sendCount, 2, 'Reuse the paid config; send only token creation')
     pool = await page.getByLabel('Graduation pool address').inputValue()
     const client = DynamicBondingCurveClient.create(connection, 'confirmed')
     const created = await client.state.getPool(pool)
+    assert.equal(created.poolState.config.toBase58(), savedLaunch.configAddress)
+    assert.notEqual(created.poolState.baseMint.toBase58(), savedLaunch.mintAddress)
     const config = await client.state.getPoolConfig(created.poolState.config)
     assert.equal(config.sqrtStartPrice.toString(), selectedConfig.sqrtStartPrice)
     assert.equal(config.migrationQuoteThreshold.toString(), selectedConfig.migrationQuoteThreshold)
@@ -147,7 +180,7 @@ try {
       assert.equal(config.curve[i].sqrtPrice.toString(), selectedConfig.curve[i].sqrtPrice)
       assert.equal(config.curve[i].liquidity.toString(), selectedConfig.curve[i].liquidity)
     }
-    await focus('.launch-success')
+    await focus('#graduate')
   })
   await scene('buy', async () => {
     await page.getByRole('button', { name: 'Read pool', exact: true }).click()
@@ -172,7 +205,8 @@ try {
     const sell = `${raw / 1_000_000n}.${(raw % 1_000_000n).toString().padStart(6, '0')}`
     const beforeQuote = Number(await page.getByTestId('wallet-quote-balance').innerText())
     await page.getByRole('button', { name: 'Sell', exact: true }).click()
-    await page.getByLabel('Live sell amount').fill(sell)
+    await page.getByRole('button', { name: 'Use half my token balance' }).click()
+    assert.equal(await page.getByLabel('Live sell amount').inputValue(), sell.replace(/0+$/, '').replace(/\.$/, ''))
     await page.getByRole('button', { name: 'Get sell quote' }).click()
     await page.getByRole('button', { name: 'Sell with wallet' }).waitFor()
     await focus('.trade-preview')
@@ -194,6 +228,8 @@ try {
     await page.getByText('Ready to graduate', { exact: true }).waitFor({ timeout: 25000 })
     await page.getByRole('button', { name: 'Check graduation cost' }).click()
     await page.getByRole('region', { name: 'Graduation cost review' }).waitFor({ timeout: 25000 })
+    await focus('[aria-label="Graduation cost review"]')
+    await new Promise(resolve => setTimeout(resolve, 2000))
     await page.getByRole('button', { name: 'Graduate with wallet' }).click()
     await page.locator('.lifecycle-balances').waitFor({ timeout: 25000 })
     await focus('.lifecycle-result')
@@ -214,6 +250,9 @@ try {
     await overlay('Explore the product and reproducible evidence')
   })
   assert.deepEqual(errors, [])
+  assert.equal(signAttempts, 7)
+  assert.equal(sendCount, 6)
+  assert.equal(receipts.length, 6)
   const total = timeline.reduce((sum, item) => sum + item.duration, 0)
   assert(total <= 180, `Demo too long: ${total}`)
   const video = page.video()
@@ -221,6 +260,6 @@ try {
   const recording = await video.path()
   await writeFile(join(work, 'recording.json'), JSON.stringify({ recordedAt: new Date().toISOString(), network: 'local-validator', syntheticStockBalance: true,
     signer: 'local-test-interface', narration: 'synthetic / en-US-AriaNeural', sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
-    video: recording, timeline, duration: total, pool, comparedConfigMatchesChain: true, signCount: signedTransactions.length, receipts, genesisHash: await connection.getGenesisHash(), downloads, pageErrors: errors }, null, 2) + '\n')
+    video: recording, timeline, duration: total, pool, comparedConfigMatchesChain: true, signCount: signedTransactions.length, signAttempts, sendCount, launchRecovery: { method: 'page reload after declined second approval', configReused: savedLaunch.configAddress, newMint: true }, receipts, genesisHash: await connection.getGenesisHash(), downloads, pageErrors: errors }, null, 2) + '\n')
   console.log(JSON.stringify({ recording, duration: total, pool, signs: signedTransactions.length, pageErrors: errors }))
 } finally { await browser.close() }
