@@ -5,6 +5,7 @@ import type { PreparedGraduation } from './lifecycle'
 import { connectWallet, sendWalletTransaction } from './wallet'
 import { reviewTransaction } from './transaction-review'
 vi.mock('./wallet', () => ({ connectWallet: vi.fn(), sendWalletTransaction: vi.fn() }))
+vi.mock('./pending-migration', () => ({ loadPendingMigration: vi.fn().mockReturnValue(null), savePendingMigration: vi.fn(), removePendingMigration: vi.fn() }))
 vi.mock('./transaction-review', () => ({ reviewTransaction: vi.fn() }))
 afterEach(() => vi.clearAllMocks())
 function fixture(): PreparedGraduation {
@@ -31,11 +32,23 @@ it('keeps the submitted migration signature when confirmation is interrupted', a
   const prepared = fixture()
   vi.mocked(reviewTransaction).mockResolvedValue(prepared.review)
   vi.mocked(sendWalletTransaction).mockImplementation(async (_connection, _wallet, _payer, _transaction, _signers, onSubmitted) => {
-    onSubmitted?.('migration-receipt'); throw new Error('Confirmation disconnected')
+    onSubmitted?.('migration-receipt', { signature: 'migration-receipt', blockhash: Keypair.generate().publicKey.toBase58(), lastValidBlockHeight: 100, startedAt: new Date().toISOString() }); throw new Error('Confirmation disconnected')
   })
   try { await graduatePrepared(prepared); throw new Error('Expected submitted migration') }
   catch (issue) {
     expect(issue).toBeInstanceOf(MigrationSubmittedError)
     expect((issue as MigrationSubmittedError).signature).toBe('migration-receipt')
   }
+})
+
+it('allows a fresh review after a definite migration failure', async () => {
+  const { TransactionOutcomeError } = await import('./confirmation')
+  const { removePendingMigration } = await import('./pending-migration')
+  const prepared = fixture(); vi.mocked(reviewTransaction).mockResolvedValue(prepared.review)
+  const attempt = { signature: 'failed-id', blockhash: Keypair.generate().publicKey.toBase58(), lastValidBlockHeight: 100, startedAt: new Date().toISOString() }
+  vi.mocked(sendWalletTransaction).mockImplementation(async (_connection, _wallet, _payer, _transaction, _signers, submitted) => {
+    submitted?.(attempt.signature, attempt); throw new TransactionOutcomeError(attempt, 'failed')
+  })
+  await expect(graduatePrepared(prepared)).rejects.toMatchObject({ state: 'failed' })
+  expect(removePendingMigration).toHaveBeenCalledWith(prepared.address, prepared.network, attempt.signature)
 })

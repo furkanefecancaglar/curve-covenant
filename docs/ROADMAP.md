@@ -79,3 +79,8 @@ The user could fund Phantom on devnet but did not complete the launch flow. The 
 Public devnet simulation passed using a funded public wallet address; no wallet signature was requested or transaction sent in this check. This does not close the public Phantom execution gate. An independently generated test wallet's faucet attempts failed (internal error, then rate limit), so no new public deployment is claimed.
 
 Next: verify the published onboarding, obtain an actual public-wallet run when available, and continue improving lifecycle guidance and recovery. Keep public execution, local execution and user adoption as separate evidence categories.
+
+
+### Interrupted transaction recovery (2026-09-30)
+
+Bounded HTTP confirmation, pre-send signed transaction IDs, persistent pending trade/migration receipts, and guarded launch resume are implemented. The browser fault fixture disables WebSockets, drops a successful send response, interrupts confirmation and reloads the page; the five-transaction SOL lifecycle still completes with five signatures/sends. Unit coverage is now 82 tests. Actual public-wallet execution, launch recovery after closing the tab, and independent user trials remain open.

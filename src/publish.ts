@@ -8,6 +8,8 @@ import { buildLaunchPlan } from './launch-plan'
 import { reviewTransaction } from './transaction-review'
 import type { TransactionReview } from './transaction-review'
 import { readTokenBalance } from './balances'
+import { readTransactionOutcome, TransactionOutcomeError } from './confirmation'
+import type { TransactionAttempt } from './confirmation'
 
 const DEVNET_RPC = 'https://api.devnet.solana.com'
 const SOL_MINT = new PublicKey('So11111111111111111111111111111111111111112')
@@ -33,7 +35,8 @@ export type PreparedLaunch = {
   plan: Awaited<ReturnType<typeof buildLaunchPlan>>; review: TransactionReview; quoteBalance: string | null
 }
 export type PendingLaunch = { configAddress: string; configSignature: string; mint: Keypair;
-  payer: string; identity: TokenIdentity; quoteAsset: QuoteAsset; signature?: string }
+  payer: string; identity: TokenIdentity; quoteAsset: QuoteAsset; signature?: string; attempt?: TransactionAttempt }
+export class LaunchNotCreatedError extends Error {}
 export class IncompleteLaunchError extends Error {
   pending: PendingLaunch
   constructor(pending: PendingLaunch, cause: unknown) {
@@ -50,13 +53,28 @@ export async function finishLaunch(pending: PendingLaunch) {
   const config = new PublicKey(pending.configAddress)
   const pool = deriveDbcPoolAddress(quoteMint, pending.mint.publicKey, config)
   if (!(await connection.getAccountInfo(pool))) {
-    if (!(await connection.getAccountInfo(config))) throw new Error('The submitted configuration is not visible yet. Check its transaction before retrying. This tab keeps the same launch addresses.')
+    const configInfo = await connection.getAccountInfo(config)
+    if (pending.attempt) {
+      const outcome = await readTransactionOutcome(connection, pending.attempt)
+      if (outcome.state === 'pending') throw new TransactionOutcomeError(pending.attempt, 'pending')
+      if ((outcome.state === 'failed' || outcome.state === 'expired') && !configInfo) {
+        throw new LaunchNotCreatedError('The configuration transaction did not complete. Check the launch cost again before starting a new attempt.')
+      }
+      if (outcome.state === 'confirmed' && pending.signature) throw new Error('The transaction is confirmed, but its pool is not visible from this RPC yet. Check the same launch again.')
+      pending.attempt = undefined
+    }
+    if (!configInfo) throw new Error('The submitted configuration is not visible yet. Check its transaction before retrying. This tab keeps the same launch addresses.')
     const tokenBadge = await verifyQuoteAsset(connection, pending.quoteAsset)
     const client = DynamicBondingCurveClient.create(connection, 'confirmed')
     const tx = await client.creator.createPool({ config, baseMint: pending.mint.publicKey, payer, poolCreator: payer,
       name: pending.identity.name, symbol: pending.identity.symbol, uri: pending.identity.metadataUri, tokenBadge })
     await reviewTransaction(connection, payer, tx)
-    await sendWalletTransaction(connection, wallet, payer, tx, [pending.mint], signature => { pending.signature = signature })
+    try {
+      await sendWalletTransaction(connection, wallet, payer, tx, [pending.mint], (signature, attempt) => { pending.signature = signature; pending.attempt = attempt })
+    } catch (issue) {
+      if (issue instanceof TransactionOutcomeError && issue.state !== 'pending') { pending.attempt = undefined; pending.signature = undefined }
+      throw issue
+    }
   }
   if (!(await connection.getAccountInfo(pool))) throw new Error('Pool confirmation is pending. Retry to check the same pool.')
   return { configAddress: pending.configAddress, mintAddress: pending.mint.publicKey.toBase58(),
@@ -119,14 +137,15 @@ export async function launchPrepared(prepared: PreparedLaunch, onProgress: (mess
   }
   onProgress(plan.mode === 'split' ? 'Step 1 of 2: approve the curve configuration. Token creation follows in a second approval.' : 'Approve the token and pool launch in your wallet.')
   let submitted = ''
+  let attempt: TransactionAttempt | undefined
   let signature: string
   try {
     signature = await sendWalletTransaction(connection, wallet, payer, plan.transaction,
-      plan.mode === 'split' ? [configAccount] : [configAccount, mint], value => { submitted = value })
+      plan.mode === 'split' ? [configAccount] : [configAccount, mint], (value, context) => { submitted = value; attempt = context })
   } catch (issue) {
-    if (!submitted) throw issue
+    if (!submitted || (issue instanceof TransactionOutcomeError && issue.state !== 'pending')) throw issue
     throw new IncompleteLaunchError({ configAddress: configAccount.publicKey.toBase58(), configSignature: submitted,
-      mint, payer: payer.toBase58(), quoteAsset, identity, signature: plan.mode === 'combined' ? submitted : undefined }, issue)
+      mint, payer: payer.toBase58(), quoteAsset, identity, attempt, signature: plan.mode === 'combined' ? submitted : undefined }, issue)
   }
   if (plan.mode === 'split') {
     const pending: PendingLaunch = { configAddress: configAccount.publicKey.toBase58(), configSignature: signature,
@@ -144,7 +163,7 @@ export async function launchPrepared(prepared: PreparedLaunch, onProgress: (mess
     if (!configInfo || !poolInfo) throw new Error('Confirmation is still pending. Retry to check the same pool.')
   } catch (issue) {
     throw new IncompleteLaunchError({ configAddress: configAccount.publicKey.toBase58(), configSignature: signature,
-      mint, payer: payer.toBase58(), quoteAsset, identity, signature }, issue)
+      mint, payer: payer.toBase58(), quoteAsset, identity, signature, attempt }, issue)
   }
   return { configAddress: configAccount.publicKey.toBase58(), mintAddress: mint.publicKey.toBase58(),
     poolAddress: poolAddress.toBase58(), signature }

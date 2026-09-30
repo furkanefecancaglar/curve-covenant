@@ -25,3 +25,4 @@
 .new-launch{display:block;margin-top:18px;padding:10px 14px;border:1px solid #719360;border-radius:7px;background:transparent;color:#bed6af;font:inherit;font-size:13px;cursor:pointer}
 .migration-review{padding:18px;margin:18px 0;border:1px solid #40583e;background:#0e1a12;border-radius:8px}.migration-review small{overflow-wrap:anywhere}.migration-review button{margin-top:12px;background:transparent;color:#bed6af;border:1px solid #719360}
 .migration-receipt{display:inline-flex;align-items:center;gap:8px;color:#b6ed90;margin:16px 0;font-size:13px}
+.pending-trade{padding:20px;background:#202918;border:1px solid #849357;border-radius:10px;margin:20px 0}.pending-trade>strong{color:#e5efc4}.pending-trade button{margin-top:12px}.pending-trade a{overflow-wrap:anywhere}

@@ -5,6 +5,7 @@ import { loadLaunch, parseUnits, quoteSwap, RPC } from './dbc'
 import type { Network, SwapQuote, TradeSide } from './dbc'
 import { connectWallet, sendWalletTransaction } from './wallet'
 import { QUOTES, verifyQuoteAsset } from './quotes'
+import type { TransactionAttempt } from './confirmation'
 
 export type TradePreview = { pool: string; network: Network; quote: SwapQuote }
 
@@ -23,7 +24,7 @@ export function validateTradePreview(preview: TradePreview, now = Date.now()) {
   return { amountIn, minimumAmountOut }
 }
 
-export async function executeTrade(preview: TradePreview) {
+export async function executeTrade(preview: TradePreview, onSubmitted?: (signature: string, attempt: TransactionAttempt) => void) {
   validateTradePreview(preview)
   const connection = new Connection(RPC[preview.network], 'confirmed')
   const { wallet, publicKey: payer } = await connectWallet()
@@ -32,5 +33,5 @@ export async function executeTrade(preview: TradePreview) {
     swapBaseForQuote: preview.quote.side === 'sell', swapMode: SwapMode.PartialFill,
     ...validateTradePreview(preview), referralTokenAccount: null })
   validateTradePreview(preview)
-  return sendWalletTransaction(connection, wallet, payer, transaction)
+  return sendWalletTransaction(connection, wallet, payer, transaction, [], onSubmitted)
 }

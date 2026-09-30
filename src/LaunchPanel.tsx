@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { ConfigParameters } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import { ArrowRight, CheckCircle2, ExternalLink, Loader2, Rocket } from 'lucide-react'
-import { launchPrepared, prepareLaunch, finishLaunch, IncompleteLaunchError } from './publish'
+import { launchPrepared, prepareLaunch, finishLaunch, IncompleteLaunchError, LaunchNotCreatedError } from './publish'
 import type { PendingLaunch, PreparedLaunch } from './publish'
 import type { QuoteAsset } from './quotes'
 import { walletError } from './wallet'
@@ -46,6 +46,7 @@ export default function LaunchPanel({ config, quoteAsset, designUrl, onCreated, 
       setLaunched(result); setPending(null); setPrepared(null); setProgress(''); onCreated(result.poolAddress, `${name} / ${quoteAsset.id}`)
     } catch (issue) {
       if (issue instanceof IncompleteLaunchError) setPending(issue.pending)
+      if (issue instanceof LaunchNotCreatedError) { setPending(null); setPrepared(null) }
       setError(walletError(issue)); setProgress('')
     } finally { setBusy(false) }
   }

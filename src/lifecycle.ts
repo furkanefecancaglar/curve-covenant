@@ -6,6 +6,9 @@ import type { Network } from './dbc'
 import { connectWallet, sendWalletTransaction } from './wallet'
 import { reviewTransaction } from './transaction-review'
 import type { TransactionReview } from './transaction-review'
+import { TransactionOutcomeError } from './confirmation'
+import type { TransactionAttempt } from './confirmation'
+import { loadPendingMigration, savePendingMigration, removePendingMigration } from './pending-migration'
 
 export async function readLifecycle(address: string, network: Network, endpoint = RPC[network]) {
   const connection = new Connection(endpoint, 'confirmed')
@@ -55,9 +58,10 @@ export type PreparedGraduation = {
 
 export class MigrationSubmittedError extends Error {
   signature: string
-  constructor(signature: string, issue: unknown) {
-    super(`Migration was submitted. Read the pool to check its status before retrying. ${issue instanceof Error ? issue.message : String(issue)}`)
-    this.signature = signature
+  attempt?: TransactionAttempt
+  constructor(signature: string, issue: unknown, attempt?: TransactionAttempt) {
+    super(`Migration status needs checking. Read the pool before retrying. ${issue instanceof Error ? issue.message : String(issue)}`)
+    this.signature = signature; this.attempt = attempt
   }
 }
 
@@ -75,19 +79,31 @@ export async function prepareGraduation(address: string, network: Network): Prom
 
 export async function graduatePrepared(prepared: PreparedGraduation) {
   const { address, network, migration } = prepared
+  const existing = loadPendingMigration(address, network)
+  if (existing) throw new MigrationSubmittedError(existing.signature, new Error('A previous transaction still needs checking.'), existing)
   const { wallet, publicKey: payer } = await connectWallet()
   if (!payer.equals(prepared.payer)) throw new Error('Your Phantom account changed. Check the graduation cost again with the account you want to use.')
   const connection = new Connection(RPC[network], 'confirmed')
   const fresh = await reviewTransaction(connection, payer, migration.transaction)
   if (fresh.estimatedDebitLamports > prepared.review.estimatedDebitLamports) throw new Error('The estimated graduation cost increased. Check the cost again before signing.')
   let submitted = ''
+  let attempt: TransactionAttempt | undefined
   try {
     const signature = await sendWalletTransaction(connection, wallet, payer, migration.transaction,
-      [migration.firstPositionNftKeypair, migration.secondPositionNftKeypair], value => { submitted = value })
+      [migration.firstPositionNftKeypair, migration.secondPositionNftKeypair], (value, context) => {
+        const prior = loadPendingMigration(address, network)
+        if (prior) throw new MigrationSubmittedError(prior.signature, new Error('Another tab started this migration.'), prior)
+        try { savePendingMigration(address, network, context) }
+        catch { throw new Error('This browser could not save the migration receipt. Allow site storage before signing again.') }
+        submitted = value; attempt = context
+      })
     submitted = signature
-    return { signature, status: await readLifecycle(address, network) }
+    const status = await readLifecycle(address, network)
+    if (status.migrated) removePendingMigration(address, network, signature)
+    return { signature, status }
   } catch (issue) {
-    if (submitted) throw new MigrationSubmittedError(submitted, issue)
+    if (issue instanceof TransactionOutcomeError && issue.state !== 'pending') { removePendingMigration(address, network, issue.attempt.signature); throw issue }
+    if (submitted) throw new MigrationSubmittedError(submitted, issue, attempt)
     throw issue
   }
 }

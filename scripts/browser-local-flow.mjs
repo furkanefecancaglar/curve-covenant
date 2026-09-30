@@ -14,6 +14,10 @@ const fixture = process.env.STOCK_FIXTURE_DIR
 const longCurve = process.env.LONG_CURVE === '1'
 const payer = fixture ? Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(join(fixture, 'signer.json'), 'utf8')))) : Keypair.generate()
 let signCount = 0
+let sendCount = 0
+let hideStatuses = false
+const recovery = process.env.RECOVERY === '1'
+assert(!recovery || !fixture, 'Recovery fault fixture uses SOL')
 const funding = await local.requestAirdrop(payer.publicKey, 10 * LAMPORTS_PER_SOL)
 await local.confirmTransaction(funding, 'confirmed')
 // DBC's migration authority pays destination account rent in this local fixture.
@@ -30,10 +34,22 @@ try {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   await page.route(/https:\/\/(solana-rpc\.publicnode\.com|api\.devnet\.solana\.com)\/?$/, async route => {
+    const request = JSON.parse(route.request().postData())
+    if (recovery && request.method === 'getSignatureStatuses' && hideStatuses) {
+      await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ jsonrpc: '2.0', id: request.id, error: { code: -32005, message: 'Test: confirmation RPC unavailable' } }) }); return
+    }
+    if (request.method === 'sendTransaction') {
+      sendCount++
+      if (recovery && (sendCount === 2 || sendCount === 5)) hideStatuses = true
+    }
     const response = await fetch(local.rpcEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: route.request().postData() })
+    if (recovery && request.method === 'sendTransaction' && sendCount === 1) { await response.text(); await route.abort('failed'); return }
     await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text() })
   })
-  await page.addInitScript(localPort => {
+  if (recovery) await page.addInitScript(() => {
+    window.WebSocket = class { constructor() { throw new Error('Test: WebSockets are disabled') } }
+  })
+  else await page.addInitScript(localPort => {
     const NativeWebSocket = window.WebSocket
     window.WebSocket = class extends NativeWebSocket {
       constructor(url, protocols) {
@@ -52,6 +68,7 @@ try {
     return Array.from(tx.signatures.find(signer => signer.publicKey.equals(payer.publicKey)).signature)
   })
   await page.goto(appUrl, { waitUntil: 'networkidle' })
+  async function installWallet() {
   await page.addScriptTag({ path: new URL('../node_modules/@solana/web3.js/lib/index.iife.min.js', import.meta.url).pathname })
   await page.evaluate(address => {
     const { PublicKey } = window.solanaWeb3
@@ -64,6 +81,8 @@ try {
       },
     } }
   }, payer.publicKey.toBase58())
+  }
+  await installWallet()
   if (fixture) {
     await page.getByRole('button', { name: /Xerox xStock/ }).click()
     await page.getByLabel('Token name', { exact: true }).fill('Curve Covenant Demo')
@@ -107,6 +126,25 @@ try {
   await page.getByLabel('Live buy amount').fill('0.1')
   await page.getByRole('button', { name: 'Get buy quote' }).click()
   await page.getByRole('button', { name: 'Buy with wallet' }).click({ timeout: 15000 })
+  if (recovery) {
+    await page.getByRole('button', { name: 'Check trade status', exact: true }).waitFor({ timeout: 15000 })
+    assert(await page.getByRole('button', { name: 'Get buy quote' }).isDisabled())
+    assert.equal(signCount, 2); assert.equal(sendCount, 2)
+    await page.reload({ waitUntil: 'networkidle' })
+    await installWallet()
+    await page.getByLabel('Graduation pool address').fill(pool)
+    await page.getByRole('button', { name: 'Read pool' }).click()
+    await page.getByRole('region', { name: 'Unconfirmed trade' }).waitFor({ timeout: 15000 })
+    assert(await page.getByRole('button', { name: 'Get buy quote' }).isDisabled())
+    // An unsuccessful check must retain the receipt and keep trading locked.
+    await page.getByRole('button', { name: 'Check trade status', exact: true }).click()
+    await page.locator('.trade-panel .publish-error').waitFor()
+    assert(await page.getByRole('button', { name: 'Get buy quote' }).isDisabled())
+    hideStatuses = false
+    await page.getByRole('button', { name: 'Check trade status', exact: true }).click()
+    assert.equal(signCount, 2); assert.equal(sendCount, 2)
+    await page.getByRole('button', { name: 'Connect wallet for balances' }).click()
+  }
   await page.getByRole('link', { name: /Buy confirmed/ }).waitFor({ timeout: 25000 })
   await page.waitForFunction(() => Number(document.querySelector('[data-testid="wallet-base-balance"]')?.textContent) > 0)
   const bought = await page.getByTestId('wallet-base-balance').innerText()
@@ -146,6 +184,15 @@ try {
   await page.getByRole('button', { name: 'Check graduation cost' }).click()
   await page.getByRole('region', { name: 'Graduation cost review' }).waitFor({ timeout: 25000 })
   await page.getByRole('button', { name: 'Graduate with wallet' }).click()
+  if (recovery) {
+    await page.getByText(/A signed migration needs checking/).waitFor({ timeout: 15000 })
+    assert.equal(signCount, 5); assert.equal(sendCount, 5)
+    assert.equal(await page.getByRole('button', { name: 'Graduate with wallet' }).count(), 0)
+    await page.reload({ waitUntil: 'networkidle' })
+    await page.getByLabel('Graduation pool address').fill(pool)
+    hideStatuses = false
+    await page.getByRole('button', { name: 'Read pool' }).click()
+  }
   await page.locator('.lifecycle-balances').waitFor({ timeout: 25000 })
   const [receiptFile] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export on-chain evidence · JSON' }).click()])
   const evidence = JSON.parse(await readFile(await receiptFile.path(), 'utf8'))
@@ -153,7 +200,11 @@ try {
   assert(evidence.receipts.length >= 5)
   assert(evidence.receipts.every(receipt => receipt.succeeded === true && receipt.explorerUrl === null))
   assert.deepEqual(errors, [])
-  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
+  if (recovery) {
+    assert.equal(sendCount, 5); assert.equal(signCount, 5)
+    assert.equal(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('curve-covenant:pending-')).length), 0)
+  }
+  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, recovery, sendCount, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
     result: await page.locator('.lifecycle-result').innerText(), pageErrors: errors }))
 } catch (error) {
   console.error('Lifecycle failure:', error.message)

@@ -1,4 +1,8 @@
 import type { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js'
+import { SendTransactionError } from '@solana/web3.js'
+import bs58 from 'bs58'
+import { rpcDeadline, TransactionOutcomeError, waitForTransaction } from './confirmation'
+import type { TransactionAttempt } from './confirmation'
 
 export type Phantom = {
   isPhantom?: boolean
@@ -30,16 +34,30 @@ export async function connectWallet() {
 }
 
 export async function sendWalletTransaction(connection: Connection, wallet: Phantom,
-  payer: PublicKey, transaction: Transaction, signers: Keypair[] = [], onSubmitted?: (signature: string) => void) {
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed')
+  payer: PublicKey, transaction: Transaction, signers: Keypair[] = [], onSubmitted?: (signature: string, attempt: TransactionAttempt) => void) {
+  const { blockhash, lastValidBlockHeight } = await rpcDeadline(connection.getLatestBlockhash('confirmed'))
   transaction.feePayer = payer
   transaction.recentBlockhash = blockhash
   if (signers.length) transaction.partialSign(...signers)
   const signed = await wallet.signTransaction(transaction)
+  if (!signed.feePayer?.equals(payer) || signed.recentBlockhash !== blockhash) {
+    throw new Error('The wallet changed the transaction payer or expiry. Check the transaction again before submitting.')
+  }
+  const bytes = signed.serialize()
+  if (!signed.signature) throw new Error('The wallet did not return a transaction signature.')
+  const signature = bs58.encode(signed.signature)
+  const attempt: TransactionAttempt = { signature, blockhash, lastValidBlockHeight, startedAt: new Date().toISOString() }
+  // Retain the transaction ID before the RPC call: a lost response does not
+  // establish that the signed transaction failed to reach the network.
+  onSubmitted?.(signature, attempt)
   // Send through the same RPC used for construction, rather than the wallet's selected network.
-  const signature = await connection.sendRawTransaction(signed.serialize(), { skipPreflight: false, maxRetries: 3 })
-  onSubmitted?.(signature)
-  const confirmation = await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed')
-  if (confirmation.value.err) throw new Error(`Transaction ${signature} failed: ${JSON.stringify(confirmation.value.err)}`)
+  try { await rpcDeadline(connection.sendRawTransaction(bytes, { skipPreflight: false, preflightCommitment: 'confirmed', maxRetries: 3 })) }
+  catch (issue) {
+    if (issue instanceof SendTransactionError && issue.message.startsWith('Simulation failed.')) {
+      throw new TransactionOutcomeError(attempt, 'rejected', issue.transactionError.message)
+    }
+    // An interrupted request is ambiguous. Resolve this exact signed ID.
+  }
+  await waitForTransaction(connection, attempt)
   return signature
 }

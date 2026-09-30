@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
+import { Connection } from '@solana/web3.js'
+import { readTransactionOutcome } from './confirmation'
+import { loadPendingMigration, removePendingMigration } from './pending-migration'
 import { ArrowRight, ExternalLink, RefreshCw } from 'lucide-react'
 import { graduatePrepared, MigrationSubmittedError, prepareGraduation, readLifecycle } from './lifecycle'
 import type { PreparedGraduation } from './lifecycle'
-import { formatUnits } from './dbc'
+import { formatUnits, RPC } from './dbc'
 import { walletError } from './wallet'
 import type { Network } from './dbc'
 import TradePanel from './TradePanel'
@@ -27,9 +30,22 @@ export default function LifecyclePanel({ initialPool, onObserved }: { initialPoo
     catch (issue) { setExportError(issue instanceof Error ? issue.message : 'Could not read transaction evidence. Retry the export.') }
     finally { setExporting(false) }
   }
+  async function reconcileMigration(result: Awaited<ReturnType<typeof readLifecycle>>) {
+    const attempt = loadPendingMigration(result.address, result.network)
+    if (!attempt) { setMigrationSubmitted(false); return }
+    setSignature(attempt.signature); setMigrationSubmitted(true)
+    if (result.migrated) {
+      removePendingMigration(result.address, result.network, attempt.signature); setMigrationSubmitted(false); return
+    }
+    const outcome = await readTransactionOutcome(new Connection(RPC[result.network], 'confirmed'), attempt)
+    if (outcome.state === 'failed' || outcome.state === 'expired') {
+      removePendingMigration(result.address, result.network, attempt.signature); setMigrationSubmitted(false)
+      setError(`Previous migration ${outcome.state}. Check the cost again before signing a new transaction.`)
+    }
+  }
   async function read() {
     setBusy(true); setError(''); setStatus(null); setMigrationReview(null)
-    try { const result = await readLifecycle(address, network); setStatus(result); setMigrationSubmitted(false); onObserved(result) }
+    try { const result = await readLifecycle(address, network); setStatus(result); await reconcileMigration(result); onObserved(result) }
     catch (issue) { setError(issue instanceof Error ? issue.message : 'Could not read the pool.') }
     finally { setBusy(false) }
   }
@@ -37,8 +53,8 @@ export default function LifecyclePanel({ initialPool, onObserved }: { initialPoo
     if (!initialPool) return
     let current = true
     setBusy(true)
-    readLifecycle(initialPool.address, initialPool.network).then(result => {
-      if (current) { setStatus(result); onObserved(result) }
+    readLifecycle(initialPool.address, initialPool.network).then(async result => {
+      if (current) { setStatus(result); onObserved(result); await reconcileMigration(result) }
     }).catch(issue => { if (current) setError(issue instanceof Error ? issue.message : 'Could not read this pool.') })
       .finally(() => { if (current) setBusy(false) })
     return () => { current = false }
@@ -49,7 +65,7 @@ export default function LifecyclePanel({ initialPool, onObserved }: { initialPoo
     try {
       if (!migrationReview) { setMigrationReview(await prepareGraduation(status.address, status.network)); return }
       const result = await graduatePrepared(migrationReview)
-      setStatus(result.status); setSignature(result.signature); setMigrationReview(null)
+      setStatus(result.status); setSignature(result.signature); setMigrationReview(null); await reconcileMigration(result.status)
     } catch (issue) {
       if (issue instanceof MigrationSubmittedError) { setSignature(issue.signature); setMigrationReview(null); setMigrationSubmitted(true) }
       setError(walletError(issue))
@@ -66,7 +82,7 @@ export default function LifecyclePanel({ initialPool, onObserved }: { initialPoo
     </form>
     {error && <p className="publish-error" role="alert">{error}</p>}
     {signature && <a className="migration-receipt" href={`https://solscan.io/tx/${signature}${network === 'devnet' ? '?cluster=devnet' : ''}`} target="_blank" rel="noreferrer">Migration transaction <ExternalLink size={14}/></a>}
-    {migrationSubmitted && <p className="allocation-note">A migration was submitted. Use “Read pool” to check the destination before starting another attempt.</p>}
+    {migrationSubmitted && <p className="allocation-note">A signed migration needs checking. Use “Read pool” to check its transaction and destination before starting another attempt.</p>}
     {status && <div className="lifecycle-result"><div className="lifecycle-status"><strong>{status.migrated ? 'Graduated to DAMM v2' : status.ready ? 'Ready to graduate' : 'Price discovery in progress'}</strong><span>{status.progress.toFixed(2)}%</span></div><progress max={100} value={status.progress}/>
       {!status.migrated && <p>{status.reserve} / {status.threshold} quote tokens in reserve</p>}
       <p>DAMM v2 starting base fee: {status.destinationFees.baseFeePct}%{status.destinationFees.dynamicEnabled ? ' + dynamic fee' : ''}. Read from the migration settings on chain.</p>

@@ -70,3 +70,25 @@ Revision `9cc7432` deployed successfully through GitHub Pages (run `36706338109`
 An initial run stalled because Chrome blocked the HTTPS page's WebSocket connection to localhost (`ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS`). The test now grants local-network access only in its isolated browser context when APP_URL is HTTPS. The same lifecycle then passed. No product/browser security settings were weakened for users.
 
 The lifecycle harness supports `APP_URL=https://furkanefecancaglar.github.io/curve-covenant/` and injects the installed SDK's PublicKey implementation without needing Vite's development-module path.
+
+
+## Third iteration — interrupted transaction recovery
+
+- The first signature is retained before sending. A lost `sendTransaction` response now leads to checking that exact signed ID, without resending or asking for another signature.
+- Confirmation uses HTTP signature-status polling with a 30-second overall wait and bounded RPC reads. Three consecutive failed reads return an unresolved receipt. Processed-only results remain pending; explicit preflight rejection and confirmed execution failure are separate outcomes.
+- A missing signature is classified as expired only after finalized block height exceeds the last valid height and a second historical status lookup is still empty.
+- Buy/sell receipts contain public transaction references and persist per network/pool. Reloading restores the pending check and disables new trades until the outcome is known. Storage failure is reported; in-memory trade recovery still works during that visit.
+- Migration receipts are saved before broadcast and recovered on pool reads. A ready pool alone no longer clears an unresolved migration. Confirmed destination state or a verified failed/expired transaction releases the guard. Migration stops before broadcast if browser storage is unavailable.
+- Launch resume checks the prior transaction before requesting another signature. An expired initial transaction without a config releases the launch for a fresh review. Launch mint keypairs remain in memory; launch recovery still requires keeping the tab open.
+
+Validation: 82 unit tests, TypeScript/build, four-scenario browser suite and exact config/share restoration passed. The full synthetic-XRXx long-curve lifecycle also passed after declining its second signature (7 signing attempts, 6 sends; selected SDK configuration matched chain state).
+
+Fault-injected SOL browser run: WebSockets disabled; launch response dropped after the local node accepted it; buy confirmation RPC unavailable; page reloaded and failed status recheck preserved the trade guard; later status recovery confirmed the original trade. Migration confirmation was also interrupted and recovered after reload. The complete lifecycle required exactly 5 signatures and 5 sends, with no browser exceptions. Local DBC: `14XKFeu84huVVCwW5Xg2BUvWgeHUK22H8PLR5NGp7hnz`; DAMM v2: `A39Xur8MSLbmACGHC6bzE9VM5rFepJWF2RYA6F3vNcMF`.
+
+Reproduce against the existing local-validator fixture:
+
+```bash
+RECOVERY=1 CHROMIUM_PATH=/path/to/chrome node scripts/browser-local-flow.mjs
+```
+
+This remains automated local-chain evidence, not a real Phantom-extension run or public mainnet execution. No user wallet signature or funds were used. Network behavior follows Solana's official [sendTransaction](https://solana.com/docs/rpc/http/sendtransaction) and [getSignatureStatuses](https://solana.com/docs/rpc/http/getsignaturestatuses) contracts.
