@@ -206,7 +206,7 @@ try {
     const beforeQuote = Number(await page.getByTestId('wallet-quote-balance').innerText())
     await page.getByRole('button', { name: 'Sell', exact: true }).click()
     await page.getByRole('button', { name: 'Use half my token balance' }).click()
-    assert.equal(await page.getByLabel('Live sell amount').inputValue(), sell.replace(/0+$/, '').replace(/\.$/, ''))
+    await page.waitForFunction(expected => document.querySelector('[aria-label="Live sell amount"]')?.value === expected, sell.replace(/0+$/, '').replace(/\.$/, ''))
     await page.getByRole('button', { name: 'Get sell quote' }).click()
     await page.getByRole('button', { name: 'Sell with wallet' }).waitFor()
     await focus('.trade-preview')
