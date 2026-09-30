@@ -92,3 +92,30 @@ RECOVERY=1 CHROMIUM_PATH=/path/to/chrome node scripts/browser-local-flow.mjs
 ```
 
 This remains automated local-chain evidence, not a real Phantom-extension run or public mainnet execution. No user wallet signature or funds were used. Network behavior follows Solana's official [sendTransaction](https://solana.com/docs/rpc/http/sendtransaction) and [getSignatureStatuses](https://solana.com/docs/rpc/http/getsignaturestatuses) contracts.
+
+
+## Fourth iteration — launch recovery after closing the tab
+
+An unfinished launch now saves a validated public receipt before broadcast. It includes config/mint/payer addresses, quote selection, token metadata and transaction expiry references; it never stores the ephemeral config/mint signers or the wallet key. If receipt storage is unavailable, creation stops before broadcast.
+
+After reopening, the Unfinished launches panel checks account ownership, pool/config/mint/creator relationships, quote mint and fee/leftover recipients on chain. A created pool opens without a wallet signature. An uncertain previous pool attempt blocks a new creation. A configuration-only launch can reuse the paid curve after a new unsigned cost review and explicit approval; the unused mint receives a new address because its original ephemeral signer was not persisted. Mainnet recovery retains the real-funds acknowledgement. The original payer, current receipt and cost are checked again before signing.
+
+Successful pools are bookmarked before the unfinished receipt is removed. A receipt changed or completed in another tab invalidates stale continuation. Browsers supporting Web Locks also serialize attempts for the same saved configuration. Browser storage remains local to the same browser/origin; clearing it loses these recovery references.
+
+Browser evidence:
+
+- Combined SOL launch: hide confirmation after the node accepts creation, reload, find the original pool, open it without another signature, then buy/sell/graduate. Original config `3DzjcpE1CWWQDAM3KYJCaHssxQMJ8h6r7jKYAXukWusM` was retained. DBC `HmNqYXDdNGrQdpfdjGDJs8FUz1Mc9VL2o9EYkhUiBFms`; DAMM v2 `APN5eqTLcUuAxEsmQU6sJwX1vsdG4bMgK5AsEJse9oTH`. Full lifecycle: 5 sends, 5 signatures.
+- Split synthetic-XRXx long curve: decline second approval, reload, check the saved configuration, review only the remaining cost, approve a new mint using that same config. Original config `FwZXH9zh9wufHVKcBESwhoac7PdkGttxCWXTn5Xuvadt` was retained; selected scenario config matched chain data exactly. DBC `5wmM8EybQ7a6JycFPXQkZXQTC5ejojmmFpcXjiiqGG8U`; DAMM v2 `Ed6YjvFAUrfTB9habBWoUTCRBhGrosBVYfMn7RS7c5Ca`. Full lifecycle: 6 sends, 7 signing attempts including the deliberate decline. Recovery fit the 390 px viewport.
+- These are local-validator transactions with a test signing interface. No actual Phantom-extension or public-mainnet claim is added.
+
+Reproduce with the running local fixtures:
+
+```bash
+LAUNCH_RELOAD=combined CHROMIUM_PATH=/path/to/chrome node scripts/browser-local-flow.mjs
+STOCK_FIXTURE_DIR=/path/to/fixture LOCAL_RPC_PORT=19299 LONG_CURVE=1 SCENARIO_CURVE=long CANCEL_SECOND=1 LAUNCH_RELOAD=split CHROMIUM_PATH=/path/to/chrome node scripts/browser-local-flow.mjs
+```
+
+The previous deployed recovery revision `eb4e637` also passed the interrupted-trade/migration fixture against the public application assets with all chain calls redirected locally (Pages run `36708708667`, local DBC `2jTEdVQBrYa1xPzJmZNSKbitmqroK1fP4Ajj3bA5bN5c`). Its independent devnet test wallet remained unfunded; a later 1-SOL faucet request was also rejected. The user's wallet was not used to sign.
+
+
+Fourth-iteration validation: 102 unit tests pass with the same 5-second per-test deadline. The runner now uses at most four workers: simultaneous SDK-heavy workers plus browser/validator processes caused the existing curve-comparison test to exceed its deadline in two overloaded runs. TypeScript/build, the four-scenario browser suite, the earlier trade/migration interruption fixture, and public-devnet unsigned onboarding pass. The onboarding check requested zero signatures and sent zero transactions; the live estimate remained 0.02657072 test SOL for combined creation.

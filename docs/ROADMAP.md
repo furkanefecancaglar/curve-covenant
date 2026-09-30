@@ -84,3 +84,8 @@ Next: verify the published onboarding, obtain an actual public-wallet run when a
 ### Interrupted transaction recovery (2026-09-30)
 
 Bounded HTTP confirmation, pre-send signed transaction IDs, persistent pending trade/migration receipts, and guarded launch resume are implemented. The browser fault fixture disables WebSockets, drops a successful send response, interrupts confirmation and reloads the page; the five-transaction SOL lifecycle still completes with five signatures/sends. Unit coverage is now 82 tests. Actual public-wallet execution, launch recovery after closing the tab, and independent user trials remain open.
+
+
+### Launch receipt recovery (2026-09-30)
+
+Launch recovery after reload is implemented and exercised in the browser: existing pools are rediscovered without signing, paid configurations can be reused after a new cost review, and unresolved earlier transactions block a duplicate attempt. The original unused mint signer is not stored; config-only recovery uses a new mint address. Public Phantom execution and independent builder trials remain open.

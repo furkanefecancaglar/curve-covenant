@@ -1,4 +1,4 @@
-# Submission package — current evidence, 2026-09-26
+# Submission package — current evidence, 2026-09-30
 
 ## Title
 
@@ -40,8 +40,8 @@ This is the point of the product: expose a choice's benefits and costs rather th
 | Stateful scenario accounting matches DBC execution | 56 confirmed swaps across eight local pools; raw price, reserves, fees, wallet inventory and quote transfers matched exactly | Local deployed program copies; XRXx funding is synthetic |
 | Controlled comparisons can be deployed | SDK-valid equalized configs; browser-selected long curve matches actual created on-chain parameters | Local validator, not mainnet |
 | Config remains exact across sharing | Version 2 share-link reconstruction and exported config equality verified in browser | Pinned SDK/normalization version |
-| End-to-end launch works | Local browser scenario → create → buy → sell → balances → graduate; declined second approval recovered | Phantom-compatible local signer, not a real extension certification |
-| Tested product | 82 unit tests, TypeScript/build, offline scenario browser checks and local lifecycle test | Not a security audit or exhaustive parameter proof |
+| End-to-end launch works | Local browser scenario → create → buy → sell → balances → graduate; declined second approval and page reload recovered | Phantom-compatible local signer, not a real extension certification |
+| Tested product | 102 unit tests, TypeScript/build, offline scenario browser checks and local lifecycle test | Not a security audit or exhaustive parameter proof |
 | Real mainnet usage | Not yet available | Do not add a public-network claim until actual receipts exist |
 | Demand or revenue | None claimed | Real builder trials remain outstanding |
 

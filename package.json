@@ -4,7 +4,7 @@
   "description": "Stock-quoted Meteora DBC launches with curve simulation and DAMM v2 graduation",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --maxWorkers=4",
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",

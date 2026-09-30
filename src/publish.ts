@@ -10,6 +10,8 @@ import type { TransactionReview } from './transaction-review'
 import { readTokenBalance } from './balances'
 import { readTransactionOutcome, TransactionOutcomeError } from './confirmation'
 import type { TransactionAttempt } from './confirmation'
+import { archiveLaunchReceipt, loadLaunchReceipt, removeLaunchReceipt, saveLaunchReceipt, withLaunchLock } from './launch-receipts'
+import type { LaunchReceipt } from './launch-receipts'
 
 const DEVNET_RPC = 'https://api.devnet.solana.com'
 const SOL_MINT = new PublicKey('So11111111111111111111111111111111111111112')
@@ -35,17 +37,23 @@ export type PreparedLaunch = {
   plan: Awaited<ReturnType<typeof buildLaunchPlan>>; review: TransactionReview; quoteBalance: string | null
 }
 export type PendingLaunch = { configAddress: string; configSignature: string; mint: Keypair;
-  payer: string; identity: TokenIdentity; quoteAsset: QuoteAsset; signature?: string; attempt?: TransactionAttempt }
+  payer: string; identity: TokenIdentity; quoteAsset: QuoteAsset; signature?: string; attempt?: TransactionAttempt; receipt?: LaunchReceipt }
 export class LaunchNotCreatedError extends Error {}
 export class IncompleteLaunchError extends Error {
   pending: PendingLaunch
   constructor(pending: PendingLaunch, cause: unknown) {
-    super(`Launch unfinished. Keep this tab open to resume the same addresses: ${cause instanceof Error ? cause.message : String(cause)}`)
+    super(`Launch unfinished. Its transaction references are saved in this browser: ${cause instanceof Error ? cause.message : String(cause)}`)
     this.pending = pending
   }
 }
 
 export async function finishLaunch(pending: PendingLaunch) {
+  return withLaunchLock(pending.configAddress, () => finishLaunchInTab(pending))
+}
+async function finishLaunchInTab(pending: PendingLaunch) {
+  const stored = loadLaunchReceipt(pending.configAddress)
+  if (pending.receipt && !stored) throw new Error('This launch was completed or changed in another tab. Reload to open it from Saved pools.')
+  if (stored && stored.mintAddress !== pending.mint.publicKey.toBase58()) throw new Error('This launch was resumed in another tab. Check its receipt in Unfinished launches.')
   const { wallet, publicKey: payer } = await connectWallet()
   if (payer.toBase58() !== pending.payer) throw new Error('Reconnect the wallet that created this launch configuration.')
   const connection = new Connection(pending.quoteAsset.network === 'devnet' ? DEVNET_RPC : 'https://solana-rpc.publicnode.com', 'confirmed')
@@ -58,6 +66,7 @@ export async function finishLaunch(pending: PendingLaunch) {
       const outcome = await readTransactionOutcome(connection, pending.attempt)
       if (outcome.state === 'pending') throw new TransactionOutcomeError(pending.attempt, 'pending')
       if ((outcome.state === 'failed' || outcome.state === 'expired') && !configInfo) {
+        if (pending.receipt) removeLaunchReceipt(pending.receipt)
         throw new LaunchNotCreatedError('The configuration transaction did not complete. Check the launch cost again before starting a new attempt.')
       }
       if (outcome.state === 'confirmed' && pending.signature) throw new Error('The transaction is confirmed, but its pool is not visible from this RPC yet. Check the same launch again.')
@@ -70,13 +79,25 @@ export async function finishLaunch(pending: PendingLaunch) {
       name: pending.identity.name, symbol: pending.identity.symbol, uri: pending.identity.metadataUri, tokenBadge })
     await reviewTransaction(connection, payer, tx)
     try {
-      await sendWalletTransaction(connection, wallet, payer, tx, [pending.mint], (signature, attempt) => { pending.signature = signature; pending.attempt = attempt })
+      await sendWalletTransaction(connection, wallet, payer, tx, [pending.mint], (signature, attempt) => {
+        if (pending.receipt) {
+          const current = loadLaunchReceipt(pending.configAddress)
+          if (!current || current.mintAddress !== pending.mint.publicKey.toBase58()) throw new Error('This launch changed in another tab. Check its saved receipt before continuing.')
+          const next = { ...pending.receipt, poolAttempt: attempt }
+          saveLaunchReceipt(next); pending.receipt = next
+        }
+        pending.signature = signature; pending.attempt = attempt
+      })
     } catch (issue) {
-      if (issue instanceof TransactionOutcomeError && issue.state !== 'pending') { pending.attempt = undefined; pending.signature = undefined }
+      if (issue instanceof TransactionOutcomeError && issue.state !== 'pending') {
+        pending.attempt = undefined; pending.signature = undefined
+        if (pending.receipt) { pending.receipt = { ...pending.receipt, poolAttempt: undefined }; saveLaunchReceipt(pending.receipt) }
+      }
       throw issue
     }
   }
   if (!(await connection.getAccountInfo(pool))) throw new Error('Pool confirmation is pending. Retry to check the same pool.')
+  if (pending.receipt) archiveLaunchReceipt(pending.receipt, pool.toBase58())
   return { configAddress: pending.configAddress, mintAddress: pending.mint.publicKey.toBase58(),
     poolAddress: pool.toBase58(), signature: pending.signature ?? pending.configSignature }
 }
@@ -138,18 +159,26 @@ export async function launchPrepared(prepared: PreparedLaunch, onProgress: (mess
   onProgress(plan.mode === 'split' ? 'Step 1 of 2: approve the curve configuration. Token creation follows in a second approval.' : 'Approve the token and pool launch in your wallet.')
   let submitted = ''
   let attempt: TransactionAttempt | undefined
+  let receipt: LaunchReceipt | undefined
   let signature: string
   try {
     signature = await sendWalletTransaction(connection, wallet, payer, plan.transaction,
-      plan.mode === 'split' ? [configAccount] : [configAccount, mint], (value, context) => { submitted = value; attempt = context })
+      plan.mode === 'split' ? [configAccount] : [configAccount, mint], (value, context) => {
+        receipt = { version: 1, configAddress: configAccount.publicKey.toBase58(), mintAddress: mint.publicKey.toBase58(),
+          payer: payer.toBase58(), quoteId: quoteAsset.id, identity, configAttempt: context,
+          ...(plan.mode === 'combined' ? { poolAttempt: context } : {}) }
+        saveLaunchReceipt(receipt)
+        submitted = value; attempt = context
+      })
   } catch (issue) {
+    if (issue instanceof TransactionOutcomeError && issue.state !== 'pending' && receipt) removeLaunchReceipt(receipt)
     if (!submitted || (issue instanceof TransactionOutcomeError && issue.state !== 'pending')) throw issue
     throw new IncompleteLaunchError({ configAddress: configAccount.publicKey.toBase58(), configSignature: submitted,
-      mint, payer: payer.toBase58(), quoteAsset, identity, attempt, signature: plan.mode === 'combined' ? submitted : undefined }, issue)
+      mint, payer: payer.toBase58(), quoteAsset, identity, attempt, receipt, signature: plan.mode === 'combined' ? submitted : undefined }, issue)
   }
   if (plan.mode === 'split') {
     const pending: PendingLaunch = { configAddress: configAccount.publicKey.toBase58(), configSignature: signature,
-      mint, payer: payer.toBase58(), quoteAsset, identity }
+      mint, payer: payer.toBase58(), quoteAsset, identity, receipt }
     onProgress('Step 2 of 2: configuration confirmed. Approve token and pool creation.')
     try { return await finishLaunch(pending) }
     catch (error) { throw new IncompleteLaunchError(pending, error) }
@@ -163,8 +192,9 @@ export async function launchPrepared(prepared: PreparedLaunch, onProgress: (mess
     if (!configInfo || !poolInfo) throw new Error('Confirmation is still pending. Retry to check the same pool.')
   } catch (issue) {
     throw new IncompleteLaunchError({ configAddress: configAccount.publicKey.toBase58(), configSignature: signature,
-      mint, payer: payer.toBase58(), quoteAsset, identity, signature, attempt }, issue)
+      mint, payer: payer.toBase58(), quoteAsset, identity, signature, attempt, receipt }, issue)
   }
+  if (receipt) archiveLaunchReceipt(receipt, poolAddress.toBase58())
   return { configAddress: configAccount.publicKey.toBase58(), mintAddress: mint.publicKey.toBase58(),
     poolAddress: poolAddress.toBase58(), signature }
 }

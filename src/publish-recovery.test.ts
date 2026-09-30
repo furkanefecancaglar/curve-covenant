@@ -7,6 +7,7 @@ import { reviewTransaction } from './transaction-review'
 import { QUOTES } from './quotes'
 import * as confirmation from './confirmation'
 vi.mock('./wallet', () => ({ connectWallet: vi.fn(), sendWalletTransaction: vi.fn() }))
+vi.mock('./launch-receipts', () => ({ loadLaunchReceipt: vi.fn().mockReturnValue(null), saveLaunchReceipt: vi.fn(), removeLaunchReceipt: vi.fn(), archiveLaunchReceipt: vi.fn(), withLaunchLock: (_address: string, work: () => Promise<unknown>) => work() }))
 vi.mock('./transaction-review', () => ({ reviewTransaction: vi.fn() }))
 vi.mock('./quotes', async original => ({ ...await original<typeof import('./quotes')>(), verifyQuoteAsset: vi.fn() }))
 afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks() })
@@ -85,5 +86,14 @@ it('releases an expired launch with no config for a fresh cost review', async ()
   vi.spyOn(confirmation, 'readTransactionOutcome').mockResolvedValue({ state: 'expired' })
   await expect(finishLaunch({ configAddress: prepared.configAccount.publicKey.toBase58(), configSignature: 'expired-id', mint: prepared.mint, payer: prepared.payer.toBase58(), identity: prepared.identity, quoteAsset: prepared.quoteAsset,
     attempt: { signature: 'expired-id', blockhash: Keypair.generate().publicKey.toBase58(), lastValidBlockHeight: 100, startedAt: new Date().toISOString() } })).rejects.toBeInstanceOf(LaunchNotCreatedError)
+  expect(sendWalletTransaction).not.toHaveBeenCalled()
+})
+
+it('blocks an old in-memory launch after its saved receipt was completed elsewhere', async () => {
+  const { finishLaunch } = await import('./publish')
+  const prepared = fixture()
+  const attempt = { signature: 'old-id', blockhash: Keypair.generate().publicKey.toBase58(), lastValidBlockHeight: 100, startedAt: new Date().toISOString() }
+  await expect(finishLaunch({ configAddress: prepared.configAccount.publicKey.toBase58(), configSignature: 'old-id', mint: prepared.mint, payer: prepared.payer.toBase58(), identity: prepared.identity, quoteAsset: prepared.quoteAsset,
+    receipt: { version: 1, configAddress: prepared.configAccount.publicKey.toBase58(), mintAddress: prepared.mint.publicKey.toBase58(), payer: prepared.payer.toBase58(), identity: prepared.identity, quoteId: 'SOL', configAttempt: attempt } })).rejects.toThrow('completed or changed in another tab')
   expect(sendWalletTransaction).not.toHaveBeenCalled()
 })

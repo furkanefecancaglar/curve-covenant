@@ -17,6 +17,10 @@ let signCount = 0
 let sendCount = 0
 let hideStatuses = false
 const recovery = process.env.RECOVERY === '1'
+const launchReload = process.env.LAUNCH_RELOAD ?? ''
+assert(['', 'combined', 'split'].includes(launchReload))
+assert(!launchReload || !recovery, 'Run launch reload and trade interruption fixtures separately')
+let recoveredReceipt = null
 assert(!recovery || !fixture, 'Recovery fault fixture uses SOL')
 const funding = await local.requestAirdrop(payer.publicKey, 10 * LAMPORTS_PER_SOL)
 await local.confirmTransaction(funding, 'confirmed')
@@ -35,12 +39,13 @@ try {
   page.on('pageerror', error => errors.push(error.message))
   await page.route(/https:\/\/(solana-rpc\.publicnode\.com|api\.devnet\.solana\.com)\/?$/, async route => {
     const request = JSON.parse(route.request().postData())
-    if (recovery && request.method === 'getSignatureStatuses' && hideStatuses) {
+    if ((recovery || launchReload) && request.method === 'getSignatureStatuses' && hideStatuses) {
       await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ jsonrpc: '2.0', id: request.id, error: { code: -32005, message: 'Test: confirmation RPC unavailable' } }) }); return
     }
     if (request.method === 'sendTransaction') {
       sendCount++
       if (recovery && (sendCount === 2 || sendCount === 5)) hideStatuses = true
+      if (launchReload === 'combined' && sendCount === 1) hideStatuses = true
     }
     const response = await fetch(local.rpcEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: route.request().postData() })
     if (recovery && request.method === 'sendTransaction' && sendCount === 1) { await response.text(); await route.abort('failed'); return }
@@ -102,12 +107,48 @@ try {
   await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 25000 })
   if (await page.getByRole('checkbox').count()) await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: /Launch token/ }).click()
-  if (process.env.CANCEL_SECOND === '1') {
-    await page.getByRole('button', { name: 'Resume token creation' }).click({ timeout: 25000 })
+  if (launchReload) {
+    await page.getByRole('button', { name: 'Resume token creation' }).waitFor({ timeout: 25000 })
+    recoveredReceipt = await page.evaluate(() => JSON.parse(localStorage.getItem(Object.keys(localStorage).find(key => key.startsWith('curve-covenant:launch:v1:')))))
+    assert(recoveredReceipt?.configAddress, 'Signed launch must be recoverable before reload')
+    assert(!JSON.stringify(recoveredReceipt).includes('secretKey'), 'Receipt must not store signers')
+    const signaturesBeforeReload = signCount
+    await page.reload({ waitUntil: 'networkidle' }); await installWallet()
+    assert(await page.getByRole('button', { name: 'Check launch with Phantom' }).isDisabled() || fixture, 'Old launch must be checked before creating another on the same quote')
+    hideStatuses = false
+    await page.getByRole('button', { name: 'Check saved launch', exact: true }).click()
+    assert.equal(signCount, signaturesBeforeReload, 'Checking saved state must not sign')
+    if (launchReload === 'combined') {
+      await page.getByRole('button', { name: 'Open recovered pool' }).click({ timeout: 15000 })
+      assert.equal(signCount, 1); assert.equal(sendCount, 1)
+    } else {
+      await page.getByRole('button', { name: 'Check remaining launch cost' }).click({ timeout: 15000 })
+      await page.getByRole('region', { name: 'Recovered launch cost review' }).waitFor({ timeout: 15000 })
+      assert.equal(signCount, signaturesBeforeReload, 'Cost review must remain unsigned')
+      await page.setViewportSize({ width: 390, height: 844 })
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'Recovery panel must fit a phone')
+      if (process.env.RECOVERY_SCREENSHOT) await page.getByRole('region', { name: 'Unfinished launches' }).screenshot({ path: process.env.RECOVERY_SCREENSHOT })
+      await page.setViewportSize({ width: 1440, height: 1050 })
+      const recoveryCheckbox = page.getByRole('region', { name: 'Unfinished launches' }).getByRole('checkbox')
+      if (await recoveryCheckbox.count()) await recoveryCheckbox.check()
+      await page.getByRole('button', { name: 'Finish saved launch with wallet' }).click()
+      await page.waitForFunction(() => document.querySelector('[aria-label="Graduation pool address"]')?.value.length > 30)
+      assert.equal(signCount, signaturesBeforeReload + 1); assert.equal(sendCount, 2, 'Config must not be paid for a second time')
+    }
+    assert.equal(await page.getByRole('region', { name: 'Unfinished launches' }).count(), 0)
+  } else {
+    if (process.env.CANCEL_SECOND === '1') await page.getByRole('button', { name: 'Resume token creation' }).click({ timeout: 25000 })
+    await page.locator('.launch-success').waitFor({ timeout: 25000 })
   }
-  await page.locator('.launch-success').waitFor({ timeout: 25000 })
   const pool = await page.getByLabel('Graduation pool address').inputValue()
   assert(pool.length > 30, 'Created pool must be transferred into the graduation form')
+  if (recoveredReceipt) {
+    const client = DynamicBondingCurveClient.create(local, 'confirmed')
+    const created = await client.state.getPool(pool)
+    assert.equal(created.poolState.config.toBase58(), recoveredReceipt.configAddress, 'Recovery must reuse the original paid config')
+    if (launchReload === 'split') assert.notEqual(created.poolState.baseMint.toBase58(), recoveredReceipt.mintAddress, 'A closed tab needs a fresh unused mint signer')
+    else assert.equal(created.poolState.baseMint.toBase58(), recoveredReceipt.mintAddress)
+  }
   if (comparedConfig) {
     const client = DynamicBondingCurveClient.create(local, 'confirmed')
     const created = await client.state.getPool(pool)
@@ -204,7 +245,7 @@ try {
     assert.equal(sendCount, 5); assert.equal(signCount, 5)
     assert.equal(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('curve-covenant:pending-')).length), 0)
   }
-  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, recovery, sendCount, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
+  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, recovery, launchReload, reusedConfig: recoveredReceipt?.configAddress ?? null, sendCount, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
     result: await page.locator('.lifecycle-result').innerText(), pageErrors: errors }))
 } catch (error) {
   console.error('Lifecycle failure:', error.message)

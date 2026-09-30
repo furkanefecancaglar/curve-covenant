@@ -9,6 +9,8 @@ import { QUOTES } from './quotes'
 import type { QuoteId } from './quotes'
 import { toPlain } from './dbc'
 import LaunchPanel from './LaunchPanel'
+import LaunchRecoveryPanel from './LaunchRecoveryPanel'
+import { LAUNCH_RECEIPTS_CHANGED, listLaunchReceipts } from './launch-receipts'
 import LifecyclePanel from './LifecyclePanel'
 import CurveChart from './CurveChart'
 import { decodeDesign, encodeDesign } from './design'
@@ -59,7 +61,16 @@ export default function Studio() {
   const [appliedScenario, setAppliedScenario] = useState<{ curve: ControlledCurve; reference: StudioInputs; quoteId: QuoteId } | null>(shared.selection)
   const activeScenario = appliedScenario && appliedScenario.curve.inputs === input && appliedScenario.quoteId === quoteId ? appliedScenario : null
   const [shareMessage, setShareMessage] = useState('')
-  const [launchLocked, setLaunchLocked] = useState(false)
+  const [launchInProgress, setLaunchLocked] = useState(false)
+  const [recoveryBusy, setRecoveryBusy] = useState(false)
+  const launchLocked = launchInProgress || recoveryBusy
+  const [launchReceipts, setLaunchReceipts] = useState(listLaunchReceipts)
+  useEffect(() => {
+    const refresh = () => setLaunchReceipts(listLaunchReceipts())
+    window.addEventListener(LAUNCH_RECEIPTS_CHANGED, refresh)
+    window.addEventListener('storage', refresh)
+    return () => { window.removeEventListener(LAUNCH_RECEIPTS_CHANGED, refresh); window.removeEventListener('storage', refresh) }
+  }, [])
   const [exampleRevision, setExampleRevision] = useState(0)
   const [linkedPool] = useState(() => {
     const params = new URLSearchParams(window.location.search)
@@ -194,7 +205,11 @@ export default function Studio() {
           document.getElementById('launch')?.scrollIntoView({ behavior: 'smooth' })
         }}/>
         {activeScenario && <p className="shared-design-note" role="status">Scenario configuration selected: {activeScenario.curve.label}. The launch uses the exact compared configuration. Editing the launch terms starts a new design.</p>}
-        <LaunchPanel key={`launch:${quoteId}:${exampleRevision}`} designUrl={launchDesignUrl.toString()} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={(address, label) => {
+        <LaunchRecoveryPanel receipts={launchReceipts} locked={launchLocked} onBusy={setRecoveryBusy} onRecovered={(pool, label) => {
+          observePool(pool, label); setCreatedPool(pool)
+          document.getElementById('graduate')?.scrollIntoView({ behavior: 'smooth' })
+        }}/>
+        <LaunchPanel recoveryBlocked={launchReceipts.some(receipt => receipt.quoteId === quoteId)} externalBusy={recoveryBusy} key={`launch:${quoteId}:${exampleRevision}`} designUrl={launchDesignUrl.toString()} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={(address, label) => {
           const pool = { address, network: quoteAsset.network }
           observePool(pool, label); setCreatedPool(pool)
         }}/>
