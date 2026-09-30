@@ -119,3 +119,44 @@ The previous deployed recovery revision `eb4e637` also passed the interrupted-tr
 
 
 Fourth-iteration validation: 102 unit tests pass with the same 5-second per-test deadline. The runner now uses at most four workers: simultaneous SDK-heavy workers plus browser/validator processes caused the existing curve-comparison test to exceed its deadline in two overloaded runs. TypeScript/build, the four-scenario browser suite, the earlier trade/migration interruption fixture, and public-devnet unsigned onboarding pass. The onboarding check requested zero signatures and sent zero transactions; the live estimate remained 0.02657072 test SOL for combined creation.
+
+
+## Fifth iteration — failures found on real mainnet reads
+
+The repository's existing USDC reference pool `4L9LJ3B5niCSLWujRJjPU6scZVbNJz4zw6A9B3aPxTeT` was read on public mainnet. This is an existing reference pool, not a Curve Covenant launch or user-adoption claim.
+
+Actual failures found:
+
+- The default PublicNode endpoint returned HTTP 403 for `getTokenSupply`, `getTokenAccountBalance` and indexed transaction listing. Account reads still worked. This broke the graduation reader and evidence export on real mainnet even though local-validator flows passed.
+- The same endpoint returned null for historical signature `4YDPmFtNkiX8Gm7X7Wq6poPp2BLRgrJn8Yrb1rKUbTLzJCHEzLt5v3GKeDQHQyQgZ8QnvZQ2jLsnAoJWG5ACeVLp`, while Solana's public endpoint returned a finalized successful receipt at slot 450089928. Treating that null as expiry would be misleading.
+- Solana's public history endpoint worked from Node, but denied browser requests with HTTP 403. Its current documented mainnet hostname did the same. A documented dRPC public endpoint returned a paid-plan requirement. No provider restriction was bypassed and no API credential was borrowed.
+
+Changes:
+
+- Mint precision and DAMM vault balances use directly readable SPL/Token-2022 accounts, checking program owner, account type, mint and exact integer amounts.
+- Current signatures are checked on the selected RPC. Before classifying an absent signature as expired, the known default mainnet RPC is routed to a separate history source only after both genesis hashes match mainnet. Local/custom RPCs stay on their own network. Failed history access keeps an uncertain transaction unresolved.
+- Evidence exports preserve the valid pool state even when history fails. Each receipt is verified against the requested signature, slot and pool account reference before recording success. Missing, mismatched and skipped details remain unverified. Reads are paced and bounded, and rate/access limits stop further detail requests.
+- Both Inspector and Graduation show how many listed receipts were verified; an unavailable history export explicitly says so. Inspector labels the public USDC reference pool without claiming a project launch.
+- Optional RPC connection settings validate network and mainnet history support before adoption. The endpoint lives only in page memory; credentials do not enter receipts, storage, share links, reports or connection-error text. Launch, trade, migration and recovery all use the selected endpoint. The launch cost review is invalidated when it changes.
+
+Validation:
+
+- 125 unit tests passed, including history-source network isolation, historical confirmation, denied/partial/mismatched receipt handling, token-account verification and RPC settings.
+- Real Node/mainnet export verified 2 of 20 listed receipts before the public history rate limit. The other 18 were explicitly unverified. The historical-status check returned confirmed at slot 450089928. Artifact: `/tmp/curve-public-mainnet-readonly-evidence.json`.
+- Real browser/mainnet test verified the existing pool snapshot and correctly displayed history unavailable. No wallet provider was injected and only an allowlist of read methods was permitted. This is **not** a passing full-history browser run. Artifact: `/tmp/curve-public-browser-evidence.json`.
+- Unsigned public-devnet onboarding passed with 0 signature requests / 0 sends. A controlled custom-endpoint route verified that launch simulation used the selected endpoint, rejected a wrong-network endpoint, cleared its input, did not persist its key, and invalidated the old review.
+- Synthetic-XRXx long-curve close/reopen lifecycle passed after the token-account changes, including exact selected config equality and 5/5 pool receipt verification. Local DBC `3HWPnC5dqk5vhhgZr4GYzUnzEe4QZN59sfiSxe9scffS`; DAMM v2 `BfRujeQ7rDRZqXzhPeLo4wTqRLJbC6MeuAFyBkuQDLwc`.
+
+Remaining dependency: a mainnet RPC endpoint that permits browser history reads has not been supplied. A concise optional account question was sent to the user. Mainnet creation/trading, actual Phantom interaction and independent builder use remain unproven.
+
+Reproduction:
+
+```bash
+# Strict public history verification: must fail if no full receipt is available.
+CHROMIUM_PATH=/path/to/chrome node scripts/browser-public-evidence.mjs
+# Explicitly test the observed public-browser history denial and honest fallback.
+EXPECT_HISTORY_UNAVAILABLE=1 CHROMIUM_PATH=/path/to/chrome node scripts/browser-public-evidence.mjs
+CUSTOM_RPC=1 PREFLIGHT_WALLET=<funded-devnet-public-address> CHROMIUM_PATH=/path/to/chrome node scripts/browser-onboarding.mjs
+```
+
+Public provider constraints are documented in [Solana's cluster reference](https://solana.com/docs/references/clusters). The dRPC public address was checked against its [own API guide](https://drpc.org/docs/solana-api), then rejected by the actual service. These sources are not guarantees of current access.

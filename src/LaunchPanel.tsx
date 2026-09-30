@@ -8,6 +8,7 @@ import type { QuoteAsset } from './quotes'
 import { walletError } from './wallet'
 import { TransactionOutcomeError } from './confirmation'
 import { formatUnits } from './dbc'
+import { RPC_SETTINGS_CHANGED } from './rpc-settings'
 
 const sol = (lamports: number) => formatUnits(String(lamports), 9)
 export default function LaunchPanel({ config, quoteAsset, designUrl, onCreated, onLockChange, recoveryBlocked = false, externalBusy = false }: { recoveryBlocked?: boolean; externalBusy?: boolean; config: ConfigParameters | null; quoteAsset: QuoteAsset; designUrl: string; onCreated: (address: string, label: string) => void; onLockChange: (locked: boolean) => void }) {
@@ -29,6 +30,12 @@ export default function LaunchPanel({ config, quoteAsset, designUrl, onCreated, 
   const browseUrl = `https://phantom.app/ul/browse/${encodeURIComponent(designUrl)}?ref=${encodeURIComponent(window.location.origin)}`
   useEffect(() => { onLockChange(busy || !!pending) }, [busy, pending, onLockChange])
   useEffect(() => { setPrepared(null); setError(''); setProgress(''); setMainnetAcknowledged(false) }, [config, name, symbol, metadataUri])
+
+  useEffect(() => {
+    const invalidate = () => { setPrepared(null); setMainnetAcknowledged(false) }
+    window.addEventListener(RPC_SETTINGS_CHANGED, invalidate)
+    return () => window.removeEventListener(RPC_SETTINGS_CHANGED, invalidate)
+  }, [])
 
   async function submit(event: FormEvent) {
     event.preventDefault()

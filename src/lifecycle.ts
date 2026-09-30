@@ -8,6 +8,7 @@ import { reviewTransaction } from './transaction-review'
 import type { TransactionReview } from './transaction-review'
 import { TransactionOutcomeError } from './confirmation'
 import type { TransactionAttempt } from './confirmation'
+import { readMintDecimals, readTokenAccount } from './token-accounts'
 import { loadPendingMigration, savePendingMigration, removePendingMigration } from './pending-migration'
 
 export async function readLifecycle(address: string, network: Network, endpoint = RPC[network]) {
@@ -27,7 +28,7 @@ export async function readLifecycle(address: string, network: Network, endpoint 
   const destinationFees = config.migrationFeeOption === 6
     ? { baseFeePct: config.migratedPoolFeeBps / 100, dynamicEnabled: config.migratedDynamicFee !== 0 }
     : { baseFeePct: Number(baseFeeNumerator) / 10_000_000, dynamicEnabled: migrationConfig.poolFees.dynamicFee.initialized !== 0 }
-  const quoteSupply = await connection.getTokenSupply(config.quoteMint)
+  const quoteDecimals = await readMintDecimals(connection, config.quoteMint)
   const dammPool = deriveDammV2PoolAddress(dammConfig, state.poolState.baseMint, config.quoteMint)
   const migrated = state.poolState.isMigrated === 1
   const threshold = config.migrationQuoteThreshold
@@ -37,17 +38,17 @@ export async function readLifecycle(address: string, network: Network, endpoint 
     const account = await connection.getAccountInfo(dammPool)
     if (!account?.owner.equals(DAMM_V2_PROGRAM_ID)) throw new Error('Graduated DAMM v2 account could not be verified.')
     const [base, quote] = await Promise.all([
-      connection.getTokenAccountBalance(deriveDammV2TokenVaultAddress(dammPool, state.poolState.baseMint)),
-      connection.getTokenAccountBalance(deriveDammV2TokenVaultAddress(dammPool, config.quoteMint)),
+      readTokenAccount(connection, deriveDammV2TokenVaultAddress(dammPool, state.poolState.baseMint), state.poolState.baseMint),
+      readTokenAccount(connection, deriveDammV2TokenVaultAddress(dammPool, config.quoteMint), config.quoteMint),
     ])
-    reserves = { base: base.value.uiAmountString!, quote: quote.value.uiAmountString! }
+    reserves = { base: formatUnits(base.amountRaw, base.decimals), quote: formatUnits(quote.amountRaw, quote.decimals) }
   }
   return { address: pool.toBase58(), network, baseMint: state.poolState.baseMint.toBase58(), quoteMint: config.quoteMint.toBase58(),
     dammConfig: dammConfig.toBase58(), dammPool: dammPool.toBase58(), migrated,
     ready: !migrated && reserve.gte(threshold), reserves, destinationFees,
     progress: migrated ? 100 : Math.min(100, Number(reserve.muln(10000).div(threshold).toString()) / 100),
-    reserve: formatUnits(reserve.toString(), quoteSupply.value.decimals),
-    threshold: formatUnits(threshold.toString(), quoteSupply.value.decimals), fetchedAt: new Date().toISOString() }
+    reserve: formatUnits(reserve.toString(), quoteDecimals),
+    threshold: formatUnits(threshold.toString(), quoteDecimals), fetchedAt: new Date().toISOString() }
 }
 
 export type PreparedGraduation = {

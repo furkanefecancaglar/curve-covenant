@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Connection, Keypair, SendTransactionError, SystemProgram, Transaction } from '@solana/web3.js'
 import bs58 from 'bs58'
-import { sendWalletTransaction } from './wallet'
+import { sendWalletTransaction, walletError } from './wallet'
 
 afterEach(() => vi.useRealTimers())
 function fixture() {
@@ -52,4 +52,10 @@ describe('wallet transaction confirmation', () => {
     expect(await result).toMatchObject({ state: 'pending', attempt: { signature: bs58.encode(f.transaction.signature!) } })
     expect(f.connection.sendRawTransaction).toHaveBeenCalledOnce()
   })
+})
+
+it('explains denied RPC access without exposing credentials from the original error', () => {
+  const message = walletError(new Error('403 denied https://example.com/private-access-key'))
+  expect(message).toContain('Open RPC connection')
+  expect(message).not.toContain('private-access-key')
 })

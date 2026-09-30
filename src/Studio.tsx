@@ -9,6 +9,7 @@ import { QUOTES } from './quotes'
 import type { QuoteId } from './quotes'
 import { toPlain } from './dbc'
 import LaunchPanel from './LaunchPanel'
+import RpcSettings from './RpcSettings'
 import LaunchRecoveryPanel from './LaunchRecoveryPanel'
 import { LAUNCH_RECEIPTS_CHANGED, listLaunchReceipts } from './launch-receipts'
 import LifecyclePanel from './LifecyclePanel'
@@ -205,6 +206,7 @@ export default function Studio() {
           document.getElementById('launch')?.scrollIntoView({ behavior: 'smooth' })
         }}/>
         {activeScenario && <p className="shared-design-note" role="status">Scenario configuration selected: {activeScenario.curve.label}. The launch uses the exact compared configuration. Editing the launch terms starts a new design.</p>}
+        <RpcSettings/>
         <LaunchRecoveryPanel receipts={launchReceipts} locked={launchLocked} onBusy={setRecoveryBusy} onRecovered={(pool, label) => {
           observePool(pool, label); setCreatedPool(pool)
           document.getElementById('graduate')?.scrollIntoView({ behavior: 'smooth' })

@@ -89,3 +89,8 @@ Bounded HTTP confirmation, pre-send signed transaction IDs, persistent pending t
 ### Launch receipt recovery (2026-09-30)
 
 Launch recovery after reload is implemented and exercised in the browser: existing pools are rediscovered without signing, paid configurations can be reused after a new cost review, and unresolved earlier transactions block a duplicate attempt. The original unused mint signer is not stored; config-only recovery uses a new mint address. Public Phantom execution and independent builder trials remain open.
+
+
+### Mainnet read compatibility (2026-09-30)
+
+Real mainnet reads exposed provider restrictions hidden by local tests. Token-account reads now avoid unavailable indexed balance/supply methods. Transaction history is verified separately, partial exports remain explicit, and an optional in-memory RPC setting validates network/history before adoption. Public browser history remains blocked by the checked default services; a compatible endpoint and real Phantom execution remain required evidence gates. See the fifth iteration in `USABILITY-CHECKPOINT.md`.

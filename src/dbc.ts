@@ -3,13 +3,13 @@ import { DynamicBondingCurveClient, FEE_DENOMINATOR, getCurrentPoint, SwapMode }
 import type { PoolConfig, VirtualPool } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import BN from 'bn.js'
 import { QUOTES } from './quotes'
+import { readMintDecimals } from './token-accounts'
+import { RPC } from './rpc-settings'
+export { RPC } from './rpc-settings'
 
 export const DBC_PROGRAM = 'dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN'
 export type Network = 'mainnet-beta' | 'devnet'
-export const RPC: Record<Network, string> = {
-  'mainnet-beta': 'https://solana-rpc.publicnode.com',
-  devnet: 'https://api.devnet.solana.com',
-}
+
 
 export type LaunchData = {
   network: Network
@@ -99,7 +99,7 @@ export async function quoteSwap(launch: LaunchData, amount: string, side: TradeS
   if (!pool) throw new Error('Pool could not be read.')
   const config = await client.state.getPoolConfig(pool.poolState.config)
   if (!config) throw new Error('Pool config could not be read.')
-  const baseDecimals = await decimalsFor(connection, new PublicKey(launch.baseMint))
+  const baseDecimals = await readMintDecimals(connection, new PublicKey(launch.baseMint))
   const selling = side === 'sell'
   const inputDecimals = selling ? baseDecimals : launch.quoteDecimals
   const outputDecimals = selling ? launch.quoteDecimals : baseDecimals
@@ -154,16 +154,6 @@ function authorityName(value: number): string {
   ][value] ?? `Unknown (${value})`
 }
 
-async function decimalsFor(connection: Connection, mint: PublicKey): Promise<number> {
-  if (mint.toBase58() === 'So11111111111111111111111111111111111111112') return 9
-  const account = await connection.getParsedAccountInfo(mint, 'confirmed')
-  const data = account.value?.data
-  if (data && typeof data === 'object' && 'parsed' in data) {
-    const decimals = (data.parsed as { info?: { decimals?: number } }).info?.decimals
-    if (typeof decimals === 'number') return decimals
-  }
-  throw new Error('Token mint decimals could not be verified from chain.')
-}
 
 function symbolFor(mint: string): string {
   const knownQuote = Object.values(QUOTES).find(quote => quote.mint === mint)
@@ -189,7 +179,7 @@ export async function loadLaunch(address: string, network: Network, endpoint = R
   if (!config) throw new Error('DBC account was found, but it is neither a supported pool nor a config.')
 
   const quoteMint = config.quoteMint.toBase58()
-  const quoteDecimals = await decimalsFor(connection, config.quoteMint)
+  const quoteDecimals = await readMintDecimals(connection, config.quoteMint)
   const slot = await connection.getSlot('confirmed')
   const fee = Number(config.poolFees.baseFee.cliffFeeNumerator.toString()) / FEE_DENOMINATOR * 100
   const thresholdRaw = config.migrationQuoteThreshold.toString()

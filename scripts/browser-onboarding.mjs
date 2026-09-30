@@ -8,12 +8,21 @@ if (!wallet) throw new Error('Set PREFLIGHT_WALLET to a funded devnet public add
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH, headless: true, args: ['--no-sandbox'] })
 const page = await browser.newPage({ viewport: { width: 1440, height: 1050 } })
 const errors = [], sends = []
+const customRequests = []
 page.on('pageerror', issue => errors.push(issue.message))
 await page.route(/https:\/\/(api\.devnet\.solana\.com|solana-rpc\.publicnode\.com)\/?$/, async route => {
   const payload = route.request().postDataJSON()
   if (payload.method === 'sendTransaction') { sends.push(payload.method); return route.abort() }
   if (route.request().url().includes('publicnode')) throw new Error('Onboarding rehearsal must stay on devnet')
   return route.continue()
+})
+await page.route('https://rpc-fixture.invalid/**', async route => {
+  const payload = route.request().postDataJSON()
+  if (payload.method === 'sendTransaction' || payload.method === 'requestAirdrop') { sends.push(payload.method); return route.abort() }
+  customRequests.push(payload.method)
+  if (route.request().url().includes('wrong-network')) return route.fulfill({ contentType: 'application/json', body: JSON.stringify({ jsonrpc: '2.0', id: payload.id, result: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d' }) })
+  const response = await fetch('https://api.devnet.solana.com', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+  await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text() })
 })
 try {
   const base = process.env.APP_URL ?? 'http://127.0.0.1:4175/'
@@ -40,6 +49,27 @@ try {
   await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 45000 })
   assert.equal(await page.evaluate(() => window.signAttempts), 0)
   const review = await page.getByRole('region', { name: 'Launch cost review' }).innerText()
+  if (process.env.CUSTOM_RPC === '1') {
+    await page.locator('#rpc-connection summary').click()
+    await page.getByLabel('RPC connection network').selectOption('devnet')
+    await page.getByLabel('Session RPC endpoint').fill('https://rpc-fixture.invalid/wrong-network')
+    await page.getByRole('button', { name: 'Check and use RPC' }).click()
+    await page.locator('#rpc-connection [role="alert"]').filter({ hasText: 'not on devnet' }).waitFor()
+    assert.equal(await page.getByRole('region', { name: 'Launch cost review' }).count(), 1, 'Rejected settings must keep the existing review')
+    await page.getByLabel('Session RPC endpoint').fill('https://rpc-fixture.invalid/fake-access-key?test-secret=not-real')
+    await page.getByRole('button', { name: 'Check and use RPC' }).click()
+    await page.locator('#rpc-connection [role="status"]').filter({ hasText: 'Connected to devnet' }).waitFor()
+    assert.equal(await page.getByLabel('Session RPC endpoint').inputValue(), '')
+    assert.equal(await page.getByRole('region', { name: 'Launch cost review' }).count(), 0, 'Changing connection invalidates the cost review')
+    await page.getByRole('button', { name: 'Check launch with Phantom' }).click()
+    await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 45000 })
+    assert(customRequests.includes('simulateTransaction'), 'Launch check must use the selected endpoint')
+    assert(!(await page.evaluate(() => JSON.stringify(localStorage))).includes('fake-access-key'))
+    assert(!(await page.evaluate(() => JSON.stringify(sessionStorage))).includes('fake-access-key'))
+    await page.getByRole('button', { name: 'Restore default RPC' }).click()
+    await page.getByRole('button', { name: 'Check launch with Phantom' }).click()
+    await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 45000 })
+  }
   await page.setViewportSize({ width: 390, height: 844 })
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Mobile onboarding overflow')
   await page.locator('#launch').screenshot({ path: '/tmp/curve-launch-mobile.png' })
@@ -69,5 +99,5 @@ try {
   assert.equal(await page.getByRole('button', { name: 'Early whale', exact: true }).getAttribute('aria-pressed'), 'true')
   assert.notEqual(await page.getByLabel('Scenario total buy budget').inputValue(), '5')
   assert.deepEqual(errors, []); assert.deepEqual(sends, [])
-  console.log(JSON.stringify({ network: 'public-devnet', evidence: 'unsigned simulation only', missingWallet: 'passed', rejectedConnection: 'passed', emptyWallet: 'funding instructions shown', accountSwitchBeforeSigning: 'blocked', changedTerms: 'review invalidated', exampleReset: 'passed', mobileWidth: 390, signatureRequests: 0, sentTransactions: 0, review, errors }))
+  console.log(JSON.stringify({ network: 'public-devnet', evidence: 'unsigned simulation only', missingWallet: 'passed', rejectedConnection: 'passed', emptyWallet: 'funding instructions shown', accountSwitchBeforeSigning: 'blocked', changedTerms: 'review invalidated', exampleReset: 'passed', mobileWidth: 390, signatureRequests: 0, sentTransactions: 0, customRpcFixture: process.env.CUSTOM_RPC === '1', customRequests, review, errors }))
 } finally { await browser.close() }

@@ -5,11 +5,14 @@ import type { BuyQuote, LaunchData, Network } from './dbc'
 import { compareCovenant, createCovenant, downloadJson, parseCovenant, PROMISE_FIELDS, signCovenantWithPhantom, verifyCovenantSignature } from './covenant'
 import type { Covenant, PromiseField } from './covenant'
 import Studio from './Studio'
+import RpcSettings from './RpcSettings'
+import { PUBLIC_REFERENCE_POOL } from './rpc-settings'
+import { downloadPoolEvidence, evidenceSummary, readPoolEvidence } from './pool-evidence'
 
 const short = (value: string, chars = 7) => `${value.slice(0, chars)}…${value.slice(-chars)}`
 const pct = (value: number) => `${value.toLocaleString('en-US', { maximumFractionDigits: 4 })}%`
 const explorer = (address: string, network: Network) => `https://solscan.io/account/${address}${network === 'devnet' ? '?cluster=devnet' : ''}`
-const SAMPLE_POOL = '4L9LJ3B5niCSLWujRJjPU6scZVbNJz4zw6A9B3aPxTeT'
+const SAMPLE_POOL = PUBLIC_REFERENCE_POOL
 
 function Address({ value, network }: { value: string; network: Network }) {
   return <a className="address" href={explorer(value, network)} target="_blank" rel="noreferrer" title={value}>{short(value)} <ExternalLink size={13} /></a>
@@ -37,6 +40,8 @@ function Inspector() {
   const [quoteLoading, setQuoteLoading] = useState(false)
   const [quoteError, setQuoteError] = useState('')
   const [signing, setSigning] = useState(false)
+  const [exportingEvidence, setExportingEvidence] = useState(false)
+  const [evidenceMessage, setEvidenceMessage] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
   const booted = useRef(false)
 
@@ -53,7 +58,7 @@ function Inspector() {
 
   async function inspect(input = address, chain = network) {
     if (!input.trim()) return setError('Enter a DBC pool or config address.')
-    setLoading(true); setError(''); setLaunch(null); setCovenant(null); setBuyQuote(null)
+    setLoading(true); setError(''); setLaunch(null); setCovenant(null); setBuyQuote(null); setEvidenceMessage('')
     try {
       const result = await loadLaunch(input, chain, rpcUrl.trim() || RPC[chain])
       setLaunch(result)
@@ -97,6 +102,16 @@ function Inspector() {
       downloadJson(`${project.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'launch'}-covenant.json`, next)
     } catch (err) { setError(err instanceof Error ? err.message : 'Could not export covenant.') }
     finally { setSigning(false) }
+  }
+
+  async function exportEvidence() {
+    if (!launch?.poolAddress || exportingEvidence) return
+    setExportingEvidence(true); setEvidenceMessage('')
+    try {
+      const report = await readPoolEvidence(launch.poolAddress, launch.network, rpcUrl.trim() || RPC[launch.network])
+      downloadPoolEvidence(report); setEvidenceMessage(evidenceSummary(report))
+    } catch (issue) { setEvidenceMessage(issue instanceof Error ? issue.message : 'Could not read pool evidence.') }
+    finally { setExportingEvidence(false) }
   }
 
   async function share() {
@@ -146,9 +161,12 @@ function Inspector() {
           <div className="search-footer"><span><span className="tiny-dot"/> Supports pool and config accounts, including Token-2022 transfer hooks</span><div className="search-footer-actions"><button onClick={() => { setNetwork('mainnet-beta'); setAddress(SAMPLE_POOL); inspect(SAMPLE_POOL, 'mainnet-beta') }}>Try a live pool <ArrowUpRight size={15}/></button><button onClick={() => fileRef.current?.click()}><FileCheck2 size={15}/> Verify a covenant</button></div><input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={event => importFile(event.target.files?.[0])}/></div>
         </div>
 
+        {!embed && <RpcSettings/>}
         {embed && error && <div className="error"><X size={16}/>{error}</div>}
         {launch && <div className="result-panel">
-          <div className="result-header"><div><div className="result-label"><span className="live-dot"/> VERIFIED ON-CHAIN <span className="muted">·</span> SLOT {launch.slot.toLocaleString()}</div><h3>{launch.kind === 'pool' ? 'Launch pool' : 'Launch configuration'} <span>{short(launch.address, 5)}</span></h3><p>Read at {new Date(launch.fetchedAt).toLocaleString()} · {launch.network === 'devnet' ? 'Solana devnet' : 'Solana mainnet'}</p></div><div className="result-actions"><button onClick={share}><Copy size={15}/> Copy link</button>{!embed && <button onClick={shareEmbed}><Code2 size={15}/> Copy embed</button>}<button onClick={() => downloadJson('dbc-onchain-snapshot.json', launch)}><Download size={15}/> Snapshot</button></div></div>
+          <div className="result-header"><div><div className="result-label"><span className="live-dot"/> VERIFIED ON-CHAIN <span className="muted">·</span> SLOT {launch.slot.toLocaleString()}</div><h3>{launch.kind === 'pool' ? 'Launch pool' : 'Launch configuration'} <span>{short(launch.address, 5)}</span></h3><p>Read at {new Date(launch.fetchedAt).toLocaleString()} · {launch.network === 'devnet' ? 'Solana devnet' : 'Solana mainnet'}</p></div><div className="result-actions"><button onClick={share}><Copy size={15}/> Copy link</button>{!embed && <button onClick={shareEmbed}><Code2 size={15}/> Copy embed</button>}<button onClick={() => downloadJson('dbc-onchain-snapshot.json', launch)}><Download size={15}/> Snapshot</button>{launch.poolAddress && launch.migrationTarget === 'Meteora DAMM v2' && <button disabled={exportingEvidence} onClick={() => void exportEvidence()}><Download size={15}/>{exportingEvidence ? 'Reading receipts…' : 'Transaction evidence'}</button>}</div></div>
+          {evidenceMessage && <p className="evidence-status" role="status">{evidenceMessage}</p>}
+          {launch.address === SAMPLE_POOL && <p className="evidence-status">Public USDC reference pool · read-only inspection. No wallet connection is needed.</p>}
           <div className="tabs"><button className={tab === 'overview' ? 'selected' : ''} onClick={() => setTab('overview')}>Overview</button><button className={tab === 'scenario' ? 'selected' : ''} onClick={() => setTab('scenario')}>Scenario lab</button><button className={tab === 'covenant' ? 'selected' : ''} onClick={() => setTab('covenant')}>Covenant</button><button className={tab === 'raw' ? 'selected' : ''} onClick={() => setTab('raw')}>Raw chain data</button></div>
           {tab === 'overview' && <div className="overview">
             <div className="metric-grid"><div className="metric"><span>INITIAL TRADING FEE</span><strong>{pct(launch.initialTradingFeePct)}</strong><small>{launch.feeMode}{launch.dynamicFeeEnabled ? ' + dynamic fee' : ''}</small></div><div className="metric"><span>GRADUATION TARGET</span><strong>{launch.migrationQuoteThreshold}</strong><small>{launch.quoteSymbol} contributed to curve</small></div><div className="metric"><span>MIGRATION DESTINATION</span><strong className="medium-value">{launch.migrationTarget}</strong><small>{launch.migrated === undefined ? 'Configuration' : launch.migrated ? 'Already migrated' : 'Awaiting threshold'}</small></div></div>

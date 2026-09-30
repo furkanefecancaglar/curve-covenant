@@ -88,3 +88,10 @@ The [readiness file](docs/SUBMISSION.md) maps the product to Meteora and Colosse
 ## License
 
 MIT. Meteora components retain their own licenses.
+
+
+### RPC access and evidence
+
+The optional **RPC connection** panel validates the selected network; mainnet endpoints also need working transaction-history methods. The endpoint remains in the current page's memory, including any provider access token. It is not saved to browser storage, shared links or exported reports, and reloading restores the defaults. Changes invalidate the launch cost review.
+
+Mainnet token precision and DAMM vault balances are read directly from verified token accounts. Transaction evidence exports include a verified-receipt count and explicit missing-history warnings. The default public state RPC restricts indexed history, while Solana's public history RPC can deny browser requests or rate limit them. A private endpoint with browser access is still needed when these public services refuse a request. An exported pool snapshot with unavailable history is not a verified transaction report.

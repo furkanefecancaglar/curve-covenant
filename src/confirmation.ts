@@ -1,4 +1,7 @@
 import type { Connection } from '@solana/web3.js'
+import { rpcDeadline } from './rpc-timeout'
+import { transactionHistoryConnection } from './rpc-history'
+export { rpcDeadline } from './rpc-timeout'
 
 export type TransactionAttempt = {
   signature: string
@@ -21,14 +24,6 @@ export class TransactionOutcomeError extends Error {
   }
 }
 
-export async function rpcDeadline<T>(operation: Promise<T>, milliseconds = 8000): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined
-  try {
-    return await Promise.race([operation, new Promise<never>((_, reject) => {
-      timer = setTimeout(() => reject(new Error('The RPC request timed out.')), milliseconds)
-    })])
-  } finally { clearTimeout(timer) }
-}
 
 function statusOutcome(status: Awaited<ReturnType<Connection['getSignatureStatuses']>>['value'][number]): TransactionOutcome {
   if (!status) return { state: 'pending' }
@@ -45,7 +40,8 @@ export async function readTransactionOutcome(connection: Connection, attempt: Tr
   // transaction while it is landing or while confirmed banks are still moving.
   const height = await rpcDeadline(connection.getBlockHeight('finalized'))
   if (height <= attempt.lastValidBlockHeight) return { state: 'pending' }
-  const recheck = await rpcDeadline(connection.getSignatureStatuses([attempt.signature], { searchTransactionHistory: true }))
+  const history = await transactionHistoryConnection(connection)
+  const recheck = await rpcDeadline(history.getSignatureStatuses([attempt.signature], { searchTransactionHistory: true }))
   return recheck.value[0] ? statusOutcome(recheck.value[0]) : { state: 'expired' }
 }
 

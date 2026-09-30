@@ -13,12 +13,12 @@ import type { TransactionAttempt } from './confirmation'
 import { archiveLaunchReceipt, loadLaunchReceipt, removeLaunchReceipt, saveLaunchReceipt, withLaunchLock } from './launch-receipts'
 import type { LaunchReceipt } from './launch-receipts'
 
-const DEVNET_RPC = 'https://api.devnet.solana.com'
+import { RPC } from './rpc-settings'
 const SOL_MINT = new PublicKey('So11111111111111111111111111111111111111112')
 
 export async function publishDevnetConfig(config: ConfigParameters): Promise<{ configAddress: string; signature: string }> {
   const { wallet, publicKey: payer } = await connectWallet()
-  const connection = new Connection(DEVNET_RPC, 'confirmed')
+  const connection = new Connection(RPC.devnet, 'confirmed')
   const account = Keypair.generate()
   const client = DynamicBondingCurveClient.create(connection, 'confirmed')
   const transaction = await client.partner.createConfig({
@@ -56,7 +56,7 @@ async function finishLaunchInTab(pending: PendingLaunch) {
   if (stored && stored.mintAddress !== pending.mint.publicKey.toBase58()) throw new Error('This launch was resumed in another tab. Check its receipt in Unfinished launches.')
   const { wallet, publicKey: payer } = await connectWallet()
   if (payer.toBase58() !== pending.payer) throw new Error('Reconnect the wallet that created this launch configuration.')
-  const connection = new Connection(pending.quoteAsset.network === 'devnet' ? DEVNET_RPC : 'https://solana-rpc.publicnode.com', 'confirmed')
+  const connection = new Connection(RPC[pending.quoteAsset.network], 'confirmed')
   const quoteMint = new PublicKey(pending.quoteAsset.mint)
   const config = new PublicKey(pending.configAddress)
   const pool = deriveDbcPoolAddress(quoteMint, pending.mint.publicKey, config)
@@ -120,7 +120,7 @@ export async function prepareLaunch(config: ConfigParameters, identity: TokenIde
     throw new Error('The example metadata is only for the CCDEMO test token. Host matching metadata for your token.')
   }
   const { publicKey: payer } = await connectWallet()
-  const endpoint = quoteAsset.network === 'devnet' ? DEVNET_RPC : 'https://solana-rpc.publicnode.com'
+  const endpoint = RPC[quoteAsset.network]
   const connection = new Connection(endpoint, 'confirmed')
   const balance = await connection.getBalance(payer, 'confirmed')
   onConnected?.(payer.toBase58(), balance)
@@ -148,7 +148,7 @@ export async function launchPrepared(prepared: PreparedLaunch, onProgress: (mess
   const { plan, configAccount, mint, identity, quoteAsset } = prepared
   const { wallet, publicKey: payer } = await connectWallet()
   if (!payer.equals(prepared.payer)) throw new Error('Your Phantom account changed. Check the launch again with the account you want to use.')
-  const connection = new Connection(quoteAsset.network === 'devnet' ? DEVNET_RPC : 'https://solana-rpc.publicnode.com', 'confirmed')
+  const connection = new Connection(RPC[quoteAsset.network], 'confirmed')
   const quoteMint = new PublicKey(quoteAsset.mint)
   await verifyQuoteAsset(connection, quoteAsset)
   onProgress('Refreshing the balance and transaction check before requesting your signature…')

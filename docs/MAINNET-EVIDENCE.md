@@ -1,10 +1,11 @@
 # Public Phantom evidence — execution worksheet
 
-Status: not executed. A public wallet address has been requested; no mainnet transaction is claimed.
+Status: not executed. A public wallet with devnet SOL was supplied and unsigned simulation passed. No real Phantom signing or mainnet transaction is claimed.
 
 ## Required inputs
 
-- Actual public Phantom wallet address, available SOL and intended xStock quote balance.
+- Actual public Phantom wallet address, available mainnet SOL and intended xStock quote balance.
+- A mainnet RPC endpoint permitting browser reads and transaction history; the default public services denied history during the 2026-09-30 check. The optional connection panel validates this before use.
 - Token name, symbol and a matching publicly accessible metadata JSON URL.
 - Selected exported scenario config and exact input/output amounts to review.
 - A concrete spending limit reviewed against live network fees, rent and swap simulation.
