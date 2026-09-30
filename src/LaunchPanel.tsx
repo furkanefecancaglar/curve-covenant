@@ -6,6 +6,7 @@ import { launchPrepared, prepareLaunch, finishLaunch, IncompleteLaunchError, Lau
 import type { PendingLaunch, PreparedLaunch } from './publish'
 import type { QuoteAsset } from './quotes'
 import { walletError } from './wallet'
+import { TransactionOutcomeError } from './confirmation'
 import { formatUnits } from './dbc'
 
 const sol = (lamports: number) => formatUnits(String(lamports), 9)
@@ -46,6 +47,7 @@ export default function LaunchPanel({ config, quoteAsset, designUrl, onCreated, 
       setLaunched(result); setPending(null); setPrepared(null); setProgress(''); onCreated(result.poolAddress, `${name} / ${quoteAsset.id}`)
     } catch (issue) {
       if (issue instanceof IncompleteLaunchError) setPending(issue.pending)
+      if (issue instanceof TransactionOutcomeError && issue.state !== 'pending') setPrepared(null)
       if (issue instanceof LaunchNotCreatedError) { setPending(null); setPrepared(null) }
       setError(walletError(issue)); setProgress('')
     } finally { setBusy(false) }
@@ -66,7 +68,7 @@ export default function LaunchPanel({ config, quoteAsset, designUrl, onCreated, 
       <button type="submit" disabled={(!config && !pending) || busy || (!!(prepared || pending) && isMainnet && !mainnetAcknowledged)}>{busy ? <Loader2 size={17} className="spin"/> : <Rocket size={17}/>} {busy ? 'Waiting for wallet / network…' : pending ? 'Resume token creation' : prepared ? `Launch token + DBC pool on ${networkLabel}` : 'Check launch with Phantom'}</button>
     </form>}
     {progress && <p className="shared-design-note" role="status">{progress}</p>}
-    {pending && <p className="allocation-note">A transaction was submitted. Keep this tab open to check and resume the same launch. <a href={`https://solscan.io/tx/${pending.signature ?? pending.configSignature}${cluster}`} target="_blank" rel="noreferrer">View submitted transaction</a></p>}
+    {pending && <p className="allocation-note">A signed transaction needs checking. Keep this tab open to check and resume the same launch. <a href={`https://solscan.io/tx/${pending.signature ?? pending.configSignature}${cluster}`} target="_blank" rel="noreferrer">View tracked transaction</a></p>}
     {error && <div className="publish-error" role="alert">{error}</div>}
     {launched && <><div className="launch-success"><CheckCircle2 size={20}/><div><strong>DBC pool created on {networkLabel}</strong><a href={`https://solscan.io/tx/${launched.signature}${cluster}`} target="_blank" rel="noreferrer">Confirmed launch transaction <ExternalLink size={13}/></a><a href={`https://solscan.io/account/${launched.poolAddress}${cluster}`} target="_blank" rel="noreferrer">Pool {launched.poolAddress} <ExternalLink size={13}/></a><a href={`https://solscan.io/token/${launched.mintAddress}${cluster}`} target="_blank" rel="noreferrer">Token mint {launched.mintAddress} <ExternalLink size={13}/></a></div></div><p>Your pool is ready. Read your wallet balances, quote a small buy, then try a sale before filling the graduation reserve.</p><a className="track-created-pool" href="#graduate">Continue to balances, buy & sell <ArrowRight size={16}/></a><button className="new-launch" onClick={() => { setLaunched(null); setConnected(null); setMainnetAcknowledged(false) }}>Create another pool</button></>}
   </section>

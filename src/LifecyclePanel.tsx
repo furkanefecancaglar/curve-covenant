@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Connection } from '@solana/web3.js'
-import { readTransactionOutcome } from './confirmation'
+import { readTransactionOutcome, TransactionOutcomeError } from './confirmation'
 import { loadPendingMigration, removePendingMigration } from './pending-migration'
 import { ArrowRight, ExternalLink, RefreshCw } from 'lucide-react'
 import { graduatePrepared, MigrationSubmittedError, prepareGraduation, readLifecycle } from './lifecycle'
@@ -68,6 +68,7 @@ export default function LifecyclePanel({ initialPool, onObserved }: { initialPoo
       setStatus(result.status); setSignature(result.signature); setMigrationReview(null); await reconcileMigration(result.status)
     } catch (issue) {
       if (issue instanceof MigrationSubmittedError) { setSignature(issue.signature); setMigrationReview(null); setMigrationSubmitted(true) }
+      if (issue instanceof TransactionOutcomeError && issue.state !== 'pending') { setMigrationReview(null); setSignature(issue.attempt.signature) }
       setError(walletError(issue))
     }
     finally { setBusy(false) }
