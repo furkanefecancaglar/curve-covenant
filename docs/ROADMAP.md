@@ -1,6 +1,6 @@
 # Curve Covenant — evidence-driven roadmap
 
-Updated: 2026-09-26. Target: a competitive first-place Meteora DBC submission. Winning is an external outcome, not an engineering completion claim.
+Updated: 2026-09-30. Target: a competitive first-place Meteora DBC submission. Winning is an external outcome, not an engineering completion claim.
 
 ## Product claim
 
@@ -64,3 +64,18 @@ Media milestone: the clearly labeled local demo and technical presentation are p
 ## Media checkpoint — 2026-09-26
 
 Narrated 1080p technical presentation (about 2:16) and actual local product demo (about 2:55) are available at `/demo.html`. Both have burned captions, downloadable SRTs and hash manifests. The demo records six confirmed local transactions and the pool `5FhyUMuFE6EwG5d8DWNLXDMLTisZ5YSUDLBC6KL4mWyx`; it uses synthetic XRXx and a local test signing interface. Full decode, audio presence, durations, Chromium playback and 390 px layout were checked. This closes the local-media deliverable, not the mainnet or user-demand gates.
+
+
+## Usability iteration — 2026-09-30
+
+The user could fund Phantom on devnet but did not complete the launch flow. The exact failure point has not been supplied. This release addresses observed onboarding gaps rather than claiming a confirmed cause:
+
+- Small devnet rehearsal and exact video-example entry points; defaults now use a feasible test reserve target.
+- Visible scenario buttons, paired opening-jump / early-share / late-cost results, and configuration-specific selection explanations.
+- Connect and unsigned simulation before launch; show actual SOL balance, estimated debit including rent, and expected remaining balance. Separate signing action; repeat the check before signing and require a new review if costs increase.
+- Current-design Phantom mobile link, actionable missing-wallet / rejection / RPC errors, exact transaction link after creation, and same-address recovery after uncertain confirmation.
+- Inventory-backed half-balance sales and an on-chain JSON evidence export with genesis-based network attribution.
+
+Public devnet simulation passed using a funded public wallet address; no wallet signature was requested or transaction sent in this check. This does not close the public Phantom execution gate. An independently generated test wallet's faucet attempts failed (internal error, then rate limit), so no new public deployment is claimed.
+
+Next: verify the published onboarding, obtain an actual public-wallet run when available, and continue improving lifecycle guidance and recovery. Keep public execution, local execution and user adoption as separate evidence categories.

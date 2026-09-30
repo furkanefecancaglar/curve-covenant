@@ -20,6 +20,7 @@ import CurveComparison from './CurveComparison'
 import './studio.css'
 
 const comma = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(n)
+const rehearsalInputs: StudioInputs = { ...PRESETS.steady.values, initialMarketCap: 1, migrationMarketCap: 10 }
 const inputFields: { key: keyof Omit<StudioInputs, 'preset'>; label: string; unit: string; min: number; step: number; help: string }[] = [
   { key: 'supply', label: 'Token supply', unit: 'tokens', min: 1_000_000, step: 1_000_000, help: 'Total tokens before the curve and DAMM v2 migration.' },
   { key: 'initialMarketCap', label: 'Opening market cap', unit: 'quote', min: 1, step: 1, help: 'Implied fully diluted value at the start of the DBC curve, in quote token units.' },
@@ -42,7 +43,9 @@ function saveJson(name: string, value: unknown) {
 
 export default function Studio() {
   const [shared] = useState(() => {
-    const encoded = new URLSearchParams(window.location.search).get('design')
+    const params = new URLSearchParams(window.location.search)
+    const example = params.get('example')
+    const encoded = params.get('design') ?? (example === 'devnet' || example === 'whale' ? encodeDesign(example === 'devnet' ? 'SOL' : 'XRXx', rehearsalInputs, { model: 'steady', reference: rehearsalInputs }) : null)
     if (!encoded) return { design: null, selection: null, error: '' }
     try {
       const design = decodeDesign(encoded)
@@ -51,12 +54,13 @@ export default function Studio() {
     }
     catch (error) { return { design: null, selection: null, error: error instanceof Error ? error.message : 'Invalid shared design.' } }
   })
-  const [input, setInput] = useState<StudioInputs>(shared.selection?.curve.inputs ?? shared.design?.inputs ?? { ...PRESETS.steady.values })
+  const [input, setInput] = useState<StudioInputs>(shared.selection?.curve.inputs ?? shared.design?.inputs ?? { ...rehearsalInputs })
   const [quoteId, setQuoteId] = useState<QuoteId>(shared.design?.quoteId ?? 'SOL')
   const [appliedScenario, setAppliedScenario] = useState<{ curve: ControlledCurve; reference: StudioInputs; quoteId: QuoteId } | null>(shared.selection)
   const activeScenario = appliedScenario && appliedScenario.curve.inputs === input && appliedScenario.quoteId === quoteId ? appliedScenario : null
   const [shareMessage, setShareMessage] = useState('')
   const [launchLocked, setLaunchLocked] = useState(false)
+  const [exampleRevision, setExampleRevision] = useState(0)
   const [linkedPool] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     if (!params.has('pool')) return { pool: null, error: '' }
@@ -107,6 +111,18 @@ export default function Studio() {
   function change(key: keyof Omit<StudioInputs, 'preset'>, value: string) {
     setInput(current => ({ ...current, [key]: Number(value) }))
   }
+  function openExample(kind: 'devnet' | 'whale') {
+    if (launchLocked) return
+    const quote = kind === 'devnet' ? 'SOL' : 'XRXx'
+    const curve = buildControlledCurves(rehearsalInputs, QUOTES[quote].decimals)[0]
+    setQuoteId(quote); setInput(curve.inputs); setAppliedScenario({ curve, reference: rehearsalInputs, quoteId: quote })
+    setBuyAmount('0.1'); setElapsedHours('0')
+    setExampleRevision(value => value + 1)
+    const url = new URL(window.location.href)
+    url.search = `?example=${kind}`; url.hash = kind === 'devnet' ? 'launch' : 'scenarios'
+    window.history.replaceState(null, '', url)
+    document.getElementById(kind === 'devnet' ? 'launch' : 'scenarios')?.scrollIntoView({ behavior: 'smooth' })
+  }
   function exportConfig() {
     if (!result.config) return
     saveJson(`dbc-${quoteId.toLowerCase()}-${input.preset}-config.json`, {
@@ -122,6 +138,10 @@ export default function Studio() {
     try { await navigator.clipboard.writeText(url.toString()); setShareMessage('Design link copied. It includes this quote asset and all launch terms.') }
     catch { setShareMessage('Clipboard unavailable. Use Download SDK config JSON to save this design.') }
   }
+  const launchDesignUrl = new URL(window.location.href)
+  launchDesignUrl.search = ''
+  launchDesignUrl.hash = 'launch'
+  launchDesignUrl.searchParams.set('design', encodeDesign(quoteId, input, activeScenario ? { model: activeScenario.curve.id, reference: activeScenario.reference } : undefined))
 
   return <div className="studio-shell">
     <header className="studio-header">
@@ -132,7 +152,7 @@ export default function Studio() {
       <section className="studio-hero"><div className="hero-noise"/>
         <div className="studio-hero-content"><div className="studio-eyebrow"><span/> STOCK-QUOTED LAUNCHES · METEORA DBC</div>
           <h1>Measure the curve.<br/><em>Then launch.</em></h1>
-          <p>Compare xStock-paired DBC curves under sequential buys, early whale pressure and selling. Inspect the trade-offs, export the evidence, then launch the configuration you chose. Rehearse with SOL on devnet.</p>
+          <p>See who receives the tokens, what late buyers pay, and how selling changes graduation. Compare xStock-paired curves under the same trades, then launch the configuration you chose.</p>
           <div className="studio-hero-actions"><a className="studio-main-btn" href="#scenarios">Compare scenarios <ArrowRight size={18}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}demo.html`}>Watch pitch & demo <ExternalLink size={15}/></a><a className="studio-text-link" href={`${import.meta.env.BASE_URL}?view=inspector`}>Inspect a live DBC pool <ExternalLink size={15}/></a></div>
           <div className="studio-hero-proof"><span><CheckCircle2 size={15}/> Issuer-listed quote mints</span><span><CheckCircle2 size={15}/> Meteora DBC + DAMM v2</span><span><CheckCircle2 size={15}/> SDK quote simulation</span></div>
         </div>
@@ -140,6 +160,7 @@ export default function Studio() {
       </section>
 
       <section className="workbench" id="workbench">
+        <div className="start-paths" aria-label="Choose a starting point"><article><span>TRY THE WALLET FLOW · FREE TEST SOL</span><h2>Make your first devnet pool.</h2><p>Ready-to-use token metadata, a small reserve target and a cost check before you sign. Then buy, sell and graduate the pool.</p><button disabled={launchLocked} onClick={() => openExample('devnet')}>Start small devnet rehearsal <ArrowRight size={16}/></button></article><article><span>REPRODUCE THE DEMO · NO WALLET NEEDED</span><h2>Why a smoother curve can favor early buyers.</h2><p>Load the video's exact XRXx whale example. Compare the lower opening jump with the larger early allocation, then explore selling pressure.</p><button disabled={launchLocked} onClick={() => openExample('whale')}>Open the measured whale example <ArrowRight size={16}/></button></article></div>
         {shared.error && <p className="publish-error" role="alert">{shared.error}</p>}
         {shared.design && <p className="shared-design-note">Shared design loaded. Review the curve and terms before creating a pool.</p>}
         <div className="studio-section-head"><span>01 / QUOTE ASSET</span><h2>Choose what buyers pay with.</h2><p>A new token can be quoted in a tokenized stock instead of SOL. These mints come from the xStocks issuer asset feed; mint precision and Meteora token badge are checked on chain before a mainnet launch transaction is built.</p></div>
@@ -168,12 +189,12 @@ export default function Studio() {
           </div>
         </div>
         <CurveComparison input={input} amount={buyAmount} elapsedHours={Number(elapsedHours)} symbol={quoteId} quoteDecimals={quoteAsset.decimals} locked={launchLocked} onChoose={preset => setInput(current => ({ ...current, preset }))}/>
-        <ScenarioLab input={activeScenario?.reference ?? input} quoteAsset={quoteAsset} locked={launchLocked} onChoose={curve => {
+        <ScenarioLab key={`scenario:${quoteId}:${exampleRevision}`} input={activeScenario?.reference ?? input} quoteAsset={quoteAsset} locked={launchLocked} onChoose={curve => {
           setAppliedScenario({ curve, reference: activeScenario?.reference ?? input, quoteId }); setInput(curve.inputs)
           document.getElementById('launch')?.scrollIntoView({ behavior: 'smooth' })
         }}/>
         {activeScenario && <p className="shared-design-note" role="status">Scenario configuration selected: {activeScenario.curve.label}. The launch uses the exact compared configuration. Editing the launch terms starts a new design.</p>}
-        <LaunchPanel key={quoteId} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={(address, label) => {
+        <LaunchPanel key={`launch:${quoteId}:${exampleRevision}`} designUrl={launchDesignUrl.toString()} config={result.config} quoteAsset={quoteAsset} onLockChange={setLaunchLocked} onCreated={(address, label) => {
           const pool = { address, network: quoteAsset.network }
           observePool(pool, label); setCreatedPool(pool)
         }}/>

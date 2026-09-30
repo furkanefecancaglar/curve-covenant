@@ -4,6 +4,7 @@ import { graduatePool, readLifecycle } from './lifecycle'
 import type { Network } from './dbc'
 import TradePanel from './TradePanel'
 import WalletBalances from './WalletBalances'
+import { downloadPoolEvidence, readPoolEvidence } from './pool-evidence'
 
 export default function LifecyclePanel({ initialPool, onObserved }: { initialPool: { address: string; network: Network } | null; onObserved: (pool: { address: string; network: Network }) => void }) {
   const [address, setAddress] = useState(initialPool?.address ?? '')
@@ -12,6 +13,15 @@ export default function LifecyclePanel({ initialPool, onObserved }: { initialPoo
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [signature, setSignature] = useState('')
+  const [exporting, setExporting] = useState(false)
+  const [exportError, setExportError] = useState('')
+  async function exportEvidence() {
+    if (!status) return
+    setExporting(true); setExportError('')
+    try { downloadPoolEvidence(await readPoolEvidence(status.address, status.network)) }
+    catch (issue) { setExportError(issue instanceof Error ? issue.message : 'Could not read transaction evidence. Retry the export.') }
+    finally { setExporting(false) }
+  }
   async function read() {
     setBusy(true); setError(''); setStatus(null); setSignature('')
     try { const result = await readLifecycle(address, network); setStatus(result); onObserved(result) }
@@ -54,6 +64,7 @@ export default function LifecyclePanel({ initialPool, onObserved }: { initialPoo
       {signature && <a href={`https://solscan.io/tx/${signature}${explorer}`} target="_blank" rel="noreferrer">Migration transaction <ExternalLink size={14}/></a>}
       {status.migrated && status.network === 'mainnet-beta' && <a className="market-link" href={`https://www.meteora.ag/dammv2/${status.dammPool}`} target="_blank" rel="noreferrer">Open this DAMM v2 market on Meteora <ExternalLink size={14}/></a>}
       <small>Read at {new Date(status.fetchedAt).toLocaleTimeString()} · {status.network}</small>
+      <div className="pool-evidence"><button disabled={exporting} onClick={() => void exportEvidence()}>{exporting ? 'Reading on-chain receipts…' : 'Export on-chain evidence · JSON'}</button><p>Includes current pool terms, graduation status and up to 20 recent transactions checked through RPC. You can share the report with their explorer links.</p>{exportError && <p className="publish-error" role="alert">{exportError}</p>}</div>
       <WalletBalances key={`balances:${status.network}:${status.address}`} pool={status.address} network={status.network} refreshKey={status.fetchedAt}/>
       {!status.migrated && !status.ready && <TradePanel key={`${status.network}:${status.address}`} pool={status.address} network={status.network} onTrade={async () => { setStatus(await readLifecycle(status.address, status.network)) }}/>}
     </div>}

@@ -8,6 +8,15 @@ Meteora DBC supports stock tokens as quote assets. Pair Launch lets a builder se
 
 This is an independent early-stage product, not a Meteora or xStocks product. A new token quoted in an xStock is **not** ownership in the underlying company. Mainnet launches use real SOL for rent and fees; the user must review and confirm each wallet transaction.
 
+## Start with a reproducible example
+
+- [Small devnet rehearsal](https://furkanefecancaglar.github.io/curve-covenant/?example=devnet#launch): ready-to-use CCDEMO metadata, opening/graduation market caps of 1/10 SOL, and a reserve threshold of approximately 2.4025 test SOL. Creation costs are additional and checked against the network before signing.
+- [The exact whale example from the video](https://furkanefecancaglar.github.io/curve-covenant/?example=whale#scenarios): XRXx, fixed 1% fees, opening/reference graduation caps of 1/10. No wallet is needed to compare or export.
+
+The launch form first connects Phantom and runs an **unsigned network simulation**. It shows the wallet, SOL balance, estimated account rent plus transaction fee, and remaining balance. A separate launch action requests a signature after another balance/cost check. Two-step launches label the first estimate as configuration-only; the pool step is checked after the config confirms. Mobile users can open the current curve design inside Phantom using the on-page link.
+
+After creation, use the buy/sell panel and its inventory-backed “Use half my token balance” action. The graduation panel can export current chain state and up to 20 recent transaction receipts. Reports verify the RPC genesis before attaching public explorer links and leave unavailable transaction details unverified. They do not establish organic volume, third-party adoption, or which wallet application signed.
+
 ## Scenario-driven selection
 
 The Scenario Lab compares one-segment and 16-segment curves under sequential retail buys, an early whale, buy/sell pressure and graduation progress. Both use the same supply, exact opening price, quote reserve threshold and fee schedule. Ending prices differ. Every trade advances reserves and actor inventory; results include price paths, cohort costs, early buy-output share, fees and graduation progress.
@@ -26,10 +35,10 @@ The xStock catalog currently includes XRXx, FLNCx, QUBTx and AIx. Their mint add
 
 ## Flow
 
-1. Select SOL on devnet or an xStock on mainnet.
+1. Start the small devnet rehearsal, reproduce the measured XRXx example, or select another supported quote.
 2. Choose a curve model and edit supply, opening/graduation market caps in quote units, fee schedule, creator share and permanent liquidity lock.
 3. Read the SDK-derived graduation quote threshold and simulate a hypothetical buy before a pool exists. Compare three curve shapes side by side under the same supply, market caps and fee schedule, including average execution cost relative to the opening price, leftover allocation and unfilled input. Export the exact SDK config JSON or copy a share link that recreates the quote asset and all edited terms.
-4. Provide token name, symbol and an HTTPS metadata JSON URL. The devnet form includes a clearly labeled CCDEMO example hosted in this repo; replace it with matching metadata for your own token. The SDK creates config + token mint + DBC virtual pool, using two wallet approvals when the curve exceeds a single transaction. An unfinished second step can be resumed in the same tab. The app checks for both new accounts and links to the explorer.
+4. Provide token name, symbol and an HTTPS metadata JSON URL. The devnet form includes a clearly labeled CCDEMO example hosted in this repo; replace it with matching metadata for your own token. Choose “Check launch with Phantom” to connect and inspect the unsigned simulation and cost. Then launch: the SDK creates config + token mint + DBC virtual pool, using two wallet approvals when the curve exceeds a single transaction. An unfinished second step can be resumed in the same tab. The app checks for both new accounts and links to the explorer.
 5. The new pool is filled into the graduation panel automatically; you can also paste an existing DBC pool. Read reserve progress, connect your wallet to inspect base-token, quote-token and SOL balances, then get a live buy or sell quote with a 1% minimum-output bound. Confirm the trade with your wallet; balances refresh after confirmation. Token balances reflect the associated accounts used by the swap, and SOL quotes use the native SOL balance. When the threshold is reached, submit migration and inspect DAMM v2 vault balances.
 6. Created and inspected pools are remembered in this browser (up to 30 public-address bookmarks). Reopen one after a page reload or share a direct pool link with its network. Chain state is fetched again when opened.
 7. Use the [companion inspector](https://furkanefecancaglar.github.io/curve-covenant/?view=inspector) to read real reserve progress and terms from an existing DBC pool. The inspector also supports a swap quote, embeddable report, and signed disclosure comparison.

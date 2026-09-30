@@ -103,7 +103,6 @@ try {
   await page.getByLabel('Token name', { exact: true }).fill('Curve Covenant Demo')
   await page.getByLabel('Ticker', { exact: true }).fill('CCDEMO')
   await page.getByLabel('Public metadata JSON URL').fill('https://furkanefecancaglar.github.io/curve-covenant/metadata/demo-token.json')
-  await page.getByRole('checkbox').check()
   await scene('opening', async () => { await focus('#scenarios') })
   await scene('whale', async () => {
     await focus('#scenarios .comparison-chart')
@@ -113,14 +112,14 @@ try {
     await focus('.scenario-details-grid')
   })
   await scene('selling', async () => {
-    await page.getByLabel('Trading scenario', { exact: true }).selectOption('sell-pressure')
+    await page.getByRole('group', { name: 'Trading scenario' }).getByRole('button', { name: 'Sell pressure', exact: true }).click()
     await focus('#scenarios .comparison-chart')
     await new Promise(resolve => setTimeout(resolve, 5000))
     await page.locator('.scenario-ledger summary').click()
     await focus('.scenario-ledger')
   })
   await scene('export', async () => {
-    await page.getByLabel('Trading scenario', { exact: true }).selectOption('whale')
+    await page.getByRole('group', { name: 'Trading scenario' }).getByRole('button', { name: 'Early whale', exact: true }).click()
     await page.locator('.scenario-ledger summary').click()
     const report = JSON.parse(await download('Export Scenario Report · JSON'))
     await download('Export visual summary · SVG')
@@ -133,6 +132,9 @@ try {
   })
   await scene('launch', async () => {
     await focus('#launch')
+    await page.getByRole('button', { name: 'Check launch with Phantom' }).click()
+    await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 25000 })
+    if (await page.getByRole('checkbox').count()) await page.getByRole('checkbox').check()
     await page.getByRole('button', { name: /Launch token/ }).click()
     await page.locator('.launch-success').waitFor({ timeout: 25000 })
     pool = await page.getByLabel('Graduation pool address').inputValue()

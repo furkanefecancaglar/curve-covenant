@@ -65,7 +65,6 @@ try {
     await page.getByLabel('Token name', { exact: true }).fill('Curve Covenant Demo')
     await page.getByLabel('Ticker', { exact: true }).fill('CCDEMO')
     await page.getByLabel('Public metadata JSON URL').fill('https://furkanefecancaglar.github.io/curve-covenant/metadata/demo-token.json')
-    await page.getByRole('checkbox').check()
   }
   if (longCurve) await page.getByRole('button', { name: /Long discovery curve/ }).click()
   await page.getByLabel('Opening market cap', { exact: false }).fill('1')
@@ -76,6 +75,9 @@ try {
     comparedConfig = JSON.parse(await readFile(await download.path(), 'utf8')).curves.find(curve => curve.id === 'long').config
     await page.getByRole('button', { name: 'Use long curve for launch' }).click()
   }
+  await page.getByRole('button', { name: 'Check launch with Phantom' }).click()
+  await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 25000 })
+  if (await page.getByRole('checkbox').count()) await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: /Launch token/ }).click()
   if (process.env.CANCEL_SECOND === '1') {
     await page.getByRole('button', { name: 'Resume token creation' }).click({ timeout: 25000 })
@@ -111,7 +113,8 @@ try {
   const sellRaw = (BigInt(whole) * 1_000_000n + BigInt(fraction.padEnd(6, '0'))) / 2n
   const sellAmount = `${sellRaw / 1_000_000n}.${(sellRaw % 1_000_000n).toString().padStart(6, '0')}`
   await page.getByRole('button', { name: 'Sell', exact: true }).click()
-  await page.getByLabel('Live sell amount').fill(sellAmount)
+  await page.getByRole('button', { name: 'Use half my token balance' }).click()
+  await page.waitForFunction(expected => document.querySelector('[aria-label="Live sell amount"]')?.value === expected, sellAmount.replace(/0+$/, '').replace(/\.$/, ''))
   await page.getByRole('button', { name: 'Get sell quote' }).click()
   await page.getByRole('button', { name: 'Sell with wallet' }).waitFor({ timeout: 15000 })
   const sellPreview = await page.locator('.trade-preview').innerText()
@@ -138,6 +141,11 @@ try {
   await page.getByText('Ready to graduate', { exact: true }).waitFor({ timeout: 25000 })
   await page.getByRole('button', { name: 'Graduate with wallet' }).click()
   await page.locator('.lifecycle-balances').waitFor({ timeout: 25000 })
+  const [receiptFile] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export on-chain evidence · JSON' }).click()])
+  const evidence = JSON.parse(await readFile(await receiptFile.path(), 'utf8'))
+  assert.equal(evidence.observedNetwork, 'unrecognized-network', 'Local genesis must never be labeled public devnet')
+  assert(evidence.receipts.length >= 5)
+  assert(evidence.receipts.every(receipt => receipt.succeeded === true && receipt.explorerUrl === null))
   assert.deepEqual(errors, [])
   console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
     result: await page.locator('.lifecycle-result').innerText(), pageErrors: errors }))

@@ -23,7 +23,7 @@ try {
   await page.getByLabel('Opening market cap', { exact: false }).fill('1')
   await page.getByLabel('Graduation market cap', { exact: false }).fill('10')
   for (const id of ['retail', 'whale', 'sell-pressure', 'graduation']) {
-    await page.getByLabel('Trading scenario', { exact: true }).selectOption(id)
+    await page.getByRole('group', { name: 'Trading scenario' }).getByRole('button', { name: ({ retail: 'Retail drip', whale: 'Early whale', 'sell-pressure': 'Sell pressure', graduation: 'Graduation progress' })[id], exact: true }).click()
     await page.getByTestId('scenario-finding').waitFor()
     assert.equal(await page.locator('#scenarios [role="alert"]').count(), 0)
     const report = JSON.parse(await download('Export Scenario Report · JSON'))
@@ -33,7 +33,7 @@ try {
     assert.equal(report.curves[0].config.sqrtStartPrice, report.curves[1].config.sqrtStartPrice)
     if (id === 'sell-pressure') assert(report.curves.every(c => c.trades.some(t => t.side === 'sell')))
   }
-  await page.getByLabel('Trading scenario', { exact: true }).selectOption('whale')
+  await page.getByRole('group', { name: 'Trading scenario' }).getByRole('button', { name: 'Early whale', exact: true }).click()
   const report = JSON.parse(await download('Export Scenario Report · JSON'))
   const svg = await download('Export visual summary · SVG')
   assert(svg.includes('Hypothetical trades') && svg.includes('XRXx'))

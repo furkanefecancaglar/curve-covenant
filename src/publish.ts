@@ -5,6 +5,9 @@ import type { QuoteAsset } from './quotes'
 import { verifyQuoteAsset } from './quotes'
 import { connectWallet, sendWalletTransaction } from './wallet'
 import { buildLaunchPlan } from './launch-plan'
+import { reviewTransaction } from './transaction-review'
+import type { TransactionReview } from './transaction-review'
+import { readTokenBalance } from './balances'
 
 const DEVNET_RPC = 'https://api.devnet.solana.com'
 const SOL_MINT = new PublicKey('So11111111111111111111111111111111111111112')
@@ -25,12 +28,16 @@ export async function publishDevnetConfig(config: ConfigParameters): Promise<{ c
 }
 
 export type TokenIdentity = { name: string; symbol: string; metadataUri: string }
+export type PreparedLaunch = {
+  payer: PublicKey; configAccount: Keypair; mint: Keypair; identity: TokenIdentity; quoteAsset: QuoteAsset
+  plan: Awaited<ReturnType<typeof buildLaunchPlan>>; review: TransactionReview; quoteBalance: string | null
+}
 export type PendingLaunch = { configAddress: string; configSignature: string; mint: Keypair;
   payer: string; identity: TokenIdentity; quoteAsset: QuoteAsset; signature?: string }
 export class IncompleteLaunchError extends Error {
   pending: PendingLaunch
   constructor(pending: PendingLaunch, cause: unknown) {
-    super(`Config created. Token creation is unfinished: ${cause instanceof Error ? cause.message : String(cause)}`)
+    super(`Launch unfinished. Keep this tab open to resume the same addresses: ${cause instanceof Error ? cause.message : String(cause)}`)
     this.pending = pending
   }
 }
@@ -43,10 +50,12 @@ export async function finishLaunch(pending: PendingLaunch) {
   const config = new PublicKey(pending.configAddress)
   const pool = deriveDbcPoolAddress(quoteMint, pending.mint.publicKey, config)
   if (!(await connection.getAccountInfo(pool))) {
+    if (!(await connection.getAccountInfo(config))) throw new Error('The submitted configuration is not visible yet. Check its transaction before retrying. This tab keeps the same launch addresses.')
     const tokenBadge = await verifyQuoteAsset(connection, pending.quoteAsset)
     const client = DynamicBondingCurveClient.create(connection, 'confirmed')
     const tx = await client.creator.createPool({ config, baseMint: pending.mint.publicKey, payer, poolCreator: payer,
       name: pending.identity.name, symbol: pending.identity.symbol, uri: pending.identity.metadataUri, tokenBadge })
+    await reviewTransaction(connection, payer, tx)
     await sendWalletTransaction(connection, wallet, payer, tx, [pending.mint], signature => { pending.signature = signature })
   }
   if (!(await connection.getAccountInfo(pool))) throw new Error('Pool confirmation is pending. Retry to check the same pool.')
@@ -55,9 +64,12 @@ export async function finishLaunch(pending: PendingLaunch) {
 }
 
 export async function launchPool(config: ConfigParameters, identity: TokenIdentity, quoteAsset: QuoteAsset,
-  onProgress: (message: string) => void = () => {}): Promise<{
-  configAddress: string; mintAddress: string; poolAddress: string; signature: string
-}> {
+  onProgress: (message: string) => void = () => {}) {
+  return launchPrepared(await prepareLaunch(config, identity, quoteAsset), onProgress)
+}
+
+export async function prepareLaunch(config: ConfigParameters, identity: TokenIdentity, quoteAsset: QuoteAsset,
+  onConnected?: (address: string, balanceLamports: number) => void): Promise<PreparedLaunch> {
   const name = identity.name.trim()
   const symbol = identity.symbol.trim().toUpperCase()
   if (!name || new TextEncoder().encode(name).length > 32) throw new Error('Token name must be 1–32 UTF-8 bytes.')
@@ -68,9 +80,14 @@ export async function launchPool(config: ConfigParameters, identity: TokenIdenti
   if (uri.pathname.endsWith('/metadata/demo-token.json') && (name !== 'Curve Covenant Demo' || symbol !== 'CCDEMO')) {
     throw new Error('The example metadata is only for the CCDEMO test token. Host matching metadata for your token.')
   }
-  const { wallet, publicKey: payer } = await connectWallet()
+  const { publicKey: payer } = await connectWallet()
   const endpoint = quoteAsset.network === 'devnet' ? DEVNET_RPC : 'https://solana-rpc.publicnode.com'
   const connection = new Connection(endpoint, 'confirmed')
+  const balance = await connection.getBalance(payer, 'confirmed')
+  onConnected?.(payer.toBase58(), balance)
+  if (balance === 0) throw new Error(quoteAsset.network === 'devnet'
+    ? 'This wallet has no devnet SOL. Use “Get free devnet SOL”, then check the launch again.'
+    : 'This wallet has no mainnet SOL for account rent and fees. Fund it before checking the launch again.')
   const quoteMint = new PublicKey(quoteAsset.mint)
   const tokenBadge = await verifyQuoteAsset(connection, quoteAsset)
   const configAccount = Keypair.generate()
@@ -81,22 +98,54 @@ export async function launchPool(config: ConfigParameters, identity: TokenIdenti
     leftoverReceiver: payer, quoteMint, tokenBadge,
     preCreatePoolParam: { name, symbol, uri: uri.toString(), poolCreator: payer, baseMint: mint.publicKey },
   })
+  const review = await reviewTransaction(connection, payer, plan.transaction)
+  const quoteBalance = quoteAsset.id === 'SOL' ? null : (await readTokenBalance(connection, payer, quoteMint)).amount
+  return { payer, configAccount, mint, identity: { name, symbol, metadataUri: uri.toString() }, quoteAsset, plan, review, quoteBalance }
+}
+
+export async function launchPrepared(prepared: PreparedLaunch, onProgress: (message: string) => void = () => {}): Promise<{
+  configAddress: string; mintAddress: string; poolAddress: string; signature: string
+}> {
+  const { plan, configAccount, mint, identity, quoteAsset } = prepared
+  const { wallet, publicKey: payer } = await connectWallet()
+  if (!payer.equals(prepared.payer)) throw new Error('Your Phantom account changed. Check the launch again with the account you want to use.')
+  const connection = new Connection(quoteAsset.network === 'devnet' ? DEVNET_RPC : 'https://solana-rpc.publicnode.com', 'confirmed')
+  const quoteMint = new PublicKey(quoteAsset.mint)
+  await verifyQuoteAsset(connection, quoteAsset)
+  onProgress('Refreshing the balance and transaction check before requesting your signature…')
+  const refreshed = await reviewTransaction(connection, payer, plan.transaction)
+  if (refreshed.estimatedDebitLamports > prepared.review.estimatedDebitLamports) {
+    throw new Error('The estimated creation cost increased. Check the launch again to review the new amount before signing.')
+  }
   onProgress(plan.mode === 'split' ? 'Step 1 of 2: approve the curve configuration. Token creation follows in a second approval.' : 'Approve the token and pool launch in your wallet.')
-  const signature = await sendWalletTransaction(connection, wallet, payer, plan.transaction,
-    plan.mode === 'split' ? [configAccount] : [configAccount, mint])
+  let submitted = ''
+  let signature: string
+  try {
+    signature = await sendWalletTransaction(connection, wallet, payer, plan.transaction,
+      plan.mode === 'split' ? [configAccount] : [configAccount, mint], value => { submitted = value })
+  } catch (issue) {
+    if (!submitted) throw issue
+    throw new IncompleteLaunchError({ configAddress: configAccount.publicKey.toBase58(), configSignature: submitted,
+      mint, payer: payer.toBase58(), quoteAsset, identity, signature: plan.mode === 'combined' ? submitted : undefined }, issue)
+  }
   if (plan.mode === 'split') {
     const pending: PendingLaunch = { configAddress: configAccount.publicKey.toBase58(), configSignature: signature,
-      mint, payer: payer.toBase58(), quoteAsset, identity: { name, symbol, metadataUri: uri.toString() } }
+      mint, payer: payer.toBase58(), quoteAsset, identity }
     onProgress('Step 2 of 2: configuration confirmed. Approve token and pool creation.')
     try { return await finishLaunch(pending) }
     catch (error) { throw new IncompleteLaunchError(pending, error) }
   }
   const poolAddress = deriveDbcPoolAddress(quoteMint, mint.publicKey, configAccount.publicKey)
-  const [configInfo, poolInfo] = await Promise.all([
-    connection.getAccountInfo(configAccount.publicKey, 'confirmed'),
-    connection.getAccountInfo(poolAddress, 'confirmed'),
-  ])
-  if (!configInfo || !poolInfo) throw new Error(`Transaction ${signature} was sent, but config or pool is not yet visible. Check the ${quoteAsset.network} explorer.`)
+  try {
+    const [configInfo, poolInfo] = await Promise.all([
+      connection.getAccountInfo(configAccount.publicKey, 'confirmed'),
+      connection.getAccountInfo(poolAddress, 'confirmed'),
+    ])
+    if (!configInfo || !poolInfo) throw new Error('Confirmation is still pending. Retry to check the same pool.')
+  } catch (issue) {
+    throw new IncompleteLaunchError({ configAddress: configAccount.publicKey.toBase58(), configSignature: signature,
+      mint, payer: payer.toBase58(), quoteAsset, identity, signature }, issue)
+  }
   return { configAddress: configAccount.publicKey.toBase58(), mintAddress: mint.publicKey.toBase58(),
     poolAddress: poolAddress.toBase58(), signature }
 }
