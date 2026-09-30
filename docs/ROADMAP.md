@@ -94,3 +94,8 @@ Launch recovery after reload is implemented and exercised in the browser: existi
 ### Mainnet read compatibility (2026-09-30)
 
 Real mainnet reads exposed provider restrictions hidden by local tests. Token-account reads now avoid unavailable indexed balance/supply methods. Transaction history is verified separately, partial exports remain explicit, and an optional in-memory RPC setting validates network/history before adoption. Public browser history remains blocked by the checked default services; a compatible endpoint and real Phantom execution remain required evidence gates. See the fifth iteration in `USABILITY-CHECKPOINT.md`.
+
+
+### Product recording refresh — 2026-09-30
+
+The refreshed approximately 2:47 product demo shows unsigned launch cost review, a declined second approval, reload recovery using the paid configuration, inventory-backed half sale, and migration cost review. The first 33 seconds present both measured whale outcomes. Recording source: `d802c4ed8faf27b54ec9716c531d81be3fa00da9`; local pool: `FrfT8D7mhG4cCMrJStgHbVBUEKzSrsdjb5TCwsc2w2Gx`. Six confirmed local transactions and one deliberately declined signing request are retained in the manifest. The original September 26 recording described above is superseded. Public Phantom/mainnet and builder-use evidence remain open.

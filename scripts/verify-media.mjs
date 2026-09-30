@@ -9,10 +9,21 @@ if (!process.env.DEMO_PAGE_URL) for (const prefix of ['curve-covenant-local-demo
   const bytes = await readFile(`public/media/${prefix}.mp4`)
   if (prefix.endsWith('local-demo')) {
     assert.equal(manifest.receipts.length, 6)
+    assert.equal(manifest.signAttempts, 7)
+    assert.equal(manifest.sendCount, 6)
+    assert.equal(manifest.launchRecovery.newMint, true)
+    assert.equal(manifest.launchRecovery.method, 'page reload after declined second approval')
+    assert.deepEqual(manifest.receipts.map(receipt => receipt.stage), ['launch', 'recovery', 'buy', 'sell', 'graduate', 'graduate'])
+    const whaleIndex = manifest.timeline.findIndex(scene => scene.id === 'whale')
+    assert(whaleIndex >= 0, 'Whale comparison must be present')
+    const whaleEnd = manifest.timeline.slice(0, whaleIndex + 1).reduce((sum, scene) => sum + scene.duration, 0)
+    assert(whaleEnd <= 40, 'Measured trade-off must be shown within the first 40 seconds')
     assert(manifest.receipts.every(receipt => receipt.error === null && receipt.slot > 0))
     assert.equal(new Set(manifest.receipts.map(receipt => receipt.signature)).size, 6)
   }
   assert.equal(createHash('sha256').update(bytes).digest('hex'), manifest.videoSha256)
+  const script = prefix.endsWith('local-demo') ? 'demo' : 'pitch'
+  assert.equal(createHash('sha256').update(await readFile(`docs/${script}-scenes.json`)).digest('hex'), manifest.scriptSha256)
   assert.equal(createHash('sha256').update(await readFile(`public/media/${prefix}.srt`)).digest('hex'), manifest.subtitlesSha256)
   const metadata = JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-show_streams', '-show_format', '-of', 'json', `public/media/${prefix}.mp4`], { encoding: 'utf8' }))
   assert(Number(metadata.format.duration) >= 120 && Number(metadata.format.duration) <= 180)

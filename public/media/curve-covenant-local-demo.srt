@@ -3,145 +3,157 @@
 A smoother opening price can still give early buyers more tokens.
 
 2
-00:00:04,404 --> 00:00:08,166
-Curve Covenant exposes both outcomes before launch.
+00:00:04,404 --> 00:00:06,773
+Measure both before launch.
 
 3
-00:00:08,166 --> 00:00:13,952
-This recording uses a local validator, synthetic Xerox tokens, and a test signer.
+00:00:06,773 --> 00:00:11,797
+This is a local validator, synthetic Xerox tokens, and a test signer.
 
 4
-00:00:15,133 --> 00:00:21,225
-Both curves use the same supply, opening price, quote reserve threshold, and fee schedule.
+00:00:12,966 --> 00:00:17,487
+Same supply, opening price, reserve threshold, and fees.
 
 5
-00:00:21,175 --> 00:00:29,128
-In this whale scenario, the long curve reduces the first price jump from three hundred eleven percent to two hundred thirty nine percent.
+00:00:17,437 --> 00:00:23,377
+The long curve lowers the first price jump from three hundred eleven to two hundred thirty nine percent.
 
 6
-00:00:29,128 --> 00:00:34,830
-But the early cohort receives two point five three percentage points more of total buy output.
+00:00:23,377 --> 00:00:28,830
+But early buyers receive two point five three percentage points more of total buy output.
 
 7
-00:00:34,830 --> 00:00:37,413
-The ending prices also differ.
+00:00:28,830 --> 00:00:31,449
+Choose with both results visible.
 
 8
-00:00:38,600 --> 00:00:40,788
-Switch to selling pressure.
+00:00:32,633 --> 00:00:34,630
+Now selling pressure.
 
 9
-00:00:40,738 --> 00:00:45,452
-An opening buyer sells half their tokens, followed by retail buying.
+00:00:34,580 --> 00:00:38,699
+The opening buyer sells half, then retail buyers enter.
 
 10
-00:00:45,452 --> 00:00:50,321
-Every event updates price, reserves, fees, and inventory.
+00:00:38,699 --> 00:00:42,854
+Each trade updates reserves, fees, and inventory.
 
 11
-00:00:50,321 --> 00:00:54,428
-The report measures buying needed to recover the pre sale price.
+00:00:42,854 --> 00:00:46,449
+Compare how much buying restores the pre sale price.
 
 12
-00:00:54,428 --> 00:00:56,964
+00:00:46,449 --> 00:00:48,985
 Neither curve graduates here.
 
 13
-00:00:58,166 --> 00:01:02,877
-Export the integer ledger as JSON, or download a visual summary.
+00:00:50,166 --> 00:00:53,508
+Export the integer ledger and visual summary.
 
 14
-00:01:02,827 --> 00:01:05,435
-Select the long curve for launch.
+00:00:53,458 --> 00:00:55,613
+Select the long curve.
 
 15
-00:01:05,435 --> 00:01:09,768
-The exact compared configuration goes to the transaction builder.
+00:00:55,613 --> 00:01:01,435
+The transaction builder receives that exact configuration, also preserved in the share link.
 
 16
-00:01:09,768 --> 00:01:13,518
-A versioned share link restores that same configuration.
+00:01:02,599 --> 00:01:04,965
+Check the cost before signing.
 
 17
-00:01:14,699 --> 00:01:18,946
-The sixteen segment configuration needs two transactions.
+00:01:04,915 --> 00:01:08,118
+This long curve needs two transactions.
 
 18
-00:01:18,896 --> 00:01:23,694
-The test signer confirms them, and the application reads the created pool.
+00:01:08,118 --> 00:01:12,808
+The configuration succeeds; we deliberately decline token creation.
 
 19
-00:01:23,694 --> 00:01:28,229
-This verifies application wiring against a real local validator.
+00:01:13,998 --> 00:01:15,900
+Reload the page.
 
 20
-00:01:28,229 --> 00:01:32,099
-It is not a Phantom extension or mainnet demonstration.
+00:01:15,850 --> 00:01:19,874
+The saved transaction reference finds the paid configuration.
 
 21
-00:01:33,299 --> 00:01:37,249
-Read wallet balances, then request a small buy quote.
+00:01:19,874 --> 00:01:22,707
+Check the remaining cost without signing.
 
 22
-00:01:37,199 --> 00:01:40,163
-Review the minimum output before signing.
+00:01:22,707 --> 00:01:27,064
+Token creation uses a new mint address, shown before approval.
 
 23
-00:01:40,163 --> 00:01:46,508
-After confirmation, the application refreshes both balances from the token accounts used for trading.
+00:01:27,064 --> 00:01:30,386
+Finish once, reusing the original curve.
 
 24
-00:01:47,699 --> 00:01:50,518
-Sell half the tokens just received.
+00:01:30,386 --> 00:01:34,683
+The recording checks it against the selected scenario configuration.
 
 25
-00:01:50,468 --> 00:01:56,991
-The input uses base token precision, and the transaction enforces the displayed minimum quote output.
+00:01:35,865 --> 00:01:38,065
+Read wallet balances.
 
 26
-00:01:56,991 --> 00:02:01,694
-Confirmation decreases the base balance and increases the quote balance.
+00:01:38,015 --> 00:01:42,015
+Quote a small buy, review minimum output, then sign.
 
 27
-00:02:02,898 --> 00:02:06,371
-A further buy reaches the threshold with a partial fill.
+00:01:42,015 --> 00:01:46,288
+The refreshed token accounts show more base tokens and less quote.
 
 28
-00:02:06,321 --> 00:02:09,667
-Migration creates the DAMM version two pool.
+00:01:47,464 --> 00:01:51,080
+Use half my token balance fills the exact amount.
 
 29
-00:02:09,667 --> 00:02:14,714
-The application verifies the destination and displays both vault balances.
+00:01:51,030 --> 00:01:53,566
+Review minimum output and sell.
 
 30
-00:02:14,714 --> 00:02:17,214
-These are local transactions.
+00:01:53,566 --> 00:01:57,435
+Base tokens decrease; the quote balance increases.
 
 31
-00:02:18,398 --> 00:02:26,669
-Validation covered fifty six swaps across eight local pools: SOL and Xerox, both curves, fixed and declining fees.
+00:01:58,597 --> 00:02:02,189
+A further buy reaches graduation with a partial fill.
 
 32
-00:02:26,619 --> 00:02:33,178
-Predicted raw prices, reserves, fees, inventory, and quote transfers matched execution.
+00:02:02,139 --> 00:02:06,485
+Review migration cost, then create the DAMM version two pool.
 
 33
-00:02:33,178 --> 00:02:36,464
-Complete data and hashes are in the repository.
+00:02:06,485 --> 00:02:09,544
+Read both destination vault balances.
 
 34
-00:02:37,631 --> 00:02:42,795
-These scenarios expose trade offs, not forecasts or a universal winner.
+00:02:10,730 --> 00:02:18,310
+Fifty six swaps across eight local pools checked both curves, SOL and Xerox, and fixed and declining fees.
 
 35
-00:02:42,745 --> 00:02:47,042
-External quote liquidity and stock price changes are not modeled.
+00:02:18,260 --> 00:02:24,820
+Predicted raw prices, reserves, fees, inventory, and quote transfers matched execution.
 
 36
-00:02:47,042 --> 00:02:50,804
-Public Phantom evidence and builder trials remain next.
+00:02:24,820 --> 00:02:27,713
+Data and hashes are in the repository.
 
 37
-00:02:50,804 --> 00:02:54,042
-Explore the product and reproducible source.
+00:02:28,897 --> 00:02:32,668
+Scenarios expose trade offs, not forecasts.
+
+38
+00:02:32,618 --> 00:02:36,916
+External quote liquidity and stock price changes are not modeled.
+
+39
+00:02:36,916 --> 00:02:42,511
+Real Phantom execution, mainnet transactions, and builder trials remain open.
+
+40
+00:02:42,511 --> 00:02:45,547
+Try the product and inspect the evidence.

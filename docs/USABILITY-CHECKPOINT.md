@@ -4,14 +4,14 @@
 
 The user funded Phantom on devnet, then could not complete the launch. They asked for ongoing development focused on real usefulness and evidence. The exact point where they stopped remains unknown. No claim is made that the underlying Phantom interaction has been reproduced with the actual extension.
 
-## Implemented
+## First iteration (historical; later updates below)
 
 - A small devnet rehearsal and a one-click reproduction of the video's exact whale scenario.
 - Default SOL design uses opening/graduation caps of 1/10 and a reserve threshold around 2.4025 test SOL, instead of the previous hundreds-of-SOL threshold.
 - Connect → unsigned on-chain simulation → cost review → signature. Wallet address, SOL balance, estimated debit including rent, and expected remaining balance are shown.
 - Recheck before signing; account changes and increased costs require a fresh review. Editing the curve or metadata invalidates the previous review.
 - Empty-wallet funding instructions, mobile Phantom link preserving the current curve, rejection and RPC error explanations.
-- Submitted launch addresses retained in memory after a confirmation/read failure, including combined launches. Resume in the same tab instead of generating another pool. Reload recovery is still not supported.
+- Submitted launch addresses retained in memory after a confirmation/read failure, including combined launches. Resume in the same tab instead of generating another pool. At this first checkpoint, reload recovery was not yet supported; the fourth iteration below implements it.
 - Four visible scenario buttons and paired opening-jump, early-output-share and late-cost measurements. Opening a named example resets scenario/budget state.
 - Exact half-inventory sell amount and a fresh chain-evidence export (last 20 pool transactions, genesis, terms, graduation status). Unavailable transaction data stays unverified; unknown genesis gets no public explorer URL.
 
@@ -160,3 +160,16 @@ CUSTOM_RPC=1 PREFLIGHT_WALLET=<funded-devnet-public-address> CHROMIUM_PATH=/path
 ```
 
 Public provider constraints are documented in [Solana's cluster reference](https://solana.com/docs/references/clusters). The dRPC public address was checked against its [own API guide](https://drpc.org/docs/solana-api), then rejected by the actual service. These sources are not guarantees of current access.
+
+
+## Sixth iteration — current product recording
+
+The product demo was re-recorded on 2026-09-30 from source commit `d802c4ed8faf27b54ec9716c531d81be3fa00da9` against the local synthetic-XRXx fixture. The first 33 seconds show the whale trade-off (311% → 239% opening jump; early buy-output share +2.53 percentage points), followed by sell pressure and exact-configuration exports.
+
+The recording now includes initial unsigned cost review, a deliberately declined second approval, page reload, remaining-cost review, and token creation with a fresh mint using the already paid configuration. It then buys, sells exactly half the wallet's inventory, refreshes balances, reviews migration cost, and creates/reads the DAMM v2 destination. Both cost checks requested no signature. The resumed creation reused config `EgeQsgbQtUBgMDZmLkhqDNQdmL2XbdrTh1d3Zm7uvVFt`; the recorder compared all selected curve segments and the threshold against actual chain state.
+
+Local DBC: `FrfT8D7mhG4cCMrJStgHbVBUEKzSrsdjb5TCwsc2w2Gx`. Exactly six sends and six successful receipts; seven signing attempts including the deliberate decline; zero browser exceptions. Raw recorded scenes total 166.44 seconds. Final artifacts and per-stage local receipts are in `public/media/curve-covenant-local-demo.*`.
+
+This remains local-validator evidence with synthetic quote balances and synthetic narration. It does not close the real Phantom, public mainnet transaction or independent builder-trial gates. The public demo page and submission/media descriptions now identify the current cost/recovery flow.
+
+Media validation: final duration 166.671745 seconds, 1920×1080 H.264 with AAC narration; video/script/caption hashes verified; complete MP4 decode and Chromium playback passed for both videos. Download links and 390 px layout passed with zero browser exceptions. Sample opening, measured result, recovery-cost and migration-cost frames were visually inspected. All 125 unit tests also passed.

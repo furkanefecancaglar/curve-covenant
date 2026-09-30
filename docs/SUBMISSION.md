@@ -67,7 +67,7 @@ Potential next steps depend on those trials: reusable validated presets, an embe
 
 ## Outstanding submission fields
 
-Founder/team biography and contact/X details must come from the actual participants. A 2:16 technical pitch and 2:55 local-validator product demo are available with synthetic narration, captions and provenance. Public mainnet transaction URLs, real user-validation evidence and portal receipt URLs are not yet available. The technical pitch does not substitute for actual founder/team details. The previous inspector-only videos were removed and must not be reused as a demo of this version.
+Founder/team biography and contact/X details must come from the actual participants. A 2:16 technical pitch and 2:47 local-validator product demo are available with synthetic narration, captions and provenance. Public mainnet transaction URLs, real user-validation evidence and portal receipt URLs are not yet available. The technical pitch does not substitute for actual founder/team details. The previous inspector-only videos were removed and must not be reused as a demo of this version.
 
 ## Deadlines and submission status
 

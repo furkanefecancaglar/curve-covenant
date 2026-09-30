@@ -6,13 +6,16 @@ Status: narrated technical presentation and local product demo produced; see [me
 
 | Time | Actual screen/action | Narration |
 | --- | --- | --- |
-| 0:00–0:15 | Scenario Lab, XRXx, fixed 1% fee, opening cap 1, reference graduation cap 10, whale schedule, default 120% budget | “A lower opening price jump can still give early buyers more tokens. Curve Covenant shows both sides of that trade-off before you launch.” |
-| 0:15–0:40 | Overlay and early-share table; inspect opening event | “The same supply, opening price, reserve threshold and fee schedule produce different outcomes. Here, the long curve reduces the first price jump from 311% to 239%, while early buyers receive about 2.53 percentage points more of total buy output.” |
-| 0:40–1:00 | Switch to sell pressure; open the transaction ledger | “Each buy and sell changes the next price and reserve. Sellers can only sell tokens they hold. This schedule measures how much additional buying recovers the pre-sale price and whether the pool still graduates.” |
-| 1:00–1:20 | Export JSON and SVG; select “Use long curve for launch”; copy and reopen design link | “Export every integer amount and the exact configuration. The configuration selected here is the one passed to the launch transaction and restored from the share link.” |
-| 1:20–2:15 | Record actual create → buy → sell → balances → graduation. Until mainnet proof exists, use the real local browser flow with a persistent LOCAL VALIDATOR / SYNTHETIC XRXx label | “This demonstration uses [the actual displayed network]. The wallet approves creation, the app shows a minimum trade output, and balances refresh after confirmation. At the reserve threshold, the pool migrates to DAMM v2.” |
-| 2:15–2:35 | Raw local proof / manifest; briefly show one confirmed event's prediction and observed values | “The scenario engine matched 56 actual swaps across eight local pools: both curves, SOL and XRXx, and fixed and declining fees. Price, reserves, fees and wallet balances matched in base units.” |
-| 2:35–2:45 | Product URL and source link | “Measure the trade-offs. Launch the configuration you chose. Verify the result.” |
+| 0:00–0:13 | Scenario Lab and persistent local environment banner | A smoother opening price can still give early buyers more tokens. Measure both before launch. |
+| 0:13–0:33 | Opening-event chart and early-share comparison | Same inputs: the long curve lowers the first price jump from 311% to 239%, while early buy-output share rises by 2.53 percentage points. |
+| 0:33–0:50 | Sell pressure and event ledger | Compare buying needed to restore the pre-sale price; neither curve graduates in this schedule. |
+| 0:50–1:02 | JSON/SVG exports, select long curve, copy design link | Preserve the exact compared configuration. |
+| 1:02–1:14 | Unsigned launch cost review, approve configuration, deliberately decline token creation | Review cost before signing; the long curve needs two transactions. |
+| 1:14–1:36 | Reload, check saved launch, review remaining cost, create new mint using paid configuration | Recovery requires one remaining creation transaction. The recorder checks the configuration against the selected scenario. |
+| 1:36–1:58 | Buy, refreshed balances, use half the inventory to sell, refreshed balances | Review minimum outputs and inspect actual balance changes. |
+| 1:58–2:11 | Reach threshold, migration cost review, DAMM v2 creation and vault reads | Migration is a separate reviewed action. |
+| 2:11–2:29 | Checked-in raw execution comparison | 56 swaps across eight local pools matched the integer predictions. |
+| 2:29–2:47 | Product/source links and outstanding evidence | Real Phantom execution, mainnet transactions and builder trials remain open. |
 
 Do not show a generic terminal scroll as the only proof. Keep the selected scenario, raw comparison, and real transaction confirmation visible long enough to inspect. A successful transaction signature is not a claim of organic adoption.
 
