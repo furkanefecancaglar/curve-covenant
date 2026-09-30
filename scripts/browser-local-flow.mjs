@@ -30,14 +30,15 @@ await local.confirmTransaction(authorityFunding, 'confirmed')
 const executablePath = process.env.CHROMIUM_PATH
 if (!executablePath) throw new Error('Set CHROMIUM_PATH to an installed Chromium executable.')
 const browser = await chromium.launch({ executablePath, headless: true, args: ['--no-sandbox'] })
-const page = await browser.newPage({ viewport: { width: 1440, height: 1050 } })
+const context = await browser.newContext({ viewport: { width: 1440, height: 1050 } })
+let page = await context.newPage()
 const appUrl = process.env.APP_URL ?? 'http://127.0.0.1:4175'
 // A public HTTPS page needs explicit permission to connect to this local-only fixture.
 if (new URL(appUrl).protocol === 'https:') await page.context().grantPermissions(['local-network-access'], { origin: new URL(appUrl).origin })
 try {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
-  await page.route(/https:\/\/(solana-rpc\.publicnode\.com|api\.devnet\.solana\.com)\/?$/, async route => {
+  await context.route(/https:\/\/(solana-rpc\.publicnode\.com|api\.devnet\.solana\.com)\/?$/, async route => {
     const request = JSON.parse(route.request().postData())
     if ((recovery || launchReload) && request.method === 'getSignatureStatuses' && hideStatuses) {
       await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ jsonrpc: '2.0', id: request.id, error: { code: -32005, message: 'Test: confirmation RPC unavailable' } }) }); return
@@ -51,10 +52,10 @@ try {
     if (recovery && request.method === 'sendTransaction' && sendCount === 1) { await response.text(); await route.abort('failed'); return }
     await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text() })
   })
-  if (recovery) await page.addInitScript(() => {
+  if (recovery) await context.addInitScript(() => {
     window.WebSocket = class { constructor() { throw new Error('Test: WebSockets are disabled') } }
   })
-  else await page.addInitScript(localPort => {
+  else await context.addInitScript(localPort => {
     const NativeWebSocket = window.WebSocket
     window.WebSocket = class extends NativeWebSocket {
       constructor(url, protocols) {
@@ -64,7 +65,7 @@ try {
       }
     }
   }, port)
-  await page.exposeFunction('localTestSign', async bytes => {
+  await context.exposeFunction('localTestSign', async bytes => {
     signCount++
     if (process.env.CANCEL_SECOND === '1' && signCount === 2) throw new Error('Test: wallet declined pool creation')
     const tx = Transaction.from(Buffer.from(bytes))
@@ -113,7 +114,11 @@ try {
     assert(recoveredReceipt?.configAddress, 'Signed launch must be recoverable before reload')
     assert(!JSON.stringify(recoveredReceipt).includes('secretKey'), 'Receipt must not store signers')
     const signaturesBeforeReload = signCount
-    await page.reload({ waitUntil: 'networkidle' }); await installWallet()
+    // Close the original page to discard its ephemeral mint/config signers.
+    await page.close()
+    page = await context.newPage()
+    page.on('pageerror', error => errors.push(error.message))
+    await page.goto(appUrl, { waitUntil: 'networkidle' }); await installWallet()
     assert(await page.getByRole('button', { name: 'Check launch with Phantom' }).isDisabled() || fixture, 'Old launch must be checked before creating another on the same quote')
     hideStatuses = false
     await page.getByRole('button', { name: 'Check saved launch', exact: true }).click()
