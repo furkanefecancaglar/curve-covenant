@@ -1,21 +1,31 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { deriveTokenBadgeAddress, DYNAMIC_BONDING_CURVE_PROGRAM_ID } from '@meteora-ag/dynamic-bonding-curve-sdk'
 
-export type QuoteId = 'SOL' | 'XRXx' | 'FLNCx' | 'QUBTx' | 'AIx'
+export type QuoteId = 'SOL' | 'SOL-mainnet' | 'XRXx' | 'FLNCx' | 'QUBTx' | 'AIx'
 export type QuoteAsset = { id: QuoteId; name: string; mint: string; decimals: number; network: 'devnet' | 'mainnet-beta'; category: string }
 
 // Stock mints from the issuer's public assets API, checked against Solana mainnet on 2026-09-25.
 // The badge check is repeated before any stock-quoted transaction is built.
 export const QUOTES: Record<QuoteId, QuoteAsset> = {
   SOL: { id: 'SOL', name: 'Solana devnet SOL', mint: 'So11111111111111111111111111111111111111112', decimals: 9, network: 'devnet', category: 'Test launch' },
+  'SOL-mainnet': { id: 'SOL-mainnet', name: 'Solana mainnet SOL', mint: 'So11111111111111111111111111111111111111112', decimals: 9, network: 'mainnet-beta', category: 'Live SOL launch' },
   XRXx: { id: 'XRXx', name: 'Xerox xStock', mint: 'XsensupeZBdHxZtdnLptf1UfWpVyancWcit7qWFYZrJ', decimals: 8, network: 'mainnet-beta', category: 'Tokenized equity quote' },
   FLNCx: { id: 'FLNCx', name: 'Fluence Energy xStock', mint: 'Xsc5BxL1ucvrQNXZqW3CT8M9gWTko1LPSLLkSVzGe9h', decimals: 8, network: 'mainnet-beta', category: 'Tokenized equity quote' },
   QUBTx: { id: 'QUBTx', name: 'Quantum Computing xStock', mint: 'XsRJiWgqGJrDaidERfWfdZkaxdA4VPjVEqN6XFctpp3', decimals: 8, network: 'mainnet-beta', category: 'Tokenized equity quote' },
   AIx: { id: 'AIx', name: 'C3.ai xStock', mint: 'Xs7QhN79WzM4hjfHbu2W46ZRkdyumim3ooJHhPxenoU', decimals: 8, network: 'mainnet-beta', category: 'Tokenized equity quote' },
 }
 
+// Keep the legacy SOL design/receipt ID bound to devnet. The mainnet choice has
+// a distinct stable ID while amounts and pool labels still use the SOL symbol.
+export function quoteSymbol(quote: { id: string }): string {
+  return quote.id === 'SOL-mainnet' ? 'SOL' : quote.id
+}
+export function isSolQuote(quote: Pick<QuoteAsset, 'mint'>): boolean {
+  return quote.mint === 'So11111111111111111111111111111111111111112'
+}
+
 export async function verifyQuoteAsset(connection: Connection, quote: QuoteAsset): Promise<PublicKey | undefined> {
-  if (quote.id === 'SOL') return undefined
+  if (isSolQuote(quote)) return undefined
   const mint = new PublicKey(quote.mint)
   const badge = deriveTokenBadgeAddress(mint)
   const [mintInfo, badgeInfo] = await Promise.all([

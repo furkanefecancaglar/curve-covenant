@@ -1,3 +1,4 @@
+import { quoteSymbol } from './quotes'
 import type { ScenarioReport } from './scenarios'
 
 export function scenarioPlot(report: ScenarioReport) {
@@ -26,14 +27,14 @@ export function scenarioSvg(report: ScenarioReport): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="710" viewBox="0 0 900 710" role="img" aria-label="Curve Covenant scenario report">
   <rect width="900" height="710" fill="#101c14"/><g font-family="Arial, sans-serif" fill="#e4efd9">
   <text x="40" y="36" font-size="23" font-weight="700">Curve Covenant · ${xml(report.scenario)}</text>
-  <text x="40" y="62" font-size="13">Hypothetical trades · Budget ${xml(report.budget)} ${xml(report.quoteAsset.id)} · SDK ${xml(report.sdkVersion)}</text>
+  <text x="40" y="62" font-size="13">Hypothetical trades · Budget ${xml(report.budget)} ${xml(quoteSymbol(report.quoteAsset))} · SDK ${xml(report.sdkVersion)}</text>
   <g transform="translate(0,65)" font-size="12">
     ${[0, .5, 1].map(f => `<line x1="70" x2="830" y1="${plot.y(plot.maxMultiple * f)}" y2="${plot.y(plot.maxMultiple * f)}" stroke="#344737"/><text x="60" y="${plot.y(plot.maxMultiple * f) + 4}" text-anchor="end">${number(plot.maxMultiple * f)}×</text>`).join('')}
     ${plot.paths.map(s => `<path d="${s.d}" fill="none" stroke="${s.color}" stroke-width="3"/>`).join('')}
     <text x="70" y="286">0 min</text><text x="830" y="286" text-anchor="end">${number(plot.maxSeconds / 60)} min</text>
     <text x="450" y="310" text-anchor="middle">Elapsed scenario time → · Spot price / opening price</text>
   </g>
-  <g fill="#a4b79d" font-size="12"><text x="40" y="400">CURVE</text><text x="290" y="400">EARLY BUY OUTPUT</text><text x="450" y="400">PROGRESS</text><text x="590" y="400">FEES · ${xml(report.quoteAsset.id)}</text></g>
+  <g fill="#a4b79d" font-size="12"><text x="40" y="400">CURVE</text><text x="290" y="400">EARLY BUY OUTPUT</text><text x="450" y="400">PROGRESS</text><text x="590" y="400">FEES · ${xml(quoteSymbol(report.quoteAsset))}</text></g>
   ${rows}
   <g fill="#a4b79d" font-size="12"><text x="40" y="596">Same supply, start price, quote threshold, fee schedule and nominal leftover target.</text>
   <text x="40" y="618">Endpoint prices differ. Lower price impact does not imply less early capture.</text>

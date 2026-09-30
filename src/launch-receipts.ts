@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import bs58 from 'bs58'
-import { QUOTES } from './quotes'
+import { QUOTES, quoteSymbol } from './quotes'
 import type { QuoteId } from './quotes'
 import type { TokenIdentity } from './publish'
 import type { TransactionAttempt } from './confirmation'
@@ -65,7 +65,7 @@ export function removeLaunchReceipt(receipt: LaunchReceipt) {
 }
 export function archiveLaunchReceipt(receipt: LaunchReceipt, poolAddress: string) {
   const pools = rememberPool(readPoolLibrary(localStorage.getItem(POOL_LIBRARY_KEY)),
-    { address: poolAddress, network: QUOTES[receipt.quoteId].network }, `${receipt.identity.name} / ${receipt.quoteId}`)
+    { address: poolAddress, network: QUOTES[receipt.quoteId].network }, `${receipt.identity.name} / ${quoteSymbol(QUOTES[receipt.quoteId])}`)
   // Write the bookmark first so a reload cannot lose an already-created pool.
   localStorage.setItem(POOL_LIBRARY_KEY, JSON.stringify(pools))
   removeLaunchReceipt(receipt)

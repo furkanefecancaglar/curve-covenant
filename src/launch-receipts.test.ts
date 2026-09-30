@@ -60,3 +60,13 @@ it('does not run a second recovery when another tab owns the launch lock', async
   await expect(withLaunchLock(receipt().configAddress, work)).rejects.toThrow('another tab')
   expect(work).not.toHaveBeenCalled()
 })
+
+
+it('persists and archives mainnet SOL separately from legacy devnet SOL', () => {
+  const value: LaunchReceipt = { ...receipt(), quoteId: 'SOL-mainnet' }
+  const pool = Keypair.generate().publicKey.toBase58()
+  saveLaunchReceipt(value)
+  expect(loadLaunchReceipt(value.configAddress)?.quoteId).toBe('SOL-mainnet')
+  archiveLaunchReceipt(value, pool)
+  expect(readPoolLibrary(localStorage.getItem(POOL_LIBRARY_KEY))).toEqual([expect.objectContaining({ address: pool, network: 'mainnet-beta', label: 'Demo / SOL' })])
+})

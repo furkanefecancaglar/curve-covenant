@@ -22,7 +22,7 @@ Status: not executed. A public wallet with devnet SOL was supplied and unsigned 
 
 For each confirmed step retain: network, signature and explorer URL, slot/time, wallet signer, pool/config/mint, instruction outcome, before/after relevant balances, quote minimum versus actual output, and the config identity. If confirmation fails, record the failure and resolve it before claiming completion.
 
-The video must show actual Phantom approval and the app's post-transaction refresh. Public SOL and public xStock evidence must be identified separately. The current SOL rehearsal option is devnet; do not relabel it as mainnet.
+The video must show actual Phantom approval and the app's post-transaction refresh. Public SOL and public xStock evidence must be identified separately. The UI has separate SOL/devnet rehearsal and SOL/mainnet launch choices. Existing SOL rehearsal links remain devnet. The mainnet SOL route has passed local-validator integration and real public balance reads; this is not a public signed launch.
 
 ## Evidence labels
 

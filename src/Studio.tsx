@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowRight, CheckCircle2, Code2, Copy, Download, ExternalLink, Info, Layers3, Rocket, SlidersHorizontal } from 'lucide-react'
 import { buildStudioConfig, PRESETS, simulateOpeningBuy, studioSummary } from './studio'
 import type { PresetId, StudioInputs } from './studio'
-import { QUOTES } from './quotes'
+import { QUOTES, isSolQuote, quoteSymbol } from './quotes'
 import type { QuoteId } from './quotes'
 import { toPlain } from './dbc'
 import LaunchPanel from './LaunchPanel'
@@ -103,6 +103,7 @@ export default function Studio() {
   const [buyAmount, setBuyAmount] = useState('1')
   const [elapsedHours, setElapsedHours] = useState('0')
   const quoteAsset = QUOTES[quoteId]
+  const displayQuote = quoteSymbol(quoteAsset)
   const result = useMemo(() => {
     try {
       const config = activeScenario?.curve.config ?? buildStudioConfig(input, quoteAsset.decimals)
@@ -120,6 +121,14 @@ export default function Studio() {
     }
   }, [result.config, buyAmount, elapsedHours, quoteAsset.decimals])
 
+  function selectQuote(next: QuoteId) {
+    if (launchLocked) return
+    // Switching SOL networks changes the transaction destination, not the curve.
+    if (activeScenario && isSolQuote(quoteAsset) && isSolQuote(QUOTES[next])) {
+      setAppliedScenario({ ...activeScenario, quoteId: next })
+    }
+    setQuoteId(next)
+  }
   function change(key: keyof Omit<StudioInputs, 'preset'>, value: string) {
     setInput(current => ({ ...current, [key]: Number(value) }))
   }
@@ -175,32 +184,32 @@ export default function Studio() {
         <div className="start-paths" aria-label="Choose a starting point"><article><span>TRY THE WALLET FLOW · FREE TEST SOL</span><h2>Make your first devnet pool.</h2><p>Ready-to-use token metadata, a small reserve target and a cost check before you sign. Then buy, sell and graduate the pool.</p><button disabled={launchLocked} onClick={() => openExample('devnet')}>Start small devnet rehearsal <ArrowRight size={16}/></button></article><article><span>REPRODUCE THE DEMO · NO WALLET NEEDED</span><h2>Why a smoother curve can favor early buyers.</h2><p>Load the video's exact XRXx whale example. Compare the lower opening jump with the larger early allocation, then explore selling pressure.</p><button disabled={launchLocked} onClick={() => openExample('whale')}>Open the measured whale example <ArrowRight size={16}/></button></article></div>
         {shared.error && <p className="publish-error" role="alert">{shared.error}</p>}
         {shared.design && <p className="shared-design-note">Shared design loaded. Review the curve and terms before creating a pool.</p>}
-        <div className="studio-section-head"><span>01 / QUOTE ASSET</span><h2>Choose what buyers pay with.</h2><p>A new token can be quoted in a tokenized stock instead of SOL. These mints come from the xStocks issuer asset feed; mint precision and Meteora token badge are checked on chain before a mainnet launch transaction is built.</p></div>
-        <div className="quote-grid">{Object.values(QUOTES).map(asset => <button disabled={launchLocked} key={asset.id} className={`quote-card ${asset.id === quoteId ? 'active' : ''}`} onClick={() => setQuoteId(asset.id)}><span>{asset.category}</span><strong>{asset.id}</strong><small>{asset.name}</small><span className="quote-network">{asset.network === 'devnet' ? 'DEVNET TEST' : 'MAINNET'}</span></button>)}</div>
+        <div className="studio-section-head"><span>01 / QUOTE ASSET</span><h2>Choose what buyers pay with.</h2><p>Choose free devnet SOL for rehearsal, or mainnet SOL or an xStock for a live launch. Stock mints come from the issuer asset feed; stock mint precision and the Meteora token badge are checked on chain before launch.</p></div>
+        <div className="quote-grid">{Object.values(QUOTES).map(asset => <button disabled={launchLocked} key={asset.id} className={`quote-card ${asset.id === quoteId ? 'active' : ''}`} onClick={() => selectQuote(asset.id)}><span>{asset.category}</span><strong>{quoteSymbol(asset)}</strong><small>{asset.name}</small><span className="quote-network">{asset.network === 'devnet' ? 'DEVNET TEST' : 'MAINNET'}</span></button>)}</div>
         <p className="quote-disclosure">The newly launched token is a separate asset priced against the selected quote token. It is not a share of the underlying company. Stock-token trading restrictions can still apply.</p>
 
-        <div className="studio-section-head preset-heading"><span>02 / LAUNCH MECHANICS</span><h2>Choose a curve and fee model.</h2><p>Each preset is editable and validated by Meteora's DBC SDK. Market cap values are denominated in {quoteId} units.</p></div>
+        <div className="studio-section-head preset-heading"><span>02 / LAUNCH MECHANICS</span><h2>Choose a curve and fee model.</h2><p>Each preset is editable and validated by Meteora's DBC SDK. Market cap values are denominated in {displayQuote} units.</p></div>
         <div className="preset-grid">{(Object.entries(PRESETS) as [PresetId, typeof PRESETS[PresetId]][]).map(([id, item], index) => <button disabled={launchLocked} key={id} className={`preset-card ${input.preset === id ? 'active' : ''}`} onClick={() => setInput({ ...item.values })}><span className="preset-top"><span>0{index + 1} / {item.audience.toUpperCase()}</span><span className="preset-radio">{input.preset === id && <CheckCircle2 size={17}/>}</span></span><strong>{item.name}</strong><p>{item.thesis}</p><span className="preset-end">{id === 'long' ? '16 SEGMENTS' : id === 'momentum' ? 'TWO CURVE STAGES' : id === 'discovery' ? 'DECAYING FEE' : 'FIXED FEE'} <ArrowRight size={15}/></span></button>)}</div>
 
         <div className="studio-work-grid">
-          <div className="studio-editor"><div className="panel-title"><SlidersHorizontal size={20}/><div><h3>Shape the launch</h3><p>Quote: {quoteId} · Base token: SPL · Graduation: DAMM v2</p></div></div>
-            <div className="studio-input-grid">{inputFields.map(field => <label key={field.key}><span>{field.label}<span className="field-help" title={field.help}><Info size={13}/></span></span><div className="studio-input"><input type="number" disabled={launchLocked} min={field.min} step={field.step} value={input[field.key]} onChange={event => change(field.key, event.target.value)}/><span>{field.unit === 'quote' ? quoteId : field.unit}</span></div></label>)}</div>
+          <div className="studio-editor"><div className="panel-title"><SlidersHorizontal size={20}/><div><h3>Shape the launch</h3><p>Quote: {displayQuote} · Base token: SPL · Graduation: DAMM v2</p></div></div>
+            <div className="studio-input-grid">{inputFields.map(field => <label key={field.key}><span>{field.label}<span className="field-help" title={field.help}><Info size={13}/></span></span><div className="studio-input"><input type="number" disabled={launchLocked} min={field.min} step={field.step} value={input[field.key]} onChange={event => change(field.key, event.target.value)}/><span>{field.unit === 'quote' ? displayQuote : field.unit}</span></div></label>)}</div>
             <p className="editor-footnote">Config values describe your DBC launch economics. The wallet flow below creates the config and token pool.</p>
             <p className="allocation-note">Leftover allocation: <strong>{input.preset === 'momentum' ? '35%' : '0.001%'} of supply</strong>, with your launch wallet set as the receiver. DAMM v2 starts with a 1% base trading fee plus a dynamic fee after graduation.</p>
-            {result.config && <CurveChart config={result.config} supply={input.supply} quoteDecimals={quoteAsset.decimals} symbol={quoteId}/>}
+            {result.config && <CurveChart config={result.config} supply={input.supply} quoteDecimals={quoteAsset.decimals} symbol={displayQuote}/>}
           </div>
           <div className="studio-output"><div className="panel-title"><Rocket size={20}/><div><h3>SDK result</h3><p>Recomputed whenever you change the design</p></div></div>
             {result.config && result.summary ? <>
-              <div className="result-hero"><span>GRADUATION QUOTE THRESHOLD</span><strong>{comma(result.summary.migrationQuoteThreshold)} <small>{quoteId}</small></strong><p>Meteora's curve builder computes the quote reserve needed before DAMM v2 migration.</p></div>
-              <div className="studio-metrics"><div><span>OPENING VALUE</span><strong>{comma(input.initialMarketCap)} {quoteId}</strong></div><div><span>GRADUATION VALUE</span><strong>{comma(input.migrationMarketCap)} {quoteId}</strong></div><div><span>TRADING FEE</span><strong>{input.startingFeeBps / 100}% → {input.endingFeeBps / 100}%</strong></div><div><span>LIQUIDITY LOCK</span><strong>{input.partnerLockedPct}% permanent</strong></div></div>
+              <div className="result-hero"><span>GRADUATION QUOTE THRESHOLD</span><strong>{comma(result.summary.migrationQuoteThreshold)} <small>{displayQuote}</small></strong><p>Meteora's curve builder computes the quote reserve needed before DAMM v2 migration.</p></div>
+              <div className="studio-metrics"><div><span>OPENING VALUE</span><strong>{comma(input.initialMarketCap)} {displayQuote}</strong></div><div><span>GRADUATION VALUE</span><strong>{comma(input.migrationMarketCap)} {displayQuote}</strong></div><div><span>TRADING FEE</span><strong>{input.startingFeeBps / 100}% → {input.endingFeeBps / 100}%</strong></div><div><span>LIQUIDITY LOCK</span><strong>{input.partnerLockedPct}% permanent</strong></div></div>
               <div className="migration-flow"><span>DBC<br/><small>Price discovery</small></span><span className="flow-arrow">→</span><span>DAMM v2<br/><small>Graduated liquidity</small></span></div>
-              <div className="prelaunch-scenario"><div className="scenario-title"><strong>Pre-launch buy simulation</strong><span>OFFICIAL DBC QUOTE MATH</span></div><div className="scenario-fields"><label>Buy amount<div className="studio-input"><input aria-label="Pre-launch buy amount" type="number" min="0.00000001" step="0.1" value={buyAmount} onChange={event => setBuyAmount(event.target.value)}/><span>{quoteId}</span></div></label><label>Hours after opening<div className="studio-input"><input aria-label="Hours after opening" type="number" min="0" max="720" step="1" value={elapsedHours} onChange={event => setElapsedHours(event.target.value)}/><span>hours</span></div></label></div>{scenario.quote ? <div className="scenario-result"><div><span>ESTIMATED TOKENS</span><strong>{comma(Number(scenario.quote.outputTokens))}</strong></div><div><span>TOTAL DBC FEE</span><strong>{scenario.quote.totalFeeQuote} {quoteId}</strong></div><div><span>UNFILLED INPUT</span><strong>{scenario.quote.unfilledQuote} {quoteId}</strong></div></div> : <p className="scenario-error">{scenario.error}</p>}<p>Hypothetical quote with zero earlier buys. Real reserves and outcomes change after launch.</p></div>
+              <div className="prelaunch-scenario"><div className="scenario-title"><strong>Pre-launch buy simulation</strong><span>OFFICIAL DBC QUOTE MATH</span></div><div className="scenario-fields"><label>Buy amount<div className="studio-input"><input aria-label="Pre-launch buy amount" type="number" min="0.00000001" step="0.1" value={buyAmount} onChange={event => setBuyAmount(event.target.value)}/><span>{displayQuote}</span></div></label><label>Hours after opening<div className="studio-input"><input aria-label="Hours after opening" type="number" min="0" max="720" step="1" value={elapsedHours} onChange={event => setElapsedHours(event.target.value)}/><span>hours</span></div></label></div>{scenario.quote ? <div className="scenario-result"><div><span>ESTIMATED TOKENS</span><strong>{comma(Number(scenario.quote.outputTokens))}</strong></div><div><span>TOTAL DBC FEE</span><strong>{scenario.quote.totalFeeQuote} {displayQuote}</strong></div><div><span>UNFILLED INPUT</span><strong>{scenario.quote.unfilledQuote} {displayQuote}</strong></div></div> : <p className="scenario-error">{scenario.error}</p>}<p>Hypothetical quote with zero earlier buys. Real reserves and outcomes change after launch.</p></div>
               <div className="studio-actions"><button onClick={exportConfig}><Download size={17}/> Download SDK config JSON</button><button onClick={shareDesign}><Copy size={17}/> Copy design link</button></div>
               {shareMessage && <p className="shared-design-note" role="status">{shareMessage}</p>}
             </> : <div className="config-error">{result.error}</div>}
           </div>
         </div>
-        <CurveComparison input={input} amount={buyAmount} elapsedHours={Number(elapsedHours)} symbol={quoteId} quoteDecimals={quoteAsset.decimals} locked={launchLocked} onChoose={preset => setInput(current => ({ ...current, preset }))}/>
+        <CurveComparison input={input} amount={buyAmount} elapsedHours={Number(elapsedHours)} symbol={displayQuote} quoteDecimals={quoteAsset.decimals} locked={launchLocked} onChoose={preset => setInput(current => ({ ...current, preset }))}/>
         <ScenarioLab key={`scenario:${quoteId}:${exampleRevision}`} input={activeScenario?.reference ?? input} quoteAsset={quoteAsset} locked={launchLocked} onChoose={curve => {
           setAppliedScenario({ curve, reference: activeScenario?.reference ?? input, quoteId }); setInput(curve.inputs)
           document.getElementById('launch')?.scrollIntoView({ behavior: 'smooth' })

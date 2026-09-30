@@ -18,7 +18,7 @@ We have not yet established the size of this problem through user interviews. We
 
 Curve Covenant combines controlled scenario comparison with a wallet-based Meteora launch flow:
 
-- Select a supported issuer-listed xStock or rehearse with devnet SOL.
+- Select a supported issuer-listed xStock or mainnet SOL, or rehearse with devnet SOL.
 - Compare one-segment and 16-segment curves with equal supply, opening price, reserve threshold and fee schedule. Ending prices remain visible outcomes.
 - Run retail drip, early-whale, sell-pressure and graduation schedules. Every trade advances the prior pool state and actor inventory.
 - Inspect price paths, fees, early buy-output share, cohort costs and reserve progress. Export raw-unit JSON and an SVG summary.
@@ -41,7 +41,7 @@ This is the point of the product: expose a choice's benefits and costs rather th
 | Controlled comparisons can be deployed | SDK-valid equalized configs; browser-selected long curve matches actual created on-chain parameters | Local validator, not mainnet |
 | Config remains exact across sharing | Version 2 share-link reconstruction and exported config equality verified in browser | Pinned SDK/normalization version |
 | End-to-end launch works | Local browser scenario → create → buy → sell → balances → graduate; declined second approval and page reload recovered | Phantom-compatible local signer, not a real extension certification |
-| Tested product | 125 unit tests, TypeScript/build, offline scenario browser checks and local lifecycle test | Not a security audit or exhaustive parameter proof |
+| Tested product | 128 unit tests, TypeScript/build, offline scenario browser checks and local lifecycle test | Not a security audit or exhaustive parameter proof |
 | Real mainnet usage | Not yet available | Do not add a public-network claim until actual receipts exist |
 | Demand or revenue | None claimed | Real builder trials remain outstanding |
 

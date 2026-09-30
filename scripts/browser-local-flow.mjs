@@ -10,7 +10,9 @@ import { join } from 'node:path'
 const port = Number(process.env.LOCAL_RPC_PORT ?? 18899)
 assert(Number.isInteger(port) && port >= 1024 && port <= 65535)
 const local = new Connection(`http://127.0.0.1:${port}`, 'confirmed')
+const mainnetSol = process.env.MAINNET_SOL === '1'
 const fixture = process.env.STOCK_FIXTURE_DIR
+assert(!mainnetSol || !fixture, 'Mainnet SOL and synthetic stock are separate local fixtures')
 const longCurve = process.env.LONG_CURVE === '1'
 const payer = fixture ? Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile(join(fixture, 'signer.json'), 'utf8')))) : Keypair.generate()
 let signCount = 0
@@ -39,6 +41,7 @@ try {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
   await context.route(/https:\/\/(solana-rpc\.publicnode\.com|api\.devnet\.solana\.com)\/?$/, async route => {
+    if (mainnetSol) assert(new URL(route.request().url()).hostname === 'solana-rpc.publicnode.com', 'Mainnet SOL must use the mainnet RPC selection')
     const request = JSON.parse(route.request().postData())
     if ((recovery || launchReload) && request.method === 'getSignatureStatuses' && hideStatuses) {
       await route.fulfill({ contentType: 'application/json', body: JSON.stringify({ jsonrpc: '2.0', id: request.id, error: { code: -32005, message: 'Test: confirmation RPC unavailable' } }) }); return
@@ -89,8 +92,8 @@ try {
   }, payer.publicKey.toBase58())
   }
   await installWallet()
-  if (fixture) {
-    await page.getByRole('button', { name: /Xerox xStock/ }).click()
+  if (fixture || mainnetSol) {
+    await page.getByRole('button', { name: fixture ? /Xerox xStock/ : /Solana mainnet SOL/ }).click()
     await page.getByLabel('Token name', { exact: true }).fill('Curve Covenant Demo')
     await page.getByLabel('Ticker', { exact: true }).fill('CCDEMO')
     await page.getByLabel('Public metadata JSON URL').fill('https://furkanefecancaglar.github.io/curve-covenant/metadata/demo-token.json')
@@ -106,6 +109,12 @@ try {
   }
   await page.getByRole('button', { name: 'Check launch with Phantom' }).click()
   await page.getByRole('region', { name: 'Launch cost review' }).waitFor({ timeout: 25000 })
+  if (mainnetSol) {
+    assert.equal(signCount, 0, 'Mainnet review must be unsigned')
+    assert(await page.getByRole('button', { name: /Launch token/ }).isDisabled(), 'Mainnet requires explicit acknowledgment')
+    assert((await page.locator('#launch').innerText()).includes('MAINNET LAUNCH'))
+    assert.equal(await page.getByRole('link', { name: 'Get free devnet SOL' }).count(), 0)
+  }
   if (await page.getByRole('checkbox').count()) await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: /Launch token/ }).click()
   if (launchReload) {
@@ -119,7 +128,7 @@ try {
     page = await context.newPage()
     page.on('pageerror', error => errors.push(error.message))
     await page.goto(appUrl, { waitUntil: 'networkidle' }); await installWallet()
-    assert(await page.getByRole('button', { name: 'Check launch with Phantom' }).isDisabled() || fixture, 'Old launch must be checked before creating another on the same quote')
+    assert(await page.getByRole('button', { name: 'Check launch with Phantom' }).isDisabled() || fixture || mainnetSol, 'Old launch must be checked before creating another on the same quote')
     hideStatuses = false
     await page.getByRole('button', { name: 'Check saved launch', exact: true }).click()
     assert.equal(signCount, signaturesBeforeReload, 'Checking saved state must not sign')
@@ -250,7 +259,7 @@ try {
     assert.equal(sendCount, 5); assert.equal(signCount, 5)
     assert.equal(await page.evaluate(() => Object.keys(localStorage).filter(key => key.startsWith('curve-covenant:pending-')).length), 0)
   }
-  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, recovery, launchReload, reusedConfig: recoveredReceipt?.configAddress ?? null, sendCount, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
+  console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', selectedNetwork: mainnetSol || fixture ? 'mainnet-beta' : 'devnet', longCurve, recovery, launchReload, reusedConfig: recoveredReceipt?.configAddress ?? null, sendCount, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
     result: await page.locator('.lifecycle-result').innerText(), pageErrors: errors }))
 } catch (error) {
   console.error('Lifecycle failure:', error.message)

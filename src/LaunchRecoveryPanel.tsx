@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ExternalLink, RefreshCw } from 'lucide-react'
-import { QUOTES } from './quotes'
+import { QUOTES, quoteSymbol } from './quotes'
 import { formatUnits } from './dbc'
 import { archiveLaunchReceipt, removeLaunchReceipt } from './launch-receipts'
 import type { LaunchReceipt } from './launch-receipts'
@@ -28,7 +28,7 @@ function RecoveryCard({ receipt, locked, onBusy, onRecovered }: Omit<Props, 'rec
       if (kind === 'prepare') { setPrepared(await prepareLaunchRecovery(receipt)); setAcknowledged(false) }
       if (kind === 'resume' && prepared) {
         const address = await resumeLaunchRecovery(prepared)
-        onRecovered({ address, network: quote.network }, `${receipt.identity.name} / ${quote.id}`)
+        onRecovered({ address, network: quote.network }, `${receipt.identity.name} / ${quoteSymbol(quote)}`)
       }
     } catch (issue) { setError(walletError(issue)); setPrepared(null) }
     finally { setBusy(false); onBusy(false) }
@@ -37,18 +37,18 @@ function RecoveryCard({ receipt, locked, onBusy, onRecovered }: Omit<Props, 'rec
     if (state?.kind !== 'created' || locked || busy) return
     try {
       archiveLaunchReceipt(receipt, state.poolAddress)
-      onRecovered({ address: state.poolAddress, network: quote.network }, `${receipt.identity.name} / ${quote.id}`)
+      onRecovered({ address: state.poolAddress, network: quote.network }, `${receipt.identity.name} / ${quoteSymbol(quote)}`)
     } catch (issue) { setError(walletError(issue)) }
   }
   return <article className="recovery-card" aria-label={`Recover ${receipt.identity.symbol} launch`}>
-    <div className="saved-pool-top"><strong>{receipt.identity.name} · {receipt.identity.symbol} / {quote.id}</strong><span>{quote.network === 'devnet' ? 'DEVNET' : 'MAINNET'}</span></div>
+    <div className="saved-pool-top"><strong>{receipt.identity.name} · {receipt.identity.symbol} / {quoteSymbol(quote)}</strong><span>{quote.network === 'devnet' ? 'DEVNET' : 'MAINNET'}</span></div>
     <p>Wallet: <span className="saved-address">{receipt.payer}</span></p>
     <a href={`https://solscan.io/account/${receipt.configAddress}${cluster}`} target="_blank" rel="noreferrer">Saved curve configuration <ExternalLink size={13}/></a>
     <a href={`https://solscan.io/tx/${(receipt.poolAttempt ?? receipt.configAttempt).signature}${cluster}`} target="_blank" rel="noreferrer">Last tracked transaction <ExternalLink size={13}/></a>
     {state?.kind === 'pending' && <p role="status">{state.message}</p>}
     {state?.kind === 'created' && <><p>The token and pool already exist. Open them to continue trading.</p><button disabled={locked || busy} onClick={openCreated}>Open recovered pool</button></>}
     {state?.kind === 'not-created' && <><p>The configuration transaction failed or expired and no configuration was found. Start again from the launch form.</p><button disabled={locked || busy} onClick={() => { try { removeLaunchReceipt(receipt) } catch (issue) { setError(walletError(issue)) } }}>Dismiss checked attempt</button></>}
-    {state?.kind === 'config-only' && <><p>Your curve configuration is already paid for. Graduation reserve: {state.threshold} {quote.id}.</p><p>Continue with the same on-chain curve and token metadata. Because the tab was closed, token creation will use a new mint address.</p>
+    {state?.kind === 'config-only' && <><p>Your curve configuration is already paid for. Graduation reserve: {state.threshold} {quoteSymbol(quote)}.</p><p>Continue with the same on-chain curve and token metadata. Because the tab was closed, token creation will use a new mint address.</p>
       {!prepared && <button disabled={locked || busy} onClick={() => void action('prepare')}>Check remaining launch cost</button>}</>}
     {prepared && <div className="migration-review" role="region" aria-label="Recovered launch cost review"><strong>Token + pool: {formatUnits(String(prepared.review.estimatedDebitLamports), 9)} SOL</strong><p>Includes rent and network fees for this step. The saved configuration is reused. Estimated balance afterwards: {formatUnits(String(prepared.review.remainingLamports), 9)} SOL.</p><small>New mint: <span className="saved-address">{prepared.mint.publicKey.toBase58()}</span></small>
       {quote.network !== 'devnet' && <label className="mainnet-confirm"><input type="checkbox" checked={acknowledged} disabled={locked || busy} onChange={event => setAcknowledged(event.target.checked)}/> I understand this spends real mainnet SOL to create the token and pool.</label>}

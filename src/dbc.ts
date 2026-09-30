@@ -2,7 +2,7 @@ import { Connection, PublicKey } from '@solana/web3.js'
 import { DynamicBondingCurveClient, FEE_DENOMINATOR, getCurrentPoint, SwapMode } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import type { PoolConfig, VirtualPool } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import BN from 'bn.js'
-import { QUOTES } from './quotes'
+import { QUOTES, quoteSymbol } from './quotes'
 import { readMintDecimals } from './token-accounts'
 import { RPC } from './rpc-settings'
 export { RPC } from './rpc-settings'
@@ -157,7 +157,7 @@ function authorityName(value: number): string {
 
 function symbolFor(mint: string): string {
   const knownQuote = Object.values(QUOTES).find(quote => quote.mint === mint)
-  if (knownQuote) return knownQuote.id
+  if (knownQuote) return quoteSymbol(knownQuote)
   if (mint === 'So11111111111111111111111111111111111111112') return 'SOL'
   if (mint === 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v') return 'USDC'
   return 'quote tokens'

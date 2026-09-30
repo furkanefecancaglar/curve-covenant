@@ -2,7 +2,7 @@ import { Connection, Keypair, PublicKey } from '@solana/web3.js'
 import { DynamicBondingCurveClient, deriveDbcPoolAddress } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import type { ConfigParameters } from '@meteora-ag/dynamic-bonding-curve-sdk'
 import type { QuoteAsset } from './quotes'
-import { verifyQuoteAsset } from './quotes'
+import { isSolQuote, verifyQuoteAsset } from './quotes'
 import { connectWallet, sendWalletTransaction } from './wallet'
 import { buildLaunchPlan } from './launch-plan'
 import { reviewTransaction } from './transaction-review'
@@ -138,7 +138,7 @@ export async function prepareLaunch(config: ConfigParameters, identity: TokenIde
     preCreatePoolParam: { name, symbol, uri: uri.toString(), poolCreator: payer, baseMint: mint.publicKey },
   })
   const review = await reviewTransaction(connection, payer, plan.transaction)
-  const quoteBalance = quoteAsset.id === 'SOL' ? null : (await readTokenBalance(connection, payer, quoteMint)).amount
+  const quoteBalance = isSolQuote(quoteAsset) ? null : (await readTokenBalance(connection, payer, quoteMint)).amount
   return { payer, configAccount, mint, identity: { name, symbol, metadataUri: uri.toString() }, quoteAsset, plan, review, quoteBalance }
 }
 

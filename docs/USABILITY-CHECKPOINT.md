@@ -173,3 +173,28 @@ Local DBC: `FrfT8D7mhG4cCMrJStgHbVBUEKzSrsdjb5TCwsc2w2Gx`. Exactly six sends and
 This remains local-validator evidence with synthetic quote balances and synthetic narration. It does not close the real Phantom, public mainnet transaction or independent builder-trial gates. The public demo page and submission/media descriptions now identify the current cost/recovery flow.
 
 Media validation: final duration 166.671745 seconds, 1920×1080 H.264 with AAC narration; video/script/caption hashes verified; complete MP4 decode and Chromium playback passed for both videos. Download links and 390 px layout passed with zero browser exceptions. Sample opening, measured result, recovery-cost and migration-cost frames were visually inspected. All 125 unit tests also passed.
+
+
+## Seventh iteration — explicit SOL mainnet route
+
+The completion audit found SOL launch selection still limited to devnet. The new SOL/mainnet choice uses the mainnet RPC, native SOL handling, a fresh identity/cost review and explicit mainnet acknowledgment. The old `SOL` design/receipt ID remains devnet; the new `SOL-mainnet` ID is stored in shared designs and recovery receipts. Both display amounts in SOL. Switching SOL networks preserves the exact selected scenario configuration and clears the previous launch review.
+
+Current public observations: the supplied wallet held 6 devnet SOL at slot 505905115 and 0 mainnet SOL at slot 451965963. The independent devnet signer remained unfunded. No actual Phantom signing capability is available through the connected tools. No user funds were spent.
+
+Validation:
+
+- 128 unit tests and production build passed. Coverage includes legacy/new SOL design separation, native quote handling, mainnet recovery bookmark network/label and all presets' serialized launch packet limits.
+- Actual public-browser reads saw the mainnet wallet's zero balance and blocked preparation without requesting a signature. The same address passed unsigned devnet simulation. Mainnet share restoration, exact curve preservation across SOL network switches, review invalidation and 390 px layout passed. Public sends/signature requests: zero. The browser provider was a non-signing test interface, not a real Phantom extension.
+- Mainnet-selected SOL flow against the local validator: combined creation with hidden confirmation, close/reopen, original-pool discovery, buy, half sale and graduation. Five sends/five signatures; five pool receipts verified. DBC `5wYRb5f3EoJFWCXQnbmc1MdQKnynRWBBz7nJ9hSTCmTE`; DAMM v2 `2TvsWT9r2Xgrw7uY27G2iF333UNpTz5PVNzYYJ7WZHKt`.
+- Mainnet-selected long SOL flow against the local validator: decline second approval, close/reopen, reuse paid config and create a new mint, then buy/sell/graduate. Six sends/seven attempts; exact scenario configuration matched the chain. Config `5jJ2MTERp5k4MeSk5mXc8nHKNkaniQpEqxk2Wu4EhCD`; DBC `6zNiZanTqutu68GcFDZ35LTE3i1LoELEsi2r3Gz1TTDR`; DAMM v2 `HeWuQAQ1TcwVt5gBiDYRdwzLZwznnwD24X4S5izjCdY2`.
+- All four scenario schedules and exact JSON/SVG/share exports passed with zero external RPC calls.
+
+The two lifecycle results above are **local transactions through the mainnet UI route**, not public mainnet transactions. Evidence exports correctly identify their unrecognized local genesis and omit public explorer links. Mainnet funding, a browser-capable history RPC, real Phantom signing and independent builder use remain open requirements.
+
+```bash
+PREFLIGHT_WALLET=<public-wallet-with-devnet-funds-and-no-mainnet-funds> CHROMIUM_PATH=/path/to/chrome node scripts/browser-sol-networks.mjs
+MAINNET_SOL=1 LAUNCH_RELOAD=combined CHROMIUM_PATH=/path/to/chrome node scripts/browser-local-flow.mjs
+MAINNET_SOL=1 LONG_CURVE=1 SCENARIO_CURVE=long CANCEL_SECOND=1 LAUNCH_RELOAD=split CHROMIUM_PATH=/path/to/chrome node scripts/browser-local-flow.mjs
+```
+
+Regression checks after the SOL-route changes: public-devnet onboarding (including the controlled custom-RPC fixture) passed with zero signature requests/sends and an unsigned combined-creation estimate of 0.02657072 test SOL. Synthetic-XRXx long-curve create/buy/half-sale/graduate passed with six sends, seven signing attempts including decline, exact selected configuration equality and five verified pool receipts. Local DBC `CW6741UFmBiKcsf7QcAGTLeRGAGk64GKH7ba9K7ELSGn`; DAMM v2 `FMSjzxQukxAv1qjdanLwCtapFk2bqm4jNhzXije1BX31`.

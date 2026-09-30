@@ -99,3 +99,8 @@ Real mainnet reads exposed provider restrictions hidden by local tests. Token-ac
 ### Product recording refresh — 2026-09-30
 
 The refreshed approximately 2:47 product demo shows unsigned launch cost review, a declined second approval, reload recovery using the paid configuration, inventory-backed half sale, and migration cost review. The first 33 seconds present both measured whale outcomes. Recording source: `d802c4ed8faf27b54ec9716c531d81be3fa00da9`; local pool: `FrfT8D7mhG4cCMrJStgHbVBUEKzSrsdjb5TCwsc2w2Gx`. Six confirmed local transactions and one deliberately declined signing request are retained in the manifest. The original September 26 recording described above is superseded. Public Phantom/mainnet and builder-use evidence remain open.
+
+
+### SOL mainnet selection — 2026-09-30
+
+A distinct SOL/mainnet choice now complements SOL/devnet and the four xStock quotes. Exact selected SOL curves survive network changes and sharing; old SOL links remain devnet. Network changes clear the cost review. Mainnet-selected combined and long/split launch → recovery → buy/sell → graduation passed against the local validator. Real public browser checks distinguish the wallet's zero mainnet balance from its funded devnet balance and request no signatures. This closes the missing SOL mainnet UI route, while actual public mainnet execution and real-user evidence remain outstanding. Current suite: 128 tests; see [usability checkpoint](USABILITY-CHECKPOINT.md).
