@@ -37,7 +37,7 @@ An independently generated devnet test signer could not obtain faucet funding: t
 
 ## Next work
 
-1. First deployment verified on the public site: scenario/export/share checks and unsigned devnet onboarding passed. Verify the graduation follow-up deployment next.
+1. First deployment verified on the public site: scenario/export/share checks and unsigned devnet onboarding passed. The graduation follow-up deployment also completed successfully.
 2. Migration cost review and submitted-signature recovery are implemented in the second iteration. Continue improving pending transaction recovery and first-time usage.
 3. Obtain a real public-wallet execution when possible; record actual receipts and extension interaction separately from automated/local evidence.
 4. Real builder trials and mainnet xStock transactions remain external evidence gates. No outreach is authorized.
@@ -61,3 +61,12 @@ Mobile browse URL format follows the [official Phantom documentation](https://do
 Graduation now has its own unsigned cost review and separate signing action. Wallet changes or increased debit require another review. If confirmation or the following pool refresh fails after submission, the receipt remains visible and the UI directs the user to read the pool before retrying. There are now 61 passing unit tests; both SOL and synthetic-XRXx local browser lifecycles passed with migration cost review.
 
 The first deployed revision passed the browser onboarding suite against real devnet RPC (unsigned simulation only), all four scenarios, exact config export/share restoration and mobile width checks. The browser test injects a non-signing provider; this remains distinct from a real Phantom-extension run.
+
+
+## Deployed lifecycle verification
+
+Revision `9cc7432` deployed successfully through GitHub Pages (run `36706338109`). The actual public application assets passed the complete SOL lifecycle and receipt-export browser test with all RPC calls and signing redirected to the local validator. Local DBC pool: `5kKyW5RPcNRzocddEv2VwEeUkRbLFS1Siv9mCe2ZQitj`; destination: `4w4NDCUaPY7PJJ26PRuphReeMDgVi2bHN2urGEE6birg`. Five signing attempts, no browser exceptions. This is deployed-asset integration evidence against a local chain, not a public transaction or Phantom-extension demonstration.
+
+An initial run stalled because Chrome blocked the HTTPS page's WebSocket connection to localhost (`ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS`). The test now grants local-network access only in its isolated browser context when APP_URL is HTTPS. The same lifecycle then passed. No product/browser security settings were weakened for users.
+
+The lifecycle harness supports `APP_URL=https://furkanefecancaglar.github.io/curve-covenant/` and injects the installed SDK's PublicKey implementation without needing Vite's development-module path.

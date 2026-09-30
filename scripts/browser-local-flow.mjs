@@ -23,6 +23,9 @@ const executablePath = process.env.CHROMIUM_PATH
 if (!executablePath) throw new Error('Set CHROMIUM_PATH to an installed Chromium executable.')
 const browser = await chromium.launch({ executablePath, headless: true, args: ['--no-sandbox'] })
 const page = await browser.newPage({ viewport: { width: 1440, height: 1050 } })
+const appUrl = process.env.APP_URL ?? 'http://127.0.0.1:4175'
+// A public HTTPS page needs explicit permission to connect to this local-only fixture.
+if (new URL(appUrl).protocol === 'https:') await page.context().grantPermissions(['local-network-access'], { origin: new URL(appUrl).origin })
 try {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
@@ -48,9 +51,10 @@ try {
     tx.partialSign(payer)
     return Array.from(tx.signatures.find(signer => signer.publicKey.equals(payer.publicKey)).signature)
   })
-  await page.goto('http://127.0.0.1:4175', { waitUntil: 'networkidle' })
-  await page.evaluate(async address => {
-    const { PublicKey } = await import('/node_modules/.vite/deps/@solana_web3__js.js')
+  await page.goto(appUrl, { waitUntil: 'networkidle' })
+  await page.addScriptTag({ path: new URL('../node_modules/@solana/web3.js/lib/index.iife.min.js', import.meta.url).pathname })
+  await page.evaluate(address => {
+    const { PublicKey } = window.solanaWeb3
     window.phantom = { solana: { isPhantom: true,
       connect: async () => ({ publicKey: new PublicKey(address) }),
       signTransaction: async tx => {
@@ -152,6 +156,7 @@ try {
   console.log(JSON.stringify({ network: 'local-validator', flow: 'browser launch -> balances -> buy -> sell -> balance refresh -> buy -> graduate -> vault reads', quote: fixture ? 'XRXx (synthetic local balance)' : 'SOL', longCurve, scenarioCurve: process.env.SCENARIO_CURVE ?? null, comparedConfigMatchesChain: Boolean(comparedConfig), signCount, pool,
     result: await page.locator('.lifecycle-result').innerText(), pageErrors: errors }))
 } catch (error) {
+  console.error('Lifecycle failure:', error.message)
   console.error({ signCount, errors: await page.locator('.publish-error').allTextContents(), progress: await page.locator('[role=status]').allTextContents() })
   throw error
 } finally { await browser.close() }
